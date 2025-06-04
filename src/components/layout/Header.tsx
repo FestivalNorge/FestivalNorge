@@ -55,7 +55,7 @@ const Header: React.FC = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-9">
             <ScrollLink 
               to="/"
               className="font-medium transition-colors hover:text-accent-500 text-gray-700"
