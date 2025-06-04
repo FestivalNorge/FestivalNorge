@@ -4,6 +4,7 @@ import { Calendar, Map, Star, ArrowRight } from 'lucide-react';
 import { useFestival } from '../context/FestivalContext';
 import SearchBar from '../components/common/SearchBar';
 import FestivalCard from '../components/common/FestivalCard';
+import Newsletter from '../components/common/Newsletter';
 
 const HomePage: React.FC = () => {
   const { popularFestivals, getUpcomingFestivals } = useFestival();
@@ -15,9 +16,9 @@ const HomePage: React.FC = () => {
       <section className="relative h-screen min-h-[600px] flex items-center bg-hero-pattern bg-cover bg-center">
         <div className="absolute inset-0 bg-gradient-to-r from-primary-900/90 to-primary-900/70"></div>
         <div className="container-custom relative z-10">
-          <div className="max-w-5xl animate-fade-in">
+          <div className="max-w-4xl animate-fade-in">
             <h1 className="text-white mb-4">
-              Opplev Norges beste festivaler
+              Oppdag Norges beste festivaler
             </h1>
             <p className="text-white/90 text-lg mb-8">
               Your one-stop destination for finding and exploring the most exciting music 
@@ -38,6 +39,7 @@ const HomePage: React.FC = () => {
             </div>
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent"></div>
       </section>
       
       {/* Popular Festivals Section */}
@@ -134,6 +136,13 @@ const HomePage: React.FC = () => {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+      
+      {/* Newsletter Section */}
+      <section className="py-16">
+        <div className="container-custom max-w-xl">
+          <Newsletter />
         </div>
       </section>
     </>

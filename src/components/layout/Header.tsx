@@ -1,24 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Music, User, LogOut } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-
-// Custom Link component that scrolls to top when clicked
-const ScrollLink: React.FC<{ to: string; children: React.ReactNode; className?: string }> = ({ to, children, className }) => {
-  const navigate = useNavigate();
-
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    navigate(to);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  return (
-    <a href={to} onClick={handleClick} className={className}>
-      {children}
-    </a>
-  );
-};
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -42,57 +25,67 @@ const Header: React.FC = () => {
 
   return (
     <header 
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white shadow-md"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled || mobileMenuOpen ? 'bg-white shadow-md' : 'bg-transparent'
+      }`}
     >
       <div className="container-custom py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <Music className="w-8 h-8 text-primary-500" />
-            <span className="text-xl font-heading font-bold text-primary-500">
+            <Music className={`w-8 h-8 ${isScrolled ? 'text-primary-500' : 'text-white'}`} />
+            <span className={`text-xl font-heading font-bold ${isScrolled ? 'text-primary-500' : 'text-white'}`}>
               FestivalNorge
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-9">
-            <ScrollLink 
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link 
               to="/"
-              className="font-medium transition-colors hover:text-accent-500 text-gray-700"
+              className={`font-medium transition-colors hover:text-accent-500 ${
+                isScrolled ? 'text-gray-700' : 'text-white'
+              }`}
             >
               Home
-            </ScrollLink>
-            <ScrollLink 
+            </Link>
+            <Link 
               to="/festivals"
-              className="font-medium transition-colors hover:text-accent-500 text-gray-700"
+              className={`font-medium transition-colors hover:text-accent-500 ${
+                isScrolled ? 'text-gray-700' : 'text-white'
+              }`}
             >
               Festivals
-            </ScrollLink>
-            <ScrollLink 
+            </Link>
+            <Link 
               to="/calendar"
-              className="font-medium transition-colors hover:text-accent-500 text-gray-700"
+              className={`font-medium transition-colors hover:text-accent-500 ${
+                isScrolled ? 'text-gray-700' : 'text-white'
+              }`}
             >
               Calendar
-            </ScrollLink>
-            <ScrollLink 
+            </Link>
+            <Link 
               to="/map"
-              className="font-medium transition-colors hover:text-accent-500 text-gray-700"
+              className={`font-medium transition-colors hover:text-accent-500 ${
+                isScrolled ? 'text-gray-700' : 'text-white'
+              }`}
             >
               Map
-            </ScrollLink>
+            </Link>
             
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
-                <ScrollLink 
+                <Link 
                   to="/my-festivals"
                   className={`font-medium transition-colors hover:text-accent-500 ${
                     isScrolled ? 'text-gray-700' : 'text-white'
                   }`}
                 >
                   My Festivals
-                </ScrollLink>
+                </Link>
                 <div className="flex items-center space-x-2 group cursor-pointer">
-                  <span className="font-medium text-primary-500">
+                  <span className={`font-medium ${isScrolled ? 'text-primary-500' : 'text-white'}`}>
                     {user?.name}
                   </span>
                   <button 
@@ -107,7 +100,9 @@ const Header: React.FC = () => {
             ) : (
               <Link
                 to="/login"
-                className="btn btn-primary"
+                className={`btn ${
+                  isScrolled ? 'btn-primary' : 'bg-white text-primary-500 hover:bg-gray-100'
+                }`}
               >
                 Login
               </Link>

@@ -54,7 +54,7 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false 
     >
       <div 
         className={`relative ${
-          featured ? 'md:w-1/2 h-64 md:h-full' : 'h-80'
+          featured ? 'md:w-1/2 h-64 md:h-full' : 'h-48'
         } overflow-hidden`}
       >
         <img 
