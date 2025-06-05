@@ -1,15 +1,24 @@
 import { collection, getDocs } from 'firebase/firestore';
 import { Festival } from '../types';
-import { db } from '../data/firebase';
+import { db, firebaseConfig } from '../data/firebase';
 
 export const getFestivals = async (): Promise<Festival[]> => {
   try {
+    console.log('Attempting to fetch festivals from Firebase');
+    console.log('Firebase config:', {
+      apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+      authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID
+    });
+    
     const querySnapshot = await getDocs(collection(db, 'festivals'));
+    console.log('Successfully fetched festivals:', querySnapshot.size);
     const festivals: Festival[] = [];
     
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       if (data) {
+        console.log('Processing festival:', doc.id, data.name);
         festivals.push({
           id: doc.id,
           name: data.name || 'Unnamed Festival',

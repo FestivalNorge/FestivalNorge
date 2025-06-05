@@ -22,5 +22,5 @@ const app = initializeApp(firebaseConfig);
 // Get a reference to the Firestore service
 const db = getFirestore(app);
 
-// Export the db instance so you can use it in other components
-export { db };
+// Export both the db instance and firebaseConfig
+export { db, firebaseConfig };

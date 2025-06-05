@@ -7,6 +7,13 @@ import { getFestivals } from '../services/festivalService';
 // Import Leaflet CSS
 import 'leaflet/dist/leaflet.css';
 
+interface MapPageState {
+  festivals: Festival[];
+  selectedFestival: string | undefined;
+  isLoading: boolean;
+  error: string | null;
+}
+
 const MapPage: React.FC = () => {
   const [festivals, setFestivals] = useState<Festival[]>([]);
   const [selectedFestival, setSelectedFestival] = useState<string | undefined>(undefined);
@@ -91,7 +98,7 @@ const MapPage: React.FC = () => {
           <div className="bg-white rounded-lg shadow-md">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-6">Kart</h2>
-              <div className="h-[400px] sm:h-[500px] w-full rounded-lg overflow-hidden relative bg-white">
+              <div className="h-[400px] sm:h-[500px] w-full rounded-lg overflow-hidden bg-white">
                 <FestivalMap 
                   festivals={festivals} 
                   zoom={5.3} 
