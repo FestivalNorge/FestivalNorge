@@ -106,9 +106,9 @@ const FestivalsPage: React.FC = () => {
             {/* Results Count */}
             <div className="bg-white rounded-lg shadow-md p-4 mb-6">
               <p className="text-gray-600">
-                Found <span className="font-semibold text-primary-500">{filteredFestivals.length}</span> festivals
+                Fant <span className="font-semibold text-primary-500">{filteredFestivals.length}</span> festivaler
                 {filterOption !== 'all' && (
-                  <span> in <span className="font-semibold text-primary-500">{filterOption}</span></span>
+                  <span> i kategorien <span className="font-semibold text-primary-500">{filterOption}</span></span>
                 )}
               </p>
             </div>
@@ -122,8 +122,8 @@ const FestivalsPage: React.FC = () => {
               </div>
             ) : (
               <div className="bg-white rounded-lg shadow-md p-12 text-center">
-                <h3 className="text-xl font-medium text-gray-700 mb-2">No festivals found</h3>
-                <p className="text-gray-500 mb-6">Try adjusting your search or filter criteria.</p>
+                <h3 className="text-xl font-medium text-gray-700 mb-2">Ingen festivaler funnet</h3>
+                <p className="text-gray-500 mb-6">Prøv å justere søket eller filterne dine.</p>
                 <button 
                   onClick={() => {
                     setSearchTerm('');
@@ -133,7 +133,7 @@ const FestivalsPage: React.FC = () => {
                   }}
                   className="btn btn-primary"
                 >
-                  Reset Filters
+                  Tilbakestill filtre
                 </button>
               </div>
             )}
