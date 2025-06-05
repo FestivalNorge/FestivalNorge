@@ -7,4 +7,5 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  base: '/FestivalNorge/', // <- IMPORTANT for GitHub Pages
 });
