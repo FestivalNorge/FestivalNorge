@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, Map, Star, ArrowRight } from 'lucide-react';
 import { useFestival } from '../context/FestivalContext';
 import FestivalCard from '../components/common/FestivalCard';
-import Newsletter from '../components/common/Newsletter';
+import SearchBar from '../components/common/SearchBar';
 
 const HomePage: React.FC = () => {
   const { popularFestivals, getUpcomingFestivals } = useFestival();
@@ -20,9 +20,15 @@ const HomePage: React.FC = () => {
               Opplev Norges beste festivaler
             </h1>
             <p className="text-white/90 text-lg mb-8">
-              Your one-stop destination for finding and exploring the most exciting music 
-              and cultural festivals across Norway.
+            Finn og utforske de mest spennende musikk- og kulturfestivalene i hele Norge.
             </p>
+            
+            <div className="max-w-2xl w-full mb-12">
+              <SearchBar 
+                placeholder="Søk etter festivaler, steder eller sjangere..."
+                className="w-full"
+              />
+            </div>
             
             <div className="flex flex-wrap gap-4">
               <Link to="/festivals" className="btn btn-accent">
@@ -130,13 +136,6 @@ const HomePage: React.FC = () => {
               </p>
             </div>
           </div>
-        </div>
-      </section>
-      
-      {/* Newsletter Section */}
-      <section className="py-16">
-        <div className="container-custom max-w-xl">
-          <Newsletter />
         </div>
       </section>
     </>
