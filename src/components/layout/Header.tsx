@@ -25,51 +25,41 @@ const Header: React.FC = () => {
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || mobileMenuOpen ? 'bg-white shadow-md' : 'bg-transparent'
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-gray-100 bg-white shadow-md"
     >
-      <div className="container-custom py-4">
+      <div className="w-full px-6 sm:px-8 lg:px-12 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <Music className={`w-8 h-8 ${isScrolled ? 'text-primary-500' : 'text-white'}`} />
-            <span className={`text-xl font-heading font-bold ${isScrolled ? 'text-primary-500' : 'text-white'}`}>
+            <Music className="w-8 h-8 text-primary-500" />
+            <span className="text-xl font-heading font-bold text-primary-500">
               FestivalNorge
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-10">
             <Link 
               to="/"
-              className={`font-medium transition-colors hover:text-accent-500 ${
-                isScrolled ? 'text-gray-700' : 'text-white'
-              }`}
+              className={`font-medium transition-colors hover:text-accent-500 text-gray-700`}
             >
               Home
             </Link>
             <Link 
               to="/festivals"
-              className={`font-medium transition-colors hover:text-accent-500 ${
-                isScrolled ? 'text-gray-700' : 'text-white'
-              }`}
+              className={`font-medium transition-colors hover:text-accent-500 text-gray-700`}
             >
               Festivals
             </Link>
             <Link 
               to="/calendar"
-              className={`font-medium transition-colors hover:text-accent-500 ${
-                isScrolled ? 'text-gray-700' : 'text-white'
-              }`}
+              className={`font-medium transition-colors hover:text-accent-500 text-gray-700`}
             >
               Calendar
             </Link>
             <Link 
               to="/map"
-              className={`font-medium transition-colors hover:text-accent-500 ${
-                isScrolled ? 'text-gray-700' : 'text-white'
-              }`}
+              className={`font-medium transition-colors hover:text-accent-500 text-gray-700`}
             >
               Map
             </Link>
@@ -85,7 +75,7 @@ const Header: React.FC = () => {
                   My Festivals
                 </Link>
                 <div className="flex items-center space-x-2 group cursor-pointer">
-                  <span className={`font-medium ${isScrolled ? 'text-primary-500' : 'text-white'}`}>
+                  <span className="font-medium text-primary-500">
                     {user?.name}
                   </span>
                   <button 
@@ -100,9 +90,7 @@ const Header: React.FC = () => {
             ) : (
               <Link
                 to="/login"
-                className={`btn ${
-                  isScrolled ? 'btn-primary' : 'bg-white text-primary-500 hover:bg-gray-100'
-                }`}
+                className="btn btn-primary"
               >
                 Login
               </Link>
@@ -116,9 +104,9 @@ const Header: React.FC = () => {
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           >
             {mobileMenuOpen ? (
-              <X className={`w-6 h-6 ${isScrolled ? 'text-gray-700' : 'text-white'}`} />
+              <X className="w-6 h-6 text-gray-700" />
             ) : (
-              <Menu className={`w-6 h-6 ${isScrolled ? 'text-gray-700' : 'text-white'}`} />
+              <Menu className="w-6 h-6 text-gray-700" />
             )}
           </button>
         </div>
