@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { MapPin, Calendar, Ticket, Heart, Users } from 'lucide-react';
+import { MapPin, Calendar, Ticket, Users } from 'lucide-react';
 import { Festival } from '../../types';
 
 interface FestivalCardProps {
@@ -31,13 +31,13 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false 
   return (
     <Link 
       to={`/festival/${festival.id}`} 
-      className={`card group festival-card-hover ${
-        featured ? 'flex flex-col md:flex-row overflow-hidden max-h-[400px]' : ''
+      className={`card group festival-card-hover overflow-hidden ${
+        featured ? 'flex flex-col md:flex-row max-h-[400px]' : 'h-full flex flex-col'
       }`}
     >
       <div 
         className={`relative ${
-          featured ? 'md:w-1/2 h-64 md:h-full' : 'h-48'
+          featured ? 'md:w-1/2 h-64 md:h-full' : 'h-96'
         } overflow-hidden`}
       >
         <img 
@@ -45,36 +45,29 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false 
           alt={festival.name} 
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
-          <div className="flex justify-between items-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-transparent flex flex-col p-4">
+          <h3 className="text-xl font-extrabold text-white group-hover:text-accent-300 transition-colors drop-shadow-md mb-2">
+            {festival.name}
+          </h3>
+          <div className="mt-auto">
             <div className="flex flex-wrap gap-2">
               <span className={`badge ${getTicketStatusClass(festival.ticketAvailability)}`}>
                 {festival.ticketAvailability === 'available' ? 'Tickets Available' : 
                  festival.ticketAvailability === 'limited' ? 'Limited Tickets' : 'Sold Out'}
               </span>
               <span className="badge bg-primary-100 text-primary-800">
-                {festival.averageAgeGroup.min}-{festival.averageAgeGroup.max} years
+                {festival.averageAgeGroup.min}-{festival.averageAgeGroup.max} år
               </span>
             </div>
           </div>
         </div>
       </div>
       
-      <div className={`p-5 ${featured ? 'md:w-1/2' : ''}`}>
-        <div className="flex items-start justify-between">
-          <h3 className="text-xl font-bold text-gray-900 group-hover:text-accent-500 transition-colors">
-            {festival.name}
-          </h3>
-          <div className="flex items-center space-x-1 bg-primary-50 text-primary-700 px-2 py-1 rounded text-sm">
-            <span>{festival.popularity}</span>
-            <span>/100</span>
-          </div>
-        </div>
-        
-        <div className="mt-2 space-y-2">
+      <div className={`p-5 ${featured ? 'md:w-1/2' : ''} pt-3`}>
+        <div className="space-y-2">
           <div className="flex items-center text-gray-600">
             <MapPin className="w-4 h-4 mr-2 text-primary-500" />
-            <span>{festival.location.city}, {festival.location.region}</span>
+            <span>{festival.location.city}</span>
           </div>
           
           <div className="flex items-center text-gray-600">
@@ -91,25 +84,25 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false 
 
           <div className="flex items-center text-gray-600">
             <Users className="w-4 h-4 mr-2 text-primary-500" />
-            <span>Age {festival.ageLimit}+ (typically {festival.averageAgeGroup.min}-{festival.averageAgeGroup.max})</span>
+            <span>{festival.ageLimit}+ år</span>
           </div>
         </div>
-        
-        <div className="mt-3 flex flex-wrap gap-1">
-          {festival.genres.map((genre, index) => (
-            <span 
-              key={index}
-              className="badge badge-secondary"
-            >
-              {genre}
-            </span>
-          ))}
-        </div>
-        
-        {featured && (
-          <p className="mt-3 text-gray-600 line-clamp-3">
-            {festival.description}
-          </p>
+
+        {festival.genres.length > 0 && (
+          <div className="mt-3">
+            <div className="flex flex-wrap gap-2">
+              {festival.genres.slice(0, 4).map((genre, index) => (
+                <span key={index} className="text-xs bg-blue-50 text-blue-800 px-3 py-1 rounded-full">
+                  {genre}
+                </span>
+              ))}
+              {festival.genres.length > 4 && (
+                <span className="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full">
+                  +{festival.genres.length - 4}
+                </span>
+              )}
+            </div>
+          </div>
         )}
         
         {featured && (
