@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "homepage": "https://FredrikPD.github.io/FestivalNorge",
+  "homepage": "https://FestivalNorge.github.io/FestivalNorge",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
