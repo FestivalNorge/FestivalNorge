@@ -54,15 +54,15 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false,
           featured ? 'md:w-1/2 h-64 md:h-full' : 'h-48'
         } overflow-hidden`}
       >
-          <img 
-            src={festival.imageUrl} 
-            alt={festival.name} 
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <span className={`badge ${getTicketStatusClass(festival.ticketAvailability)}`}>
+        <img 
+          src={festival.imageUrl} 
+          alt={festival.name} 
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <span className={`badge ${getTicketStatusClass(festival.ticketAvailability)}`}>
                 {festival.ticketAvailability === 'available' ? 'Tickets Available' : 
                  festival.ticketAvailability === 'limited' ? 'Limited Tickets' : 'Sold Out'}
               </span>

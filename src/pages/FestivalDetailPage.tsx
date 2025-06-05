@@ -72,10 +72,10 @@ const FestivalDetailPage: React.FC = () => {
   return (
     <div className="min-h-screen pt-20 pb-16">
       {/* Hero Section with Festival Image */}
-      <div className="relative h-[12rem] bg-cover bg-center" style={{ backgroundImage: `url(${festival.imageUrl})` }}>
+      <div className="relative h-[15rem] bg-cover bg-center" style={{ backgroundImage: `url(${festival.imageUrl})` }}>
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/30"></div>
         <div className="container-custom relative h-full flex flex-col justify-center pb-8">
-          <div className="flex flex-wrap items-center gap-3 mb-4">
+          <div className="flex flex-wrap items-center gap-4 mb-3">
             {festival.genres.map((genre, index) => (
               <span 
                 key={index}
@@ -91,7 +91,7 @@ const FestivalDetailPage: React.FC = () => {
           </div>
           
           <div>
-            <h1 className="text-white mb-2">{festival.name}</h1>
+            <h1 className="text-white mb-4">{festival.name}</h1>
             <div className="flex items-center text-white/90">
               <MapPin className="w-5 h-5 mr-2" />
               <span>{festival.location.city}, {festival.location.venue}</span>
@@ -102,11 +102,11 @@ const FestivalDetailPage: React.FC = () => {
       
       <div className="container-custom">
         {/* Quick Info Section */}
-        <div className="bg-white rounded-lg shadow-md -mt-6 relative z-10 p-6 mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white rounded-lg shadow-md -mt-6 relative z-10 p-6 mb-8 md:mb-10 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="flex items-center">
             <Calendar className="w-8 h-8 text-primary-500 mr-4" />
             <div>
-              <p className="text-sm text-gray-500">Dates</p>
+              <p className="text-sm text-gray-500">Dato</p>
               <p className="font-medium">
                 {formatDate(festival.dates.start)} - {formatDate(festival.dates.end)}
               </p>
@@ -116,7 +116,7 @@ const FestivalDetailPage: React.FC = () => {
           <div className="flex items-center">
             <Ticket className="w-8 h-8 text-primary-500 mr-4" />
             <div>
-              <p className="text-sm text-gray-500">Price Range</p>
+              <p className="text-sm text-gray-500">Pris</p>
               <p className="font-medium">
                 {festival.price.currency} {festival.price.dayPass} - {festival.price.fullPass}
               </p>
@@ -126,7 +126,7 @@ const FestivalDetailPage: React.FC = () => {
           <div className="flex items-center">
             <Users className="w-8 h-8 text-primary-500 mr-4" />
             <div>
-              <p className="text-sm text-gray-500">Age Limit</p>
+              <p className="text-sm text-gray-500">Alder</p>
               <p className="font-medium">{festival.ageLimit}+</p>
             </div>
           </div>
@@ -138,7 +138,7 @@ const FestivalDetailPage: React.FC = () => {
           <div className="lg:col-span-2 space-y-8">
             {/* Description */}
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-bold mb-4">About the Festival</h2>
+              <h2 className="text-2xl font-bold mb-4">Om Festivalen</h2>
               <p className="text-gray-700 leading-relaxed">{festival.description}</p>
             </div>
             
@@ -170,7 +170,7 @@ const FestivalDetailPage: React.FC = () => {
               </div>
               
               {/* Other Artists */}
-              <h3 className="text-lg font-semibold mb-3 text-primary-700">Artists</h3>
+              <h3 className="text-lg font-semibold mb-3 text-primary-700">Artister</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {festival.lineup
                   .filter(artist => !artist.headliner)
@@ -193,7 +193,7 @@ const FestivalDetailPage: React.FC = () => {
             
             {/* Location Map */}
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-bold mb-4">Location</h2>
+              <h2 className="text-2xl font-bold mb-4">Sted</h2>
               <p className="text-gray-700 mb-4">
                 <MapPin className="w-5 h-5 inline-block mr-2 text-primary-500" />
                 {festival.location.venue}, {festival.location.city}
@@ -213,7 +213,7 @@ const FestivalDetailPage: React.FC = () => {
                   rel="noopener noreferrer"
                   className="btn btn-accent w-full mb-4 justify-center"
                 >
-                  Buy Tickets
+                  Kjøp billetter
                   <ExternalLink className="w-4 h-4 ml-2" />
                 </a>
               ) : (
@@ -221,7 +221,7 @@ const FestivalDetailPage: React.FC = () => {
                   disabled
                   className="btn btn-accent w-full mb-4 opacity-50 cursor-not-allowed"
                 >
-                  Sold Out
+                  Utsolgt
                 </button>
               )}
             </div>
@@ -233,7 +233,7 @@ const FestivalDetailPage: React.FC = () => {
                 <li className="flex items-start">
                   <Clock className="w-5 h-5 text-primary-500 mr-3 mt-0.5" />
                   <div>
-                    <p className="font-medium">Duration</p>
+                    <p className="font-medium">Varighet</p>
                     <p className="text-gray-600">
                       {Math.ceil((new Date(festival.dates.end).getTime() - new Date(festival.dates.start).getTime()) / (1000 * 60 * 60 * 24))} days
                     </p>
@@ -242,9 +242,9 @@ const FestivalDetailPage: React.FC = () => {
                 <li className="flex items-start">
                   <Ticket className="w-5 h-5 text-primary-500 mr-3 mt-0.5" />
                   <div>
-                    <p className="font-medium">Ticket Options</p>
+                    <p className="font-medium">Billettpriser</p>
                     <p className="text-gray-600">
-                      Day Pass: {festival.price.currency} {festival.price.dayPass}
+                      Dagbillett: {festival.price.currency} {festival.price.dayPass}
                     </p>
                     <p className="text-gray-600">
                       Full Festival: {festival.price.currency} {festival.price.fullPass}
@@ -254,14 +254,14 @@ const FestivalDetailPage: React.FC = () => {
                 <li className="flex items-start">
                   <Users className="w-5 h-5 text-primary-500 mr-3 mt-0.5" />
                   <div>
-                    <p className="font-medium">Age Restriction</p>
-                    <p className="text-gray-600">{festival.ageLimit}+ years</p>
+                    <p className="font-medium">Aldersgrense</p>
+                    <p className="text-gray-600">{festival.ageLimit}+</p>
                   </div>
                 </li>
                 <li className="flex items-start">
                   <ExternalLink className="w-5 h-5 text-primary-500 mr-3 mt-0.5" />
                   <div>
-                    <p className="font-medium">Official Website</p>
+                    <p className="font-medium">Offesiell hjemmeside</p>
                     <a 
                       href={festival.website} 
                       target="_blank"
