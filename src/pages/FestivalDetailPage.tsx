@@ -8,8 +8,7 @@ import {
   Users, 
   Clock, 
   ExternalLink, 
-  Music,
-  Star
+  Music
 } from 'lucide-react';
 import { useFestival } from '../context/FestivalContext';
 import FestivalMap from '../components/common/FestivalMap';
@@ -73,9 +72,9 @@ const FestivalDetailPage: React.FC = () => {
   return (
     <div className="min-h-screen pt-20 pb-16">
       {/* Hero Section with Festival Image */}
-      <div className="relative h-80 md:h-96 bg-cover bg-center" style={{ backgroundImage: `url(${festival.imageUrl})` }}>
+      <div className="relative h-[12rem] bg-cover bg-center" style={{ backgroundImage: `url(${festival.imageUrl})` }}>
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/30"></div>
-        <div className="container-custom relative h-full flex flex-col justify-end pb-8">
+        <div className="container-custom relative h-full flex flex-col justify-center pb-8">
           <div className="flex flex-wrap items-center gap-3 mb-4">
             {festival.genres.map((genre, index) => (
               <span 
@@ -91,19 +90,11 @@ const FestivalDetailPage: React.FC = () => {
             </span>
           </div>
           
-          <div className="flex justify-between items-end">
-            <div>
-              <h1 className="text-white mb-2">{festival.name}</h1>
-              <div className="flex items-center text-white/90">
-                <MapPin className="w-5 h-5 mr-2" />
-                <span>{festival.location.city}, {festival.location.venue}</span>
-              </div>
-            </div>
-            
-            <div className="flex items-center bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full text-white">
-              <Star className="w-4 h-4 mr-1.5 text-yellow-400 fill-yellow-400" />
-              <span className="font-medium">{festival.popularity}</span>
-              <span className="text-sm text-white/70 ml-1">/100</span>
+          <div>
+            <h1 className="text-white mb-2">{festival.name}</h1>
+            <div className="flex items-center text-white/90">
+              <MapPin className="w-5 h-5 mr-2" />
+              <span>{festival.location.city}, {festival.location.venue}</span>
             </div>
           </div>
         </div>

@@ -23,7 +23,7 @@ const HomePage: React.FC = () => {
             Finn og utforske de mest spennende musikk- og kulturfestivalene i hele Norge.
             </p>
             
-            <div className="max-w-2xl w-full mb-12">
+            <div className="max-w-2xl w-full mb-10">
               <SearchBar 
                 placeholder="Søk etter festivaler, steder eller sjangere..."
                 className="w-full"
@@ -47,11 +47,11 @@ const HomePage: React.FC = () => {
         <div className="container-custom">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Popular Festivals</h2>
-              <p className="text-gray-600">Discover the most popular festivals in Norway</p>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Populære Festivaler</h2>
+              <p className="text-gray-600">Oppdag de mest populære festivalene i hele Norge</p>
             </div>
             <Link to="/festivals" className="text-accent-500 hover:text-accent-600 flex items-center">
-              <span className="mr-1">View All</span>
+              <span className="mr-1">Alle Festivaler</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -64,30 +64,16 @@ const HomePage: React.FC = () => {
         </div>
       </section>
       
-      {/* Featured Festival */}
-      <section className="py-16 bg-gray-50">
-        <div className="container-custom">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Featured Festival</h2>
-              <p className="text-gray-600">Don't miss out on this amazing experience</p>
-            </div>
-          </div>
-          
-          <FestivalCard festival={popularFestivals[0]} featured />
-        </div>
-      </section>
-      
       {/* Upcoming Festivals */}
       <section className="py-16">
         <div className="container-custom">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Upcoming Festivals</h2>
-              <p className="text-gray-600">Plan your next festival experience</p>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Kommende Festivaler</h2>
+              <p className="text-gray-600">Planlegg din neste festival opplevelse</p>
             </div>
             <Link to="/calendar" className="text-accent-500 hover:text-accent-600 flex items-center">
-              <span className="mr-1">Calendar View</span>
+              <span className="mr-1">Kalender</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
