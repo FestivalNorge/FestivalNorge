@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { MapPin, Calendar, Ticket, Heart } from 'lucide-react';
+import { MapPin, Calendar, Ticket } from 'lucide-react';
 import { Festival } from '../../types';
-import { useAuth } from '../../context/AuthContext';
 
 interface FestivalCardProps {
   festival: Festival;
@@ -11,22 +10,6 @@ interface FestivalCardProps {
 }
 
 const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false }) => {
-  const { isAuthenticated, user, saveFestival, removeSavedFestival } = useAuth();
-  
-  const isSaved = user?.savedFestivals.includes(festival.id) || false;
-  
-  const handleSaveToggle = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (!isAuthenticated) return;
-    
-    if (isSaved) {
-      removeSavedFestival(festival.id);
-    } else {
-      saveFestival(festival.id);
-    }
-  };
   
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'MMM d, yyyy');
@@ -70,19 +53,6 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false 
                  festival.ticketAvailability === 'limited' ? 'Limited Tickets' : 'Sold Out'}
               </span>
             </div>
-            {isAuthenticated && (
-              <button 
-                onClick={handleSaveToggle}
-                className={`p-2 rounded-full ${
-                  isSaved 
-                    ? 'bg-accent-500 text-white' 
-                    : 'bg-white/30 backdrop-blur-sm text-white hover:bg-white/50'
-                } transition-colors`}
-                aria-label={isSaved ? "Remove from saved" : "Save festival"}
-              >
-                <Heart className={`w-5 h-5 ${isSaved ? 'fill-white' : ''}`} />
-              </button>
-            )}
           </div>
         </div>
       </div>

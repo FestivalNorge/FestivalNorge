@@ -7,20 +7,17 @@ import {
   Ticket, 
   Users, 
   Clock, 
-  Heart, 
   ExternalLink, 
   Music,
   Star
 } from 'lucide-react';
 import { useFestival } from '../context/FestivalContext';
-import { useAuth } from '../context/AuthContext';
 import FestivalMap from '../components/common/FestivalMap';
 import { Festival } from '../types';
 
 const FestivalDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { getFestivalById } = useFestival();
-  const { isAuthenticated, user, saveFestival, removeSavedFestival } = useAuth();
   const [festival, setFestival] = useState<Festival | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -55,18 +52,6 @@ const FestivalDetailPage: React.FC = () => {
       </div>
     );
   }
-  
-  const isSaved = user?.savedFestivals.includes(festival.id) || false;
-  
-  const handleSaveToggle = () => {
-    if (!isAuthenticated) return;
-    
-    if (isSaved) {
-      removeSavedFestival(festival.id);
-    } else {
-      saveFestival(festival.id);
-    }
-  };
   
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'MMMM d, yyyy');
@@ -247,28 +232,6 @@ const FestivalDetailPage: React.FC = () => {
                 >
                   Sold Out
                 </button>
-              )}
-              
-              {isAuthenticated ? (
-                <button 
-                  onClick={handleSaveToggle}
-                  className={`btn w-full justify-center ${
-                    isSaved 
-                      ? 'bg-white border-accent-500 text-accent-500 hover:bg-accent-50'
-                      : 'btn-outline'
-                  }`}
-                >
-                  <Heart className={`w-5 h-5 mr-2 ${isSaved ? 'fill-accent-500' : ''}`} />
-                  {isSaved ? 'Saved to My Festivals' : 'Save to My Festivals'}
-                </button>
-              ) : (
-                <Link 
-                  to="/login" 
-                  className="btn btn-outline w-full justify-center"
-                >
-                  <Heart className="w-5 h-5 mr-2" />
-                  Login to Save
-                </Link>
               )}
             </div>
             

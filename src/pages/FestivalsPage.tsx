@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useFestival } from '../context/FestivalContext';
 import FestivalCard from '../components/common/FestivalCard';
-import SearchBar from '../components/common/SearchBar';
+
 import FilterPanel from '../components/common/FilterPanel';
 import { SortOption, FilterOption } from '../types';
 
@@ -29,12 +29,7 @@ const FestivalsPage: React.FC = () => {
     setFilterOption(genre);
   }, []);
   
-  // Update search params when filters change
-  const handleSearch = (term: string) => {
-    setSearchTerm(term);
-    updateSearchParams('search', term);
-  };
-  
+  // Handle sort and filter changes
   const handleSortChange = (option: SortOption) => {
     setSortOption(option);
     updateSearchParams('sort', option);
@@ -65,12 +60,7 @@ const FestivalsPage: React.FC = () => {
             <p className="text-white/90 text-lg mb-6 max-w-3xl">
               Discover and filter through all the exciting festivals happening across Norway.
             </p>
-            <div className="max-w-xl">
-              <SearchBar 
-                onSearch={handleSearch} 
-                placeholder="Search by festival name, location, or genre..."
-              />
-            </div>
+
           </div>
         </div>
         

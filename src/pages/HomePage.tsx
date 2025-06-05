@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, Map, Star, ArrowRight } from 'lucide-react';
 import { useFestival } from '../context/FestivalContext';
-import SearchBar from '../components/common/SearchBar';
 import FestivalCard from '../components/common/FestivalCard';
 import Newsletter from '../components/common/Newsletter';
 
@@ -24,10 +23,6 @@ const HomePage: React.FC = () => {
               Your one-stop destination for finding and exploring the most exciting music 
               and cultural festivals across Norway.
             </p>
-            
-            <div className="max-w-xl mb-8">
-              <SearchBar />
-            </div>
             
             <div className="flex flex-wrap gap-4">
               <Link to="/festivals" className="btn btn-accent">
