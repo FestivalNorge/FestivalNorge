@@ -1,36 +1,24 @@
-import React, { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { Festival } from '../types';
 import { festivals as festivalData } from '../data/festivals';
+import { Link } from 'react-router-dom';
 import FestivalCard from '../components/common/FestivalCard';
 
 // Fix for missing default marker icons
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-
-// Set up custom icon
-const customIcon = new L.Icon({
-  iconUrl: markerIcon,
-  iconRetinaUrl: markerIcon2x,
+const icon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowUrl: markerShadow,
-  shadowSize: [41, 41],
-  shadowAnchor: [12, 41],
-  iconSize: [25, 41]
+  shadowSize: [41, 41]
 });
 
-// Fix for missing default marker icons
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
+// Set up custom icon for all markers
+L.Marker.prototype.options.icon = icon;
 
 type Props = {
   festivals?: Festival[];
@@ -61,7 +49,7 @@ const FestivalMap: React.FC<Props> = ({ festivals }) => {
 
             const { latitude, longitude } = festival.location.coordinates;
             return (
-              <Marker key={festival.id} position={[latitude, longitude]} icon={customIcon}>
+              <Marker key={festival.id} position={[latitude, longitude]}>
                 <Popup>
                   <div className="max-w-[300px] p-6 text-gray-900">
                     <Link to={`/festival/${festival.id}`} className="block w-full">
