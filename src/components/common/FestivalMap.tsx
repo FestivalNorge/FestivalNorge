@@ -1,119 +1,117 @@
-import React, { useState } from 'react';
-import Map, { Marker, Popup, NavigationControl } from 'react-map-gl';
+import React from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { Icon } from 'leaflet';
+import { Festival } from '../../types';
 import { Link } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
-import { Festival } from '../../types';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import 'leaflet/dist/leaflet.css';
+
+// Create custom icons
+const greenIcon = new Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+const blueIcon = new Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
 interface FestivalMapProps {
   festivals: Festival[];
-  useCurrentLocation?: boolean;
+  zoom?: number;
+  center?: [number, number];
+  scrollWheelZoom?: boolean;
+  className?: string;
+  selectedFestivalId?: string;
 }
 
-const FestivalMap: React.FC<FestivalMapProps> = ({ festivals, useCurrentLocation = false }) => {
-  // Mapbox token would normally come from environment variables
-  // For this demo, we'll use a placeholder
-  const MAPBOX_TOKEN = 'YOUR_MAPBOX_TOKEN';
-  
-  const [popupInfo, setPopupInfo] = useState<Festival | null>(null);
-  const [viewState, setViewState] = useState({
-    latitude: 60.3913, // Norway center approximately
-    longitude: 5.3221,
-    zoom: 5
-  });
+const FestivalMap: React.FC<FestivalMapProps> = ({
+  festivals,
+  zoom = 5.3,
+  center = [60.472, 8.4689],
+  scrollWheelZoom = true,
+  className = '',
+  selectedFestivalId = ''
+}) => {
+  // Return early if no festivals or invalid center coordinates
+  if (!festivals || !Array.isArray(festivals) || !center || center.length !== 2) {
+    return null;
+  }
 
-  // This would be used in a real app with a valid Mapbox token
+  // Add a unique key to prevent multiple renders
+  const mapKey = `map-${center.join(',')}-${zoom}-${selectedFestivalId}`;
+
+  // Ensure the map container has proper height
   React.useEffect(() => {
-    if (useCurrentLocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setViewState({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            zoom: 10
-          });
-        },
-        (error) => {
-          console.error('Error getting current location:', error);
-        }
-      );
+    const mapContainer = document.querySelector('.leaflet-container');
+    if (mapContainer instanceof HTMLElement) {
+      mapContainer.style.height = '100%';
     }
-  }, [useCurrentLocation]);
+  }, []);
 
   return (
-    <div className="h-[500px] w-full rounded-lg overflow-hidden relative shadow-lg">
-      {/* For demo purposes, show a placeholder since we don't have a real Mapbox token */}
-      <div className="absolute inset-0 bg-gray-100 flex flex-col items-center justify-center p-4 text-center z-10">
-        <MapPin className="w-12 h-12 text-primary-500 mb-4" />
-        <h3 className="text-xl font-semibold mb-2">Interactive Festival Map</h3>
-        <p className="text-gray-600 mb-4 max-w-md">
-          This would be an interactive map showing all festival locations across Norway. 
-          Users could click on pins to see festival details and navigate to festival pages.
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-lg">
-          {festivals.slice(0, 4).map(festival => (
-            <Link 
-              key={festival.id} 
-              to={`/festival/${festival.id}`}
-              className="bg-white p-3 rounded-md shadow-sm hover:shadow-md transition-shadow flex items-center space-x-2"
-            >
-              <MapPin className="w-5 h-5 text-accent-500 flex-shrink-0" />
-              <div>
-                <p className="font-medium text-sm">{festival.name}</p>
-                <p className="text-xs text-gray-500">{festival.location.city}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-      
-      {/* This would be the actual map in a real implementation */}
-      {/* <Map
-        {...viewState}
-        onMove={evt => setViewState(evt.viewState)}
-        mapStyle="mapbox://styles/mapbox/light-v10"
-        mapboxAccessToken={MAPBOX_TOKEN}
-      >
-        <NavigationControl position="top-right" />
-        
-        {festivals.map(festival => (
-          <Marker
-            key={festival.id}
-            latitude={festival.location.coordinates.latitude}
-            longitude={festival.location.coordinates.longitude}
-            anchor="bottom"
-            onClick={e => {
-              e.originalEvent.stopPropagation();
-              setPopupInfo(festival);
+    <div key={mapKey} className={`relative w-full ${className || ''}`}>
+      <div className="h-full">
+        <div className="w-full h-full">
+          <MapContainer 
+            center={center} 
+            zoom={zoom} 
+            scrollWheelZoom={scrollWheelZoom}
+            style={{ 
+              height: '100%',
+              width: '100%'
             }}
           >
-            <MapPin className="w-8 h-8 text-accent-500 hover:text-accent-600 cursor-pointer" />
-          </Marker>
-        ))}
-        
-        {popupInfo && (
-          <Popup
-            anchor="top"
-            longitude={popupInfo.location.coordinates.longitude}
-            latitude={popupInfo.location.coordinates.latitude}
-            onClose={() => setPopupInfo(null)}
-            closeButton={true}
-            closeOnClick={false}
-            offsetTop={10}
-          >
-            <div className="p-2 max-w-xs">
-              <h3 className="font-bold">{popupInfo.name}</h3>
-              <p className="text-sm text-gray-600">{popupInfo.location.venue}, {popupInfo.location.city}</p>
-              <Link 
-                to={`/festival/${popupInfo.id}`}
-                className="text-accent-500 text-sm font-medium hover:underline mt-2 block"
-              >
-                View Details
-              </Link>
-            </div>
-          </Popup>
-        )}
-      </Map> */}
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+
+            {festivals.map((festival) => {
+              if (!festival || !festival.location || !festival.location.coordinates) {
+                console.error('Invalid festival data:', festival);
+                return null;
+              }
+
+              const { latitude, longitude } = festival.location.coordinates;
+              const isCurrentFestival = festival.id === selectedFestivalId;
+              return (
+                <Marker key={festival.id} position={[latitude, longitude]} icon={isCurrentFestival ? blueIcon : greenIcon}>
+                  <Popup>
+                    <div className="max-w-[300px] p-6 text-gray-900">
+                      <Link to={`/festival/${festival.id}`} className="block w-full">
+                        <div className="flex items-center space-x-2">
+                          <div className="text-primary-500">
+                            <MapPin className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-lg">{festival.name}</h3>
+                            <p className="text-sm text-gray-600">
+                              {festival.location.venue}, {festival.location.city}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              {new Date(festival.dates.start).toLocaleDateString('no-NO')} - {new Date(festival.dates.end).toLocaleDateString('no-NO')}
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                  </Popup>
+                </Marker>
+              );
+            })}
+          </MapContainer>
+        </div>
+      </div>
     </div>
   );
 };

@@ -17,14 +17,16 @@ function App() {
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/festivals" element={<FestivalsPage />} />
-              <Route path="/festival/:id" element={<FestivalDetailPage />} />
-              <Route path="/calendar" element={<CalendarPage />} />
-              <Route path="/map" element={<MapPage />} />
-              <Route path="*" element={<HomePage />} />
-            </Routes>
+            <div className="pt-16">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/festivals" element={<FestivalsPage />} />
+                <Route path="/festival/:id" element={<FestivalDetailPage />} />
+                <Route path="/calendar" element={<CalendarPage />} />
+                <Route path="/map" element={<MapPage />} />
+                <Route path="*" element={<HomePage />} />
+              </Routes>
+            </div>
           </main>
           <Footer />
         </div>

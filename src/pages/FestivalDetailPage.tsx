@@ -198,7 +198,17 @@ const FestivalDetailPage: React.FC = () => {
                 <MapPin className="w-5 h-5 inline-block mr-2 text-primary-500" />
                 {festival.location.venue}, {festival.location.city}
               </p>
-              <FestivalMap festivals={[festival]} />
+              <div className="relative h-[400px] sm:h-[500px] w-full rounded-lg overflow-hidden">
+                <div className="h-full w-full">
+                  <FestivalMap 
+                    festivals={[festival]} 
+                    zoom={12} 
+                    scrollWheelZoom={true}
+                    center={[festival.location.coordinates.latitude, festival.location.coordinates.longitude]}
+                    className="h-full w-full"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           
