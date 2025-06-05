@@ -14,12 +14,6 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* React Router Future Flags */
-    "future": {
-      "v7_startTransition": true,
-      "v7_relativeSplatPath": true
-    },
-
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,

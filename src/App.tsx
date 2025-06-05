@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { FestivalProvider } from './context/FestivalContext';
+import { AuthProvider } from './context/AuthContext';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 
@@ -9,11 +10,13 @@ import FestivalsPage from './pages/FestivalsPage';
 import FestivalDetailPage from './pages/FestivalDetailPage';
 import CalendarPage from './pages/CalendarPage';
 import MapPage from './pages/MapPage';
+import AuthPage from './pages/AuthPage';
 
 function App() {
   return (
     <Router>
-      <FestivalProvider>
+      <AuthProvider>
+        <FestivalProvider>
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="flex-grow">
@@ -23,12 +26,14 @@ function App() {
               <Route path="/festival/:id" element={<FestivalDetailPage />} />
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/map" element={<MapPage />} />
+              <Route path="/login" element={<AuthPage />} />
               <Route path="*" element={<HomePage />} />
             </Routes>
           </main>
           <Footer />
         </div>
-      </FestivalProvider>
+        </FestivalProvider>
+      </AuthProvider>
     </Router>
   );
 }
