@@ -1,12 +1,13 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { Festival, SortOption, FilterOption, LocationFilter } from '../types';
-import { festivals as initialFestivals } from '../data/festivals';
+import { getFestivals } from '../services/festivalService';
 
 interface FestivalContextType {
   festivals: Festival[];
   popularFestivals: Festival[];
   filteredFestivals: Festival[];
   loading: boolean;
+  error: string | null;
   searchTerm: string;
   sortOption: SortOption;
   filterOption: FilterOption;
@@ -23,17 +24,49 @@ interface FestivalContextType {
 const FestivalContext = createContext<FestivalContextType | undefined>(undefined);
 
 export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [festivals] = useState<Festival[]>(initialFestivals);
-  const [filteredFestivals, setFilteredFestivals] = useState<Festival[]>(initialFestivals);
-  const [loading] = useState<boolean>(false);
+  const [festivals, setFestivals] = useState<Festival[]>([]);
+  const [filteredFestivals, setFilteredFestivals] = useState<Festival[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortOption, setSortOption] = useState<SortOption>('popularity');
   const [filterOption, setFilterOption] = useState<FilterOption>('all');
   const [locationFilter, setLocationFilter] = useState<LocationFilter>('all');
 
+  // Fetch festivals from Firebase
+  const fetchFestivals = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await getFestivals();
+      setFestivals(data);
+      setFilteredFestivals(data);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching festivals:', err);
+      setError('Failed to load festivals. Please try again later.');
+      setFestivals([]);
+      setFilteredFestivals([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Initial data fetch
+  useEffect(() => {
+    fetchFestivals();
+  }, [fetchFestivals]);
+
   // Apply filters and sort whenever the dependencies change
   useEffect(() => {
+    if (loading) return;
+    
     let result = [...festivals];
+    
+    // If there was an error, don't filter/sort
+    if (error) {
+      setFilteredFestivals([]);
+      return;
+    }
     
     // Apply search filter
     if (searchTerm) {
@@ -119,12 +152,13 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   return (
-    <FestivalContext.Provider 
+    <FestivalContext.Provider
       value={{
         festivals,
         popularFestivals,
         filteredFestivals,
         loading,
+        error,
         searchTerm,
         sortOption,
         filterOption,
@@ -135,7 +169,7 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setLocationFilter,
         getFestivalById,
         getUpcomingFestivals,
-        getFestivalsByMonth,
+        getFestivalsByMonth
       }}
     >
       {children}

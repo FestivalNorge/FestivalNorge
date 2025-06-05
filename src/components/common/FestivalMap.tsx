@@ -36,7 +36,7 @@ interface FestivalMapProps {
 }
 
 const FestivalMap: React.FC<FestivalMapProps> = ({
-  festivals,
+  festivals = [],
   zoom = 5.3,
   center = [60.472, 8.4689],
   scrollWheelZoom = true,
@@ -44,9 +44,17 @@ const FestivalMap: React.FC<FestivalMapProps> = ({
   selectedFestivalId = '',
   onClick
 }) => {
+  // Debug log to check the festivals data
+  console.log('Festivals in map component:', festivals);
+  
   // Return early if no festivals or invalid center coordinates
-  if (!festivals || !Array.isArray(festivals) || !center || center.length !== 2) {
-    return null;
+  if (!Array.isArray(festivals) || !center || center.length !== 2) {
+    console.log('No valid festivals or center coordinates');
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-gray-100">
+        <p>Laster kart...</p>
+      </div>
+    );
   }
 
   // Add a unique key to prevent multiple renders

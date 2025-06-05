@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useFestival } from '../context/FestivalContext';
+import { Loader2 } from 'lucide-react';
 import FestivalCard from '../components/common/FestivalCard';
 import SearchBar from '../components/common/SearchBar';
 import FilterPanel from '../components/common/FilterPanel';
@@ -15,7 +16,9 @@ const FestivalsPage: React.FC = () => {
     setLocationFilter,
     sortOption,
     filterOption,
-    locationFilter
+    locationFilter,
+    loading,
+    error
   } = useFestival();
   
   const [searchParams, setSearchParams] = useSearchParams();
@@ -62,6 +65,50 @@ const FestivalsPage: React.FC = () => {
     setSearchParams(newParams);
   };
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-28 pb-16 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 text-primary-500 animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Laster festivaler...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen pt-28 pb-16 flex items-center justify-center">
+        <div className="bg-red-50 border-l-4 border-red-400 p-6 max-w-2xl w-full">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-4">
+              <h3 className="text-lg font-medium text-red-700">Kunne ikke laste festivaler</h3>
+              <div className="mt-2 text-sm text-red-600">
+                <p>{error}</p>
+              </div>
+              <div className="mt-4">
+                <button
+                  onClick={() => window.location.reload()}
+                  className="btn btn-error"
+                >
+                  Prøv igjen
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Main content
   return (
     <div className="min-h-screen pt-28 pb-16">
       <div className="container-custom">
