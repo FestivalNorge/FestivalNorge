@@ -7,9 +7,10 @@ import { Festival } from '../../types';
 interface FestivalCardProps {
   festival: Festival;
   featured?: boolean;
+  simplified?: boolean;
 }
 
-const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false }) => {
+const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false, simplified = false }) => {
   
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'MMM d, yyyy');
@@ -28,6 +29,19 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false 
     }
   };
 
+  if (simplified) {
+    return (
+      <div className="space-y-4">
+        <h3 className="text-xl font-semibold text-gray-900 break-words">
+          {festival.name}
+        </h3>
+        <div className="text-gray-600 text-sm">
+          {format(new Date(festival.dates.start), 'MMM d, yyyy')} - {format(new Date(festival.dates.end), 'MMM d, yyyy')}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Link 
       to={`/festival/${festival.id}`} 
@@ -40,15 +54,15 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false 
           featured ? 'md:w-1/2 h-64 md:h-full' : 'h-48'
         } overflow-hidden`}
       >
-        <img 
-          src={festival.imageUrl} 
-          alt={festival.name} 
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <span className={`badge ${getTicketStatusClass(festival.ticketAvailability)}`}>
+          <img 
+            src={festival.imageUrl} 
+            alt={festival.name} 
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
+            <div className="flex justify-between items-center">
+              <div>
+                <span className={`badge ${getTicketStatusClass(festival.ticketAvailability)}`}>
                 {festival.ticketAvailability === 'available' ? 'Tickets Available' : 
                  festival.ticketAvailability === 'limited' ? 'Limited Tickets' : 'Sold Out'}
               </span>
