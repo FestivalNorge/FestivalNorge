@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { Festival, SortOption, FilterOption } from '../types';
+import { Festival, SortOption, FilterOption, LocationFilter } from '../types';
 import { festivals as initialFestivals } from '../data/festivals';
 
 interface FestivalContextType {
@@ -10,9 +10,11 @@ interface FestivalContextType {
   searchTerm: string;
   sortOption: SortOption;
   filterOption: FilterOption;
+  locationFilter: LocationFilter;
   setSearchTerm: (term: string) => void;
   setSortOption: (option: SortOption) => void;
   setFilterOption: (option: FilterOption) => void;
+  setLocationFilter: (location: LocationFilter) => void;
   getFestivalById: (id: string) => Festival | undefined;
   getUpcomingFestivals: () => Festival[];
   getFestivalsByMonth: (month: number, year: number) => Festival[];
@@ -27,6 +29,7 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortOption, setSortOption] = useState<SortOption>('popularity');
   const [filterOption, setFilterOption] = useState<FilterOption>('all');
+  const [locationFilter, setLocationFilter] = useState<LocationFilter>('all');
 
   // Apply filters and sort whenever the dependencies change
   useEffect(() => {
@@ -51,11 +54,18 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       );
     }
     
+    // Apply location filter
+    if (locationFilter !== 'all') {
+      result = result.filter(festival => 
+        festival.location.city.toLowerCase() === locationFilter.toLowerCase()
+      );
+    }
+    
     // Apply sorting
     result = sortFestivals(result, sortOption);
     
     setFilteredFestivals(result);
-  }, [festivals, searchTerm, sortOption, filterOption]);
+  }, [festivals, searchTerm, sortOption, filterOption, locationFilter]);
 
   // Sort festivals based on the selected option
   const sortFestivals = (festivalList: Festival[], option: SortOption): Festival[] => {
@@ -109,7 +119,7 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   return (
-    <FestivalContext.Provider
+    <FestivalContext.Provider 
       value={{
         festivals,
         popularFestivals,
@@ -118,12 +128,14 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         searchTerm,
         sortOption,
         filterOption,
+        locationFilter,
         setSearchTerm,
         setSortOption,
         setFilterOption,
+        setLocationFilter,
         getFestivalById,
         getUpcomingFestivals,
-        getFestivalsByMonth
+        getFestivalsByMonth,
       }}
     >
       {children}

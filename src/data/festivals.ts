@@ -4,10 +4,11 @@ import { Festival } from '../types';
 export const festivals: Festival[] = [
   {
     id: '1',
-    name: 'Øya Festivalen',
+    name: 'Øya Festival',
     location: {
       city: 'Oslo',
       venue: 'Tøyenparken',
+      region: 'Eastern Norway',
       coordinates: {
         latitude: 59.9167,
         longitude: 10.7667
@@ -23,6 +24,10 @@ export const festivals: Festival[] = [
       fullPass: 3200
     },
     ageLimit: 18,
+    averageAgeGroup: {
+      min: 20,
+      max: 35
+    },
     description: 'Øya Festival is one of Norway\'s largest and most popular music festivals, featuring a diverse lineup of local and international artists. The festival is known for its focus on sustainability and eco-friendly practices.',
     genres: ['Rock', 'Pop', 'Electronic', 'Hip-hop'],
     lineup: [
@@ -40,10 +45,11 @@ export const festivals: Festival[] = [
   },
   {
     id: '2',
-    name: 'Bergenfesten',
+    name: 'Bergenfest',
     location: {
       city: 'Bergen',
       venue: 'Bergenhus Fortress',
+      region: 'Western Norway',
       coordinates: {
         latitude: 60.3913,
         longitude: 5.3221
@@ -59,6 +65,10 @@ export const festivals: Festival[] = [
       fullPass: 2800
     },
     ageLimit: 18,
+    averageAgeGroup: {
+      min: 18,
+      max: 30
+    },
     description: 'Bergenfest is an annual music festival that takes place in Bergen, Norway. The festival features international and Norwegian artists and bands, and is held at the historic Bergenhus Fortress.',
     genres: ['Rock', 'Indie', 'Pop', 'Folk'],
     lineup: [
@@ -78,6 +88,7 @@ export const festivals: Festival[] = [
     location: {
       city: 'Oslo',
       venue: 'Sofienbergparken',
+      region: 'Eastern Norway',
       coordinates: {
         latitude: 59.9255,
         longitude: 10.7649
@@ -93,6 +104,10 @@ export const festivals: Festival[] = [
       fullPass: 2100
     },
     ageLimit: 18,
+    averageAgeGroup: {
+      min: 25,
+      max: 40
+    },
     description: 'Piknik i Parken (PiP) is a boutique festival that combines music, food, and art in a beautiful park setting. The festival has a relaxed atmosphere and focuses on quality over quantity.',
     genres: ['Indie', 'Folk', 'Alternative', 'Electronic'],
     lineup: [
@@ -112,6 +127,7 @@ export const festivals: Festival[] = [
     location: {
       city: 'Molde',
       venue: 'Various venues in Molde',
+      region: 'Central Norway',
       coordinates: {
         latitude: 62.7374,
         longitude: 7.1588
@@ -127,6 +143,10 @@ export const festivals: Festival[] = [
       fullPass: 2500
     },
     ageLimit: 18,
+    averageAgeGroup: {
+      min: 30,
+      max: 55
+    },
     description: 'Moldejazz is one of Europe\'s oldest jazz festivals, founded in 1961. The festival takes place in the picturesque town of Molde and features performances by jazz artists from around the world.',
     genres: ['Jazz', 'Blues', 'World Music'],
     lineup: [
@@ -146,6 +166,7 @@ export const festivals: Festival[] = [
     location: {
       city: 'Oslo',
       venue: 'Ekebergparken',
+      region: 'Eastern Norway',
       coordinates: {
         latitude: 59.8794,
         longitude: 10.7662
@@ -161,6 +182,10 @@ export const festivals: Festival[] = [
       fullPass: 2750
     },
     ageLimit: 18,
+    averageAgeGroup: {
+      min: 16,
+      max: 35
+    },
     description: 'Tons of Rock is Norway\'s biggest rock and metal festival. It features a mix of international and Norwegian artists across multiple stages.',
     genres: ['Rock', 'Metal', 'Hard Rock', 'Punk'],
     lineup: [

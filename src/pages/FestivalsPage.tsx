@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useFestival } from '../context/FestivalContext';
 import FestivalCard from '../components/common/FestivalCard';
-
+import SearchBar from '../components/common/SearchBar';
 import FilterPanel from '../components/common/FilterPanel';
-import { SortOption, FilterOption } from '../types';
+import { SortOption, FilterOption, LocationFilter } from '../types';
 
 const FestivalsPage: React.FC = () => {
   const { 
@@ -12,37 +12,49 @@ const FestivalsPage: React.FC = () => {
     setSearchTerm, 
     setSortOption, 
     setFilterOption,
+    setLocationFilter,
     sortOption,
-    filterOption
+    filterOption,
+    locationFilter
   } = useFestival();
   
   const [searchParams, setSearchParams] = useSearchParams();
   
-  // Initialize from URL params
   useEffect(() => {
     const searchTerm = searchParams.get('search') || '';
     const sort = searchParams.get('sort') as SortOption || 'popularity';
-    const genre = searchParams.get('genre') as FilterOption || 'all';
+    const filter = searchParams.get('filter') as FilterOption || 'all';
+    const location = searchParams.get('location') as LocationFilter || 'all';
     
     setSearchTerm(searchTerm);
     setSortOption(sort);
-    setFilterOption(genre);
-  }, []);
+    setFilterOption(filter);
+    setLocationFilter(location);
+  }, [searchParams, setSearchTerm, setSortOption, setFilterOption, setLocationFilter]);
   
-  // Handle sort and filter changes
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+    updateSearchParams('search', term);
+  };
+  
   const handleSortChange = (option: SortOption) => {
     setSortOption(option);
     updateSearchParams('sort', option);
   };
-  
+
   const handleFilterChange = (option: FilterOption) => {
     setFilterOption(option);
-    updateSearchParams('genre', option);
+    updateSearchParams('filter', option);
+  };
+
+  const handleLocationChange = (location: LocationFilter) => {
+    setLocationFilter(location);
+    updateSearchParams('location', location.toLowerCase());
   };
   
   const updateSearchParams = (param: string, value: string) => {
     const newParams = new URLSearchParams(searchParams);
-    if (value) {
+    if (value && value !== 'all') {
       newParams.set(param, value);
     } else {
       newParams.delete(param);
@@ -51,49 +63,82 @@ const FestivalsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pt-20 pb-16">
+    <div className="min-h-screen pt-28 pb-16">
       <div className="container-custom">
-        {/* Page Header */}
-        <div className="bg-primary-500 rounded-lg shadow-lg overflow-hidden mb-8">
-          <div className="p-8 md:p-12">
-            <h1 className="text-white mb-4">Explore Festivals</h1>
-            <p className="text-white/90 text-lg mb-6 max-w-3xl">
-              Discover and filter through all the exciting festivals happening across Norway.
+        {/* Hero Section */}
+        <div className="relative h-[300px] rounded-xl overflow-hidden mb-12">
+          <div className="absolute inset-0 bg-festival-texture bg-cover bg-center">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary-900/90 to-primary-900/70"></div>
+          </div>
+          <div className="relative h-full flex flex-col justify-center px-8 md:px-12">
+            <h1 className="text-white mb-4 max-w-2xl">Utforsk festivaler</h1>
+            <p className="text-white/90 text-lg mb-6 max-w-2xl">
+              Utforsk de mest spennende festivalene som foregår i Norge. Filtrér, sorter og finn din neste opplevelse.
             </p>
-
+            <div className="max-w-xl">
+              <SearchBar 
+                onSearch={handleSearch} 
+                placeholder="Søk etter festivalnavn, lokasjon eller genre..."
+                className="shadow-lg"
+              />
+            </div>
           </div>
         </div>
         
-        {/* Filters Section */}
-        <div className="mb-8">
-          <FilterPanel 
-            sortOption={sortOption}
-            filterOption={filterOption}
-            onSortChange={handleSortChange}
-            onFilterChange={handleFilterChange}
-          />
-        </div>
-        
-        {/* Results Count */}
-        <div className="mb-6">
-          <p className="text-gray-600">
-            Showing <span className="font-semibold">{filteredFestivals.length}</span> festivals
-          </p>
-        </div>
-        
-        {/* Festivals Grid */}
-        {filteredFestivals.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredFestivals.map(festival => (
-              <FestivalCard key={festival.id} festival={festival} />
-            ))}
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Filters Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-56">
+              <FilterPanel 
+                sortOption={sortOption}
+                filterOption={filterOption}
+                locationFilter={locationFilter}
+                onSortChange={handleSortChange}
+                onFilterChange={handleFilterChange}
+                onLocationChange={handleLocationChange}
+              />
+            </div>
           </div>
-        ) : (
-          <div className="text-center py-12">
-            <h3 className="text-xl font-medium text-gray-700 mb-2">No festivals found</h3>
-            <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
+          
+          {/* Festivals Grid */}
+          <div className="lg:col-span-3">
+            {/* Results Count */}
+            <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+              <p className="text-gray-600">
+                Found <span className="font-semibold text-primary-500">{filteredFestivals.length}</span> festivals
+                {filterOption !== 'all' && (
+                  <span> in <span className="font-semibold text-primary-500">{filterOption}</span></span>
+                )}
+              </p>
+            </div>
+            
+            {/* Festival Cards */}
+            {filteredFestivals.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredFestivals.map(festival => (
+                  <FestivalCard key={festival.id} festival={festival} />
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white rounded-lg shadow-md p-12 text-center">
+                <h3 className="text-xl font-medium text-gray-700 mb-2">No festivals found</h3>
+                <p className="text-gray-500 mb-6">Try adjusting your search or filter criteria.</p>
+                <button 
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSortOption('popularity');
+                    setFilterOption('all');
+                    setSearchParams(new URLSearchParams());
+                  }}
+                  className="btn btn-primary"
+                >
+                  Reset Filters
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

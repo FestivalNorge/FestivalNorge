@@ -1,16 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { MapPin, Calendar, Ticket } from 'lucide-react';
+import { MapPin, Calendar, Ticket, Heart, Users } from 'lucide-react';
 import { Festival } from '../../types';
 
 interface FestivalCardProps {
   festival: Festival;
   featured?: boolean;
-  simplified?: boolean;
 }
 
-const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false, simplified = false }) => {
+const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false }) => {
   
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'MMM d, yyyy');
@@ -28,19 +27,6 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false,
         return 'bg-gray-100 text-gray-800';
     }
   };
-
-  if (simplified) {
-    return (
-      <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-900 break-words">
-          {festival.name}
-        </h3>
-        <div className="text-gray-600 text-sm">
-          {format(new Date(festival.dates.start), 'MMM d, yyyy')} - {format(new Date(festival.dates.end), 'MMM d, yyyy')}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <Link 
@@ -61,10 +47,13 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false,
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
           <div className="flex justify-between items-center">
-            <div>
+            <div className="flex flex-wrap gap-2">
               <span className={`badge ${getTicketStatusClass(festival.ticketAvailability)}`}>
                 {festival.ticketAvailability === 'available' ? 'Tickets Available' : 
                  festival.ticketAvailability === 'limited' ? 'Limited Tickets' : 'Sold Out'}
+              </span>
+              <span className="badge bg-primary-100 text-primary-800">
+                {festival.averageAgeGroup.min}-{festival.averageAgeGroup.max} years
               </span>
             </div>
           </div>
@@ -85,7 +74,7 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false,
         <div className="mt-2 space-y-2">
           <div className="flex items-center text-gray-600">
             <MapPin className="w-4 h-4 mr-2 text-primary-500" />
-            <span>{festival.location.city}, {festival.location.venue}</span>
+            <span>{festival.location.city}, {festival.location.region}</span>
           </div>
           
           <div className="flex items-center text-gray-600">
@@ -98,6 +87,11 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false,
           <div className="flex items-center text-gray-600">
             <Ticket className="w-4 h-4 mr-2 text-primary-500" />
             <span>{festival.price.currency} {festival.price.dayPass} - {festival.price.fullPass}</span>
+          </div>
+
+          <div className="flex items-center text-gray-600">
+            <Users className="w-4 h-4 mr-2 text-primary-500" />
+            <span>Age {festival.ageLimit}+ (typically {festival.averageAgeGroup.min}-{festival.averageAgeGroup.max})</span>
           </div>
         </div>
         

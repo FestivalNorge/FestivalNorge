@@ -4,6 +4,7 @@ export interface Festival {
   location: {
     city: string;
     venue: string;
+    region: string; // Added region for better location filtering
     coordinates: {
       latitude: number;
       longitude: number;
@@ -19,6 +20,10 @@ export interface Festival {
     fullPass: number;
   };
   ageLimit: number;
+  averageAgeGroup: {
+    min: number;
+    max: number;
+  };
   description: string;
   genres: string[];
   lineup: Artist[];
@@ -45,3 +50,4 @@ export interface User {
 
 export type SortOption = 'popularity' | 'date' | 'price' | 'location';
 export type FilterOption = 'all' | string; // genre or other filter type
+export type LocationFilter = 'all' | string; // region filter
