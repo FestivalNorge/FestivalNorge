@@ -19,10 +19,10 @@ const greenIcon = new Icon({
 const blueIcon = new Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  iconSize: [35, 51],
+  iconAnchor: [17, 51],
+  popupAnchor: [1, -44],
+  shadowSize: [51, 51]
 });
 
 interface FestivalMapProps {
@@ -32,6 +32,7 @@ interface FestivalMapProps {
   scrollWheelZoom?: boolean;
   className?: string;
   selectedFestivalId?: string;
+  onClick?: (id: string) => void;
 }
 
 const FestivalMap: React.FC<FestivalMapProps> = ({
@@ -40,7 +41,8 @@ const FestivalMap: React.FC<FestivalMapProps> = ({
   center = [60.472, 8.4689],
   scrollWheelZoom = true,
   className = '',
-  selectedFestivalId = ''
+  selectedFestivalId = '',
+  onClick
 }) => {
   // Return early if no festivals or invalid center coordinates
   if (!festivals || !Array.isArray(festivals) || !center || center.length !== 2) {
@@ -61,20 +63,16 @@ const FestivalMap: React.FC<FestivalMapProps> = ({
   return (
     <div key={mapKey} className={`relative w-full ${className || ''}`}>
       <div className="h-full">
-        <div className="w-full h-full">
-          <MapContainer 
-            center={center} 
-            zoom={zoom} 
-            scrollWheelZoom={scrollWheelZoom}
-            style={{ 
-              height: '100%',
-              width: '100%'
-            }}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+        <MapContainer
+          center={center}
+          zoom={zoom}
+          scrollWheelZoom={scrollWheelZoom}
+          style={{ height: '100%', width: '100%', position: 'relative', zIndex: 1 }}
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
 
             {festivals.map((festival) => {
               if (!festival || !festival.location || !festival.location.coordinates) {
@@ -85,7 +83,14 @@ const FestivalMap: React.FC<FestivalMapProps> = ({
               const { latitude, longitude } = festival.location.coordinates;
               const isCurrentFestival = festival.id === selectedFestivalId;
               return (
-                <Marker key={festival.id} position={[latitude, longitude]} icon={isCurrentFestival ? blueIcon : greenIcon}>
+                <Marker 
+                  key={festival.id} 
+                  position={[latitude, longitude]} 
+                  icon={isCurrentFestival ? blueIcon : greenIcon}
+                  eventHandlers={{
+                    click: () => onClick?.(festival.id)
+                  }}
+                >
                   <Popup>
                     <div className="max-w-[300px] p-6 text-gray-900">
                       <Link to={`/festival/${festival.id}`} className="block w-full">
@@ -106,11 +111,10 @@ const FestivalMap: React.FC<FestivalMapProps> = ({
                       </Link>
                     </div>
                   </Popup>
-                </Marker>
-              );
-            })}
-          </MapContainer>
-        </div>
+              </Marker>
+            );
+          })}
+        </MapContainer>
       </div>
     </div>
   );
