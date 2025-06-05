@@ -32,10 +32,10 @@ const HomePage: React.FC = () => {
             
             <div className="flex flex-wrap gap-4">
               <Link to="/festivals" className="btn btn-accent">
-                Browse All Festivals
+                Alle Festivaler
               </Link>
               <Link to="/map" className="btn btn-outline border-white text-white hover:bg-white/10">
-                View Festival Map
+                Kart over festivaler
               </Link>
             </div>
           </div>
@@ -89,16 +89,16 @@ const HomePage: React.FC = () => {
       {/* Features Section */}
       <section className="py-16 bg-primary-50">
         <div className="container-custom">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Discover, Plan, and Enjoy</h2>
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Oppdag, planlegg og nyt</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-lg shadow-md p-6 text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-100 text-primary-600 mb-4">
                 <Calendar className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Browse Festivals</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Festivaler nær deg</h3>
               <p className="text-gray-600">
-                Explore a comprehensive database of music and cultural festivals happening across Norway.
+                Oppdag en samling av musikk- og kulturfestivaler som foregår nær deg.
               </p>
             </div>
             
@@ -106,9 +106,9 @@ const HomePage: React.FC = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary-100 text-secondary-600 mb-4">
                 <Map className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Find Nearby Events</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Chat med andre deltagere</h3>
               <p className="text-gray-600">
-                Discover festivals happening near you with our interactive map and location-based search.
+                Bli med i gruppechatter med andre som skal til samme festivaler.
               </p>
             </div>
             
@@ -116,9 +116,9 @@ const HomePage: React.FC = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent-100 text-accent-600 mb-4">
                 <Star className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Save Favorites</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Lagre favoritter</h3>
               <p className="text-gray-600">
-                Create an account to bookmark festivals, get personalized recommendations, and more.
+                Opprett en konto for å lagre festivaler, få personlige anbefalinger, påminnelser og mer.
               </p>
             </div>
           </div>

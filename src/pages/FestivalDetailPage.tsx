@@ -244,10 +244,10 @@ const FestivalDetailPage: React.FC = () => {
                   <div>
                     <p className="font-medium">Billettpriser</p>
                     <p className="text-gray-600">
-                      Dagbillett: {festival.price.currency} {festival.price.dayPass}
+                      Dagspass: {festival.price.currency} {festival.price.dayPass}
                     </p>
                     <p className="text-gray-600">
-                      Full Festival: {festival.price.currency} {festival.price.fullPass}
+                      Festivalpass: {festival.price.currency} {festival.price.fullPass}
                     </p>
                   </div>
                 </li>

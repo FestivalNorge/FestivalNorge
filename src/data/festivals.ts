@@ -4,7 +4,7 @@ import { Festival } from '../types';
 export const festivals: Festival[] = [
   {
     id: '1',
-    name: 'Øya Festival',
+    name: 'Øya Festivalen',
     location: {
       city: 'Oslo',
       venue: 'Tøyenparken',
@@ -40,7 +40,7 @@ export const festivals: Festival[] = [
   },
   {
     id: '2',
-    name: 'Bergenfest',
+    name: 'Bergenfesten',
     location: {
       city: 'Bergen',
       venue: 'Bergenhus Fortress',
