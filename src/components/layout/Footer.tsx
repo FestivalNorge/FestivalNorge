@@ -4,34 +4,22 @@ import { Music, Instagram, Facebook, Twitter, Mail } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-900 text-white pt-16 pb-8">
+    <footer className="bg-gray-900 text-white pt-24 pb-8">
       <div className="container-custom">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-20">
           {/* Brand */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
+          <div className="space-y-2">
+          <div className="flex items-center space-x-2">
               <Music className="w-8 h-8 text-accent-500" />
               <span className="text-xl font-heading font-bold">FestivalNorge</span>
             </div>
             <p className="text-gray-400 max-w-xs">
               Your one-stop destination for discovering the best music and cultural festivals across Norway.
             </p>
-            <div className="flex space-x-4 pt-2">
-              <a href="https://instagram.com" className="text-gray-400 hover:text-accent-500 transition-colors" aria-label="Instagram">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="https://facebook.com" className="text-gray-400 hover:text-accent-500 transition-colors" aria-label="Facebook">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="https://twitter.com" className="text-gray-400 hover:text-accent-500 transition-colors" aria-label="Twitter">
-                <Twitter className="w-5 h-5" />
-              </a>
-            </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/" className="text-gray-400 hover:text-accent-500 transition-colors">
@@ -58,7 +46,6 @@ const Footer: React.FC = () => {
 
           {/* Genres */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Festival Genres</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/festivals?genre=rock" className="text-gray-400 hover:text-accent-500 transition-colors">
@@ -90,7 +77,6 @@ const Footer: React.FC = () => {
 
           {/* Newsletter */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Stay Updated</h3>
             <p className="text-gray-400 mb-4">
               Subscribe to our newsletter to get the latest updates on festivals.
             </p>
@@ -115,7 +101,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-12 pt-8">
+        <div className="border-t border-gray-800 mt-10 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
               &copy; {new Date().getFullYear()} FestivalNorge. All rights reserved.
