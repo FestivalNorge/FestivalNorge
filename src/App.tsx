@@ -11,6 +11,7 @@ import FestivalDetailPage from './pages/FestivalDetailPage';
 import CalendarPage from './pages/CalendarPage';
 import MapPage from './pages/MapPage';
 import AuthPage from './pages/AuthPage';
+import MyFestivalsPage from './pages/MyFestivalsPage';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/map" element={<MapPage />} />
               <Route path="/login" element={<AuthPage />} />
+              <Route path="/my-festivals" element={<MyFestivalsPage />} />
               <Route path="*" element={<HomePage />} />
             </Routes>
           </main>

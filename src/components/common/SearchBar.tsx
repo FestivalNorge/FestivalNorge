@@ -84,20 +84,21 @@ const SearchBar: React.FC<SearchBarProps> = ({
     e.preventDefault();
     setShowSuggestions(false);
     
-    if (suggestions.length > 0 && activeSuggestion >= 0) {
-      // If there's an active suggestion, navigate to that festival
-      navigate(`/festivals/${suggestions[activeSuggestion].id}`);
-    } else if (onSearch) {
+    // Only perform search if no suggestion is selected
+    if (onSearch) {
       onSearch(searchTerm);
     } else {
-      navigate(`/festivals?search=${encodeURIComponent(searchTerm)}`);
+      navigate(`/festival?search=${encodeURIComponent(searchTerm)}`);
     }
   };
 
-  const handleSuggestionClick = (festival: Festival) => {
+  const handleSuggestionClick = (festival: Festival, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setSearchTerm(festival.name);
     setShowSuggestions(false);
-    navigate(`/festivals/${festival.id}`);
+    // Navigate directly to the festival page
+    navigate(`/festival/${festival.id}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -117,10 +118,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
       setActiveSuggestion(prev => (prev > 0 ? prev - 1 : 0));
     }
     
-    // Handle enter
+    // Handle enter - navigate to the selected festival
     if (e.key === 'Enter' && showSuggestions && activeSuggestion >= 0) {
       e.preventDefault();
-      handleSuggestionClick(suggestions[activeSuggestion]);
+      handleSuggestionClick(suggestions[activeSuggestion], e as unknown as React.MouseEvent);
     }
   };
 
@@ -159,7 +160,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           {suggestions.map((festival, index) => (
             <li
               key={festival.id}
-              onClick={() => handleSuggestionClick(festival)}
+              onClick={(e) => handleSuggestionClick(festival, e)}
               onMouseEnter={() => setActiveSuggestion(index)}
               className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
                 index === activeSuggestion ? 'bg-accent-50' : ''
