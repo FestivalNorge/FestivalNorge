@@ -3,6 +3,7 @@ import { FestivalProvider } from './context/FestivalContext';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import ScrollManager from './components/common/ScrollManager';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -19,6 +20,7 @@ function App() {
       <AuthProvider>
         <FestivalProvider>
         <div className="flex flex-col min-h-screen">
+          <ScrollManager />
           <Header />
           <main className="flex-grow">
             <Routes>

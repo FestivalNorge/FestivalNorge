@@ -34,25 +34,25 @@ const Header: React.FC = () => {
               to="/"
               className="font-medium text-gray-700 transition-colors hover:text-accent-500"
             >
-              Home
+              Hjem
             </Link>
             <Link 
               to="/festivals"
               className="font-medium text-gray-700 transition-colors hover:text-accent-500"
             >
-              Festivals
+              Festivaler
             </Link>
             <Link 
               to="/calendar"
               className="font-medium text-gray-700 transition-colors hover:text-accent-500"
             >
-              Calendar
+              Kalender
             </Link>
             <Link 
               to="/map"
               className="font-medium text-gray-700 transition-colors hover:text-accent-500"
             >
-              Map
+              Kart
             </Link>
             
             {isAuthenticated ? (
@@ -61,7 +61,7 @@ const Header: React.FC = () => {
                   to="/my-festivals"
                   className="font-medium text-gray-700 transition-colors hover:text-accent-500"
                 >
-                  My Festivals
+                  Mine Festivaler
                 </Link>
                 <div className="flex items-center space-x-2 group cursor-pointer">
                   <span className="font-medium text-primary-500">
@@ -108,25 +108,25 @@ const Header: React.FC = () => {
                 to="/"
                 className="font-medium text-gray-700 hover:text-accent-500 py-2"
               >
-                Home
+                Hjem
               </Link>
               <Link 
                 to="/festivals"
                 className="font-medium text-gray-700 hover:text-accent-500 py-2"
               >
-                Festivals
+                Festivaler
               </Link>
               <Link 
                 to="/calendar"
                 className="font-medium text-gray-700 hover:text-accent-500 py-2"
               >
-                Calendar
+                Kalender
               </Link>
               <Link 
                 to="/map"
                 className="font-medium text-gray-700 hover:text-accent-500 py-2"
               >
-                Map
+                Kart
               </Link>
               
               {isAuthenticated ? (
@@ -135,7 +135,7 @@ const Header: React.FC = () => {
                     to="/my-festivals"
                     className="font-medium text-gray-700 hover:text-accent-500 py-2"
                   >
-                    My Festivals
+                    Mine Festivaler
                   </Link>
                   <div className="flex items-center justify-between pt-2 border-t">
                     <div className="flex items-center space-x-2">
@@ -149,7 +149,7 @@ const Header: React.FC = () => {
                       className="text-accent-500 hover:text-accent-600 flex items-center space-x-1"
                     >
                       <LogOut className="w-4 h-4" />
-                      <span>Log out</span>
+                      <span>Logg ut</span>
                     </button>
                   </div>
                 </>
