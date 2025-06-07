@@ -13,6 +13,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@firebase/analytics": "^0.10.16",
     "@firebase/firestore": "^4.7.17",
     "@types/react-leaflet": "^3.0.0",
     "date-fns": "^2.30.0",
