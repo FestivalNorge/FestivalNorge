@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-// import { getAnalytics } from 'firebase/analytics';
+import { getAnalytics, isSupported } from "firebase/analytics";
+import { getInstallations } from 'firebase/installations'; // <-- Import getInstallations!
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -13,14 +14,18 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
+// Initialize Firebase App
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore
+// Initialize Firebase Installations (Analytics needs this!)
+const installations = getInstallations(app);
+
+// Initialize Firebase Analytics
+const analytics = getAnalytics(app);
+
+// Get reference to Firestore
 const db = getFirestore(app);
 
-// Initialize Analytics
-// const analytics = getAnalytics(app);
-
-export { app, db };
+// Export the initialized services
+export { app, db, analytics, installations }; // Export installations if you might need it, otherwise just db and analytics
 

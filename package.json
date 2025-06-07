@@ -17,7 +17,7 @@
     "@firebase/firestore": "^4.7.17",
     "@types/react-leaflet": "^3.0.0",
     "date-fns": "^2.30.0",
-    "firebase": "^10.12.0",
+    "firebase": "^10.11.1",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.344.0",
     "mapbox-gl": "^3.12.0",
