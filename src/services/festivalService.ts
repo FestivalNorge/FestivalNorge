@@ -1,6 +1,6 @@
 import { collection, getDocs } from 'firebase/firestore';
 import { Festival } from '../types';
-import { db } from '../data/firebase';
+import { db } from '../data/firebaseConfig';
 
 export const getFestivals = async (): Promise<Festival[]> => {
   try {
