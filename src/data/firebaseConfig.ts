@@ -1,8 +1,5 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAnalytics, isSupported } from "firebase/analytics"; // Keep isSupported if you like, but it's not needed for the core error
-import { getInstallations } from 'firebase/installations';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -18,23 +15,24 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Installations FIRST (Analytics needs it)
-// No need for window check for standard web app on GH Pages
-const installations = getInstallations(app);
-
-// Initialize Analytics AFTER Installations
-// You can keep the isSupported check if desired, but it won't fix the core issue
-let analytics: any;
-isSupported().then(yes => {
-   if (yes) {
-     analytics = getAnalytics(app);
-   }
-});
-
-
-// Get reference to Firestore
+// Initialize Firestore
 const db = getFirestore(app);
 
+// Initialize Analytics only if in browser
+let analytics: any;
+if (typeof window !== 'undefined') {
+  // Dynamically import analytics to avoid SSR issues
+  import('firebase/analytics')
+    .then(() => {
+      // Import getAnalytics from the dynamically imported module
+      import('firebase/analytics').then(({ getAnalytics }) => {
+        analytics = getAnalytics(app);
+      });
+    })
+    .catch((error) => {
+      console.error('Failed to initialize Analytics:', error);
+    });
+}
 
-export { app, db, analytics, installations };
+export { app, db, analytics };
 
