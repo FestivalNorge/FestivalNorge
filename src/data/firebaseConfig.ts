@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAnalytics, isSupported } from "firebase/analytics";
+import { getAnalytics, isSupported } from "firebase/analytics"; // Keep isSupported if you like, but it's not needed for the core error
 import { getInstallations } from 'firebase/installations';
 
 // Your web app's Firebase configuration
@@ -18,23 +18,23 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore
+// Initialize Installations FIRST (Analytics needs it)
+// No need for window check for standard web app on GH Pages
+const installations = getInstallations(app);
+
+// Initialize Analytics AFTER Installations
+// You can keep the isSupported check if desired, but it won't fix the core issue
+let analytics: any;
+isSupported().then(yes => {
+   if (yes) {
+     analytics = getAnalytics(app);
+   }
+});
+
+
+// Get reference to Firestore
 const db = getFirestore(app);
 
-// Initialize Analytics only in browser environment
-let analytics: any;
-if (typeof window !== 'undefined') {
-  isSupported().then(yes => {
-    if (yes) {
-      analytics = getAnalytics(app);
-    }
-  });
-}
-
-// Initialize Installations only in browser environment
-let installations: any;
-if (typeof window !== 'undefined') {
-  installations = getInstallations(app);
-}
 
 export { app, db, analytics, installations };
+
