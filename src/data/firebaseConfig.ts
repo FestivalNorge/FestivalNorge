@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAnalytics, isSupported } from 'firebase/analytics';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -18,21 +19,7 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firestore
 const db = getFirestore(app);
 
-// Initialize Analytics only if in browser
-let analytics: any;
-if (typeof window !== 'undefined') {
-  // Dynamically import analytics to avoid SSR issues
-  import('firebase/analytics')
-    .then(() => {
-      // Import getAnalytics from the dynamically imported module
-      import('firebase/analytics').then(({ getAnalytics }) => {
-        analytics = getAnalytics(app);
-      });
-    })
-    .catch((error) => {
-      console.error('Failed to initialize Analytics:', error);
-    });
-}
+const analytics = (await isSupported()) ? getAnalytics(app) : null;
 
 export { app, db, analytics };
 
