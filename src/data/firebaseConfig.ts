@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAnalytics, isSupported } from "firebase/analytics";
-import { getInstallations } from 'firebase/installations'; // <-- Import getInstallations!
+import { getAnalytics } from "firebase/analytics";
+import { getInstallations } from 'firebase/installations';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
