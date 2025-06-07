@@ -2,9 +2,6 @@ import { StrictMode} from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
-
-// Import the firebaseconfig.tsx file
-// The import itself executes the initialization code within that file
 import './data/firebaseConfig';
 
 createRoot(document.getElementById('root')!).render(
