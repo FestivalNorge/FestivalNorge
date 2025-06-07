@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Music, User, LogOut } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { Menu, X, Music } from 'lucide-react';
 
 const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isAuthenticated, user, logout } = useAuth();
   const location = useLocation();
 
   // Close mobile menu when changing routes
@@ -55,35 +53,7 @@ const Header: React.FC = () => {
               Kart
             </Link>
             
-            {isAuthenticated ? (
-              <div className="flex items-center space-x-4">
-                <Link 
-                  to="/my-festivals"
-                  className="font-medium text-gray-700 transition-colors hover:text-accent-500"
-                >
-                  Mine Festivaler
-                </Link>
-                <div className="flex items-center space-x-2 group cursor-pointer">
-                  <span className="font-medium text-primary-500">
-                    {user?.name}
-                  </span>
-                  <button 
-                    onClick={logout}
-                    className="p-1 rounded-full hover:bg-gray-100 group-hover:text-accent-500"
-                    aria-label="Log out"
-                  >
-                    <LogOut className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <Link
-                to="/login"
-                className="btn btn-primary"
-              >
-                Login
-              </Link>
-            )}
+            
           </nav>
 
           {/* Mobile Menu Button */}
@@ -129,38 +99,7 @@ const Header: React.FC = () => {
                 Kart
               </Link>
               
-              {isAuthenticated ? (
-                <>
-                  <Link 
-                    to="/my-festivals"
-                    className="font-medium text-gray-700 hover:text-accent-500 py-2"
-                  >
-                    Mine Festivaler
-                  </Link>
-                  <div className="flex items-center justify-between pt-2 border-t">
-                    <div className="flex items-center space-x-2">
-                      <User className="w-4 h-4 text-primary-500" />
-                      <span className="font-medium text-primary-500">
-                        {user?.name}
-                      </span>
-                    </div>
-                    <button 
-                      onClick={logout}
-                      className="text-accent-500 hover:text-accent-600 flex items-center space-x-1"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      <span>Logg ut</span>
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <Link
-                  to="/login"
-                  className="btn btn-primary w-full mt-2"
-                >
-                  Login
-                </Link>
-              )}
+
             </div>
           </nav>
         )}
