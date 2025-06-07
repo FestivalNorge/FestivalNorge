@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
+import { getInstallations } from 'firebase/installations'; // <-- Import the Installations SDK!
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
@@ -20,10 +21,16 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 // Initialize Analytics and get a reference to the service
-const analytics = getAnalytics(app);
+getInstallations(app); // <-- Initialize Installations here!
+
+// Now Initialize Analytics
+const analytics = getAnalytics(app); // <-- This should now work!
 
 // Get reference to Firestore
 const db = getFirestore(app);
 
 // Export the Firestore instance
 export { db, analytics };
+
+// Initialize Installations (even if you don't store/use the 'installations' variable directly)
+// Importing getInstallations and potentially calling it helps ensure the service is registered.
