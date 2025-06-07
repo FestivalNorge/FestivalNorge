@@ -10,6 +10,6 @@ export type {
   Artist
 } from './festival';
 
-export type SortOption = 'name' | 'date' | 'popularity';
+export type SortOption = 'name' | 'date' | 'popularity' | 'price' | 'location';
 export type FilterOption = string;
 export type LocationFilter = 'all' | string; // region filter
