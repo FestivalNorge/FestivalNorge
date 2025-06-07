@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Music, Instagram, Facebook, Twitter, Mail } from 'lucide-react';
+import { Music, Mail } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
               <span className="text-xl font-heading font-bold">FestivalNorge</span>
             </div>
             <p className="text-gray-400 max-w-xs">
-              Your one-stop destination for discovering the best music and cultural festivals across Norway.
+            Din destinasjon for å oppdage de beste musikk- og kulturfestivalene i hele Norge.
             </p>
           </div>
 
@@ -23,22 +23,22 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               <li>
                 <Link to="/" className="text-gray-400 hover:text-accent-500 transition-colors">
-                  Home
+                  Hjem
                 </Link>
               </li>
               <li>
                 <Link to="/festivals" className="text-gray-400 hover:text-accent-500 transition-colors">
-                  All Festivals
+                  Alle Festivaler
                 </Link>
               </li>
               <li>
                 <Link to="/calendar" className="text-gray-400 hover:text-accent-500 transition-colors">
-                  Festival Calendar
+                  Festival Kalender
                 </Link>
               </li>
               <li>
                 <Link to="/map" className="text-gray-400 hover:text-accent-500 transition-colors">
-                  Festival Map
+                  Festival Kart
                 </Link>
               </li>
             </ul>
@@ -78,13 +78,13 @@ const Footer: React.FC = () => {
           {/* Newsletter */}
           <div>
             <p className="text-gray-400 mb-4">
-              Subscribe to our newsletter to get the latest updates on festivals.
+              Abonner på vårt nyhetsbrev for å få oppdatert informasjon om festivaler.
             </p>
             <form className="space-y-2">
               <div className="flex">
                 <input
                   type="email"
-                  placeholder="Your email"
+                  placeholder="Din e-postadresse"
                   className="flex-grow px-3 py-2 bg-gray-800 rounded-l-md border border-gray-700 focus:outline-none focus:ring-1 focus:ring-accent-500"
                 />
                 <button
@@ -95,7 +95,7 @@ const Footer: React.FC = () => {
                 </button>
               </div>
               <p className="text-xs text-gray-500">
-                We respect your privacy. Unsubscribe at any time.
+                Vi respekterer ditt personvern. Du kan avslutte når du vil.
               </p>
             </form>
           </div>
@@ -104,17 +104,17 @@ const Footer: React.FC = () => {
         <div className="border-t border-gray-800 mt-10 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              &copy; {new Date().getFullYear()} FestivalNorge. All rights reserved.
+              &copy; {new Date().getFullYear()} FestivalNorge
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link to="/privacy" className="text-gray-400 hover:text-accent-500 text-sm transition-colors">
-                Privacy Policy
+                Personvern
               </Link>
               <Link to="/terms" className="text-gray-400 hover:text-accent-500 text-sm transition-colors">
-                Terms of Service
+                Vilkår og betingelser
               </Link>
               <Link to="/contact" className="text-gray-400 hover:text-accent-500 text-sm transition-colors">
-                Contact Us
+                Kontakt Oss
               </Link>
             </div>
           </div>
