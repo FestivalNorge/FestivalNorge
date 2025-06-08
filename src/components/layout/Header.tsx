@@ -4,6 +4,20 @@ import { Menu, X, Music } from 'lucide-react';
 
 const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  
+  const handleMenuToggle = () => {
+    if (mobileMenuOpen) {
+      setIsClosing(true);
+      // Wait for the animation to complete before hiding the menu
+      setTimeout(() => {
+        setMobileMenuOpen(false);
+        setIsClosing(false);
+      }, 300); // Match this duration with the CSS transition duration
+    } else {
+      setMobileMenuOpen(true);
+    }
+  };
   const location = useLocation();
 
   // Close mobile menu when changing routes
@@ -58,7 +72,7 @@ const Header: React.FC = () => {
 
           {/* Mobile Menu Button */}
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={handleMenuToggle}
             className="md:hidden p-2"
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           >
@@ -71,30 +85,34 @@ const Header: React.FC = () => {
         </div>
 
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <nav className="md:hidden py-4 border-t mt-4 animate-slide-down">
+        {(mobileMenuOpen || isClosing) && (
+          <nav 
+            className={`md:hidden py-4 border-t border-gray-100 bg-white shadow-md mt-4 ${
+              isClosing ? 'animate-slide-up' : 'animate-slide-down'
+            }`}
+          >
             <div className="flex flex-col space-y-4">
               <Link 
                 to="/"
-                className="font-medium text-gray-700 hover:text-accent-500 py-2"
+                className="font-medium text-gray-700 hover:text-accent-500 py-2 pl-6"
               >
                 Hjem
               </Link>
               <Link 
                 to="/festivals"
-                className="font-medium text-gray-700 hover:text-accent-500 py-2"
+                className="font-medium text-gray-700 hover:text-accent-500 py-2 pl-6"
               >
                 Festivaler
               </Link>
               <Link 
                 to="/calendar"
-                className="font-medium text-gray-700 hover:text-accent-500 py-2"
+                className="font-medium text-gray-700 hover:text-accent-500 py-2 pl-6"
               >
                 Kalender
               </Link>
               <Link 
                 to="/map"
-                className="font-medium text-gray-700 hover:text-accent-500 py-2"
+                className="font-medium text-gray-700 hover:text-accent-500 py-2 pl-6"
               >
                 Kart
               </Link>
