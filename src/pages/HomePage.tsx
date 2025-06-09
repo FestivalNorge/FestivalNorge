@@ -45,15 +45,17 @@ const HomePage: React.FC = () => {
       {/* Popular Festivals Section */}
       <section className="py-20">
         <div className="container-custom">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between mb-6 gap-4">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Populære Festivaler</h2>
+              <h2 className="text-3xl font-bold text-gray-900">Populære Festivaler</h2>
               <p className="text-gray-600">Oppdag de mest populære festivalene i hele Norge</p>
             </div>
-            <Link to="/festivals" className="text-accent-500 hover:text-accent-600 flex items-center">
-              <span className="mr-1">Alle Festivaler</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            <div className="flex items-start sm:items-center">
+              <Link to="/festivals" className="text-accent-500 hover:text-accent-600 flex items-center h-full py-2">
+                <span className="mr-1">Alle Festivaler</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -67,7 +69,7 @@ const HomePage: React.FC = () => {
       {/* Upcoming Festivals */}
       <section className="py-20">
         <div className="container-custom">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between mb-6 gap-4">
             <div>
               <h2 className="text-3xl font-bold text-gray-900 mb-2">Kommende Festivaler</h2>
               <p className="text-gray-600">Planlegg din neste festival opplevelse</p>

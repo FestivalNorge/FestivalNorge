@@ -85,41 +85,48 @@ const Header: React.FC = () => {
         </div>
 
         {/* Mobile Menu */}
-        {(mobileMenuOpen || isClosing) && (
-          <nav 
-            className={`md:hidden py-4 border-t border-gray-100 bg-white shadow-md mt-4 ${
-              isClosing ? 'animate-slide-up' : 'animate-slide-down'
-            }`}
+        {mobileMenuOpen && (
+          <div 
+            className="fixed left-0 right-0 z-40 md:hidden"
+            style={{
+              top: '64px',
+              backgroundColor: 'rgba(255, 255, 255, 0.98)',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            }}
           >
-            <div className="flex flex-col space-y-4">
-              <Link 
-                to="/"
-                className="font-medium text-gray-700 hover:text-accent-500 py-2 pl-6"
-              >
-                Hjem
-              </Link>
-              <Link 
-                to="/festivals"
-                className="font-medium text-gray-700 hover:text-accent-500 py-2 pl-6"
-              >
-                Festivaler
-              </Link>
-              <Link 
-                to="/calendar"
-                className="font-medium text-gray-700 hover:text-accent-500 py-2 pl-6"
-              >
-                Kalender
-              </Link>
-              <Link 
-                to="/map"
-                className="font-medium text-gray-700 hover:text-accent-500 py-2 pl-6"
-              >
-                Kart
-              </Link>
-              
-
-            </div>
-          </nav>
+            <nav className={`w-full ${isClosing ? 'animate-slide-up' : 'animate-slide-down'}`}>
+              <div className="flex flex-col space-y-1 p-2">
+                <Link 
+                  to="/"
+                  className="font-medium text-gray-700 hover:text-accent-500 py-2 px-4 text-lg rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Hjem
+                </Link>
+                <Link 
+                  to="/festivals"
+                  className="font-medium text-gray-700 hover:text-accent-500 py-2 px-4 text-lg rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Festivaler
+                </Link>
+                <Link 
+                  to="/calendar"
+                  className="font-medium text-gray-700 hover:text-accent-500 py-2 px-4 text-lg rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Kalender
+                </Link>
+                <Link 
+                  to="/map"
+                  className="font-medium text-gray-700 hover:text-accent-500 py-2 px-4 text-lg rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Kart
+                </Link>
+              </div>
+            </nav>
+          </div>
         )}
       </div>
     </header>
