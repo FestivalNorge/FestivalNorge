@@ -38,12 +38,16 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       setLoading(true);
       const data = await getFestivals();
+      if (!data || !Array.isArray(data)) {
+        throw new Error('Invalid festival data received');
+      }
       setFestivals(data);
       setFilteredFestivals(data);
       setError(null);
     } catch (err) {
       console.error('Error fetching festivals:', err);
-      setError('Failed to load festivals. Please try again later.');
+      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+      setError(errorMessage);
       setFestivals([]);
       setFilteredFestivals([]);
     } finally {

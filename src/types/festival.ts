@@ -31,6 +31,7 @@ export interface Artist {
   name: string;
   genre: string;
   headliner?: boolean;
+  link?: string;
 }
 
 export interface Festival {
