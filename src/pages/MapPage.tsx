@@ -1,52 +1,33 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Festival } from '../types';
+import React, { useState, useMemo } from 'react';
 import FestivalCard from '../components/common/FestivalCard';
 import FestivalMap from '../components/common/FestivalMap';
-import { getFestivals } from '../services/festivalService';
+import { useFestival } from '../context/FestivalContext';
 
 // Import Leaflet CSS
 import 'leaflet/dist/leaflet.css';
 
 const MapPage: React.FC = () => {
-  const [festivals, setFestivals] = useState<Festival[]>([]);
+  const { filteredFestivals } = useFestival();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFestival, setSelectedFestival] = useState<string | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const filteredFestivals = useMemo(() => {
-    if (!searchTerm) return festivals;
+  const filteredFestivalsWithSearch = useMemo(() => {
+    if (!searchTerm) return filteredFestivals;
     
     const searchLower = searchTerm.toLowerCase();
-    return festivals.filter(festival => 
+    return filteredFestivals.filter(festival => 
       festival.name.toLowerCase().includes(searchLower) ||
       festival.location.city.toLowerCase().includes(searchLower)
     );
-  }, [festivals, searchTerm]);
+  }, [filteredFestivals, searchTerm]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  useEffect(() => {
-    const fetchFestivals = async () => {
-      try {
-        setIsLoading(true);
-        const data = await getFestivals();
-        setFestivals(data);
-        setError(null);
-      } catch (err) {
-        console.error('Failed to fetch festivals:', err);
-        setError('Kunne ikke laste inn festivaler. Prøv igjen senere.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const { loading, error } = useFestival();
 
-    fetchFestivals();
-  }, []);
-
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen pt-28 pb-16 flex items-center justify-center">
         <div className="text-center">
@@ -86,7 +67,7 @@ const MapPage: React.FC = () => {
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Festivalkart</h1>
           <p className="text-lg text-gray-600 max-w-3xl">
             Se festivaler på kartet over Norge. Trykk på markørene for mer informasjon.
-            {festivals.length === 0 && ' Ingen festivaler funnet.'}
+            {filteredFestivals.length === 0 && ' Ingen festivaler funnet.'}
           </p>
         </div>
       </div>
@@ -94,18 +75,21 @@ const MapPage: React.FC = () => {
       <div className="container-custom">
         <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-8">
           {/* Map section */}
-          <div className="bg-white rounded-lg shadow-md">
+          <div className="bg-white rounded-lg shadow-md h-full">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-6">Kart</h2>
+<<<<<<< HEAD
               <div className="h-[calc(65vh-32px)] w-full rounded-lg overflow-hidden bg-white relative" style={{ zIndex: 1 }}>
+=======
+              <div className="h-[60vh] w-full rounded-lg overflow-hidden bg-white">
+>>>>>>> 791b3995b361775b2a3b41b1807022da047c0f46
                 <FestivalMap 
-                  festivals={festivals} 
-                  zoom={5.3} 
-                  scrollWheelZoom={true}
-                  center={[60.472, 8.4689]}
-                  className="w-full h-full relative"
+                  festivals={filteredFestivalsWithSearch}
+                  zoom={5}
+                  scrollWheelZoom={false}
+                  center={[62.4208, 8.9309]} 
                   selectedFestivalId={selectedFestival}
-                  onClick={(id: string) => setSelectedFestival(id)}
+                  onClick={(id) => setSelectedFestival(id)}
                 />
               </div>
             </div>

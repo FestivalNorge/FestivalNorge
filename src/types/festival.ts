@@ -31,6 +31,7 @@ export interface Artist {
   name: string;
   genre: string;
   headliner?: boolean;
+  link?: string;
 }
 
 export interface Festival {
@@ -40,11 +41,15 @@ export interface Festival {
   dates: FestivalDate;
   price: Price;
   ageLimit: number;
-  averageAgeGroup: AgeGroup;
+  averageAgeGroup?: AgeGroup;
   description: string;
+  about: string;
+  homepages: string[];
+  detailsLink: string;
+  ticketLink: string;
   genres: string[];
   lineup: Artist[];
-  ticketAvailability: string;
+  ticketAvailability?: string;
   popularity: number;
   imageUrl: string;
   website: string;
