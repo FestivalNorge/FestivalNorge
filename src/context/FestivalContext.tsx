@@ -51,9 +51,21 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                festival.dates && 
                festival.price;
       });
-      
-      setFestivals(validFestivals);
-      setFilteredFestivals(validFestivals);
+
+      // Transform festivals to ensure consistent coordinate format
+      const transformedFestivals = validFestivals.map(festival => ({
+        ...festival,
+        location: {
+          ...festival.location,
+          coordinates: festival.location.coordinates || {
+            latitude: 0,
+            longitude: 0
+          }
+        }
+      }));
+
+      setFestivals(transformedFestivals);
+      setFilteredFestivals(transformedFestivals);
       setError(null);
     } catch (err) {
       console.error('Error fetching festivals:', err);

@@ -16,16 +16,24 @@ export const transformFestivalData = (raw: any): Festival => {
     }
   };
 
-  // Handle venue parsing safely
+  // Handle location and coordinates parsing safely
   const location = {
     ...defaultLocation,
-    ...(raw.venue ? {
-      venue: raw.venue,
-      city: '', // Leave city empty since we're only using venue
-      region: ''
+    ...(raw.location ? {
+      venue: raw.location.venue || '',
+      city: raw.location.city || '',
+      region: raw.location.region || '',
+      coordinates: {
+        latitude: raw.location.coordinates?.latitude || 0,
+        longitude: raw.location.coordinates?.longitude || 0
+      }
     } : {
       venue: '',
-      city: ''
+      city: '',
+      coordinates: {
+        latitude: 0,
+        longitude: 0
+      }
     })
   };
 
