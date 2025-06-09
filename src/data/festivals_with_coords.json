@@ -100,7 +100,11 @@
         "name": "Tommy WÁ",
         "link": "https://www.ticketmaster.no/artist/tommy-wa-billetter/1298354"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 67.2806,
+      "longitude": 14.4049
+    }
   },
   {
     "name": "Langs Akerselva",
@@ -146,7 +150,11 @@
         "name": "Smag På Dig Selv (DK)",
         "link": "https://www.ticketmaster.no/artist/smag-pa-dig-selv-dk-billetter/1236053"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.9504,
+      "longitude": 10.7573
+    }
   },
   {
     "name": "OverOslo",
@@ -203,7 +211,11 @@
         "name": "Fagernes Yacht Klubb",
         "link": "https://www.ticketmaster.no/artist/fagernes-yacht-klubb-billetter/918495"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.962,
+      "longitude": 10.7967
+    }
   },
   {
     "name": "Slottsfjell",
@@ -300,7 +312,11 @@
         "name": "Stuzzi",
         "link": "https://www.ticketmaster.no/artist/stuzzi-billetter/1217073"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.2652,
+      "longitude": 10.4253
+    }
   },
   {
     "name": "Palmesus",
@@ -387,7 +403,11 @@
         "name": "Freddie",
         "link": "https://www.ticketmaster.no/artist/freddie-billetter/999667"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 58.1446,
+      "longitude": 7.9956
+    }
   },
   {
     "name": "Tons of Rock",
@@ -457,7 +477,11 @@
         "name": "Fixation",
         "link": "https://www.ticketmaster.no/artist/fixation-billetter/1233343"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.9002,
+      "longitude": 10.7675
+    }
   },
   {
     "name": "Pipfest",
@@ -495,7 +519,11 @@
         "name": "Ella Marie",
         "link": "https://www.ticketmaster.no/artist/ella-marie-billetter/1234783"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.9242,
+      "longitude": 10.7636
+    }
   },
   {
     "name": "2830 Sommerfestival",
@@ -508,7 +536,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 60.8147,
+      "longitude": 10.726
+    }
   },
   {
     "name": "Åsanefest",
@@ -538,7 +570,11 @@
         "name": "Madcon",
         "link": "https://www.ticketmaster.no/artist/madcon-billetter/130803"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 60.3913,
+      "longitude": 5.3221
+    }
   },
   {
     "name": "Asker Live",
@@ -572,7 +608,11 @@
         "name": "Ramon",
         "link": "https://www.ticketmaster.no/artist/ramon-billetter/1154054"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.8356,
+      "longitude": 10.4375
+    }
   },
   {
     "name": "Aurskog Mart’n",
@@ -585,7 +625,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 59.9991,
+      "longitude": 11.3152
+    }
   },
   {
     "name": "Bergenfest",
@@ -653,7 +697,11 @@
         "name": "Willie J Healey (UK)",
         "link": "https://www.ticketmaster.no/artist/willie-j-healey-uk-billetter/990549"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 60.3973,
+      "longitude": 5.322
+    }
   },
   {
     "name": "Beyond The Gates",
@@ -666,7 +714,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 60.39299,
+      "longitude": 5.32415
+    }
   },
   {
     "name": "Bjerkreimsfesten",
@@ -679,7 +731,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 58.5509,
+      "longitude": 6.786
+    }
   },
   {
     "name": "Blues In Hell",
@@ -692,7 +748,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 63.422,
+      "longitude": 10.9827
+    }
   },
   {
     "name": "Brunlanes Coverbandfestival",
@@ -705,7 +765,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 59.0313,
+      "longitude": 10.086
+    }
   },
   {
     "name": "by:Larm",
@@ -723,7 +787,11 @@
         "name": "2AM-DM (NO)",
         "link": "https://www.ticketmaster.no/artist/2am-dm-no-billetter/1362953"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.9139,
+      "longitude": 10.7522
+    }
   },
   {
     "name": "Canal Street",
@@ -739,7 +807,11 @@
       "http://www.canalstreet.no/",
       "https://www.facebook.com/csarendal"
     ],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 58.4594,
+      "longitude": 8.7729
+    }
   },
   {
     "name": "Countryfestival Lavvotunet Dokka",
@@ -752,7 +824,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 60.7883,
+      "longitude": 9.94
+    }
   },
   {
     "name": "Countryfestivalen Vinstra",
@@ -765,7 +841,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 61.8411,
+      "longitude": 9.5252
+    }
   },
   {
     "name": "Dalane Blues Festival",
@@ -778,7 +858,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 58.4481,
+      "longitude": 5.9985
+    }
   },
   {
     "name": "Drøbak Havnefestival",
@@ -808,7 +892,11 @@
         "name": "Oslo Ess",
         "link": "https://www.ticketmaster.no/artist/oslo-ess-billetter/883601"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.655,
+      "longitude": 10.6283
+    }
   },
   {
     "name": "Einadagene",
@@ -821,7 +909,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 60.4789,
+      "longitude": 10.3436
+    }
   },
   {
     "name": "Elvebris",
@@ -875,7 +967,11 @@
         "name": "Melanie C",
         "link": "https://www.ticketmaster.no/artist/melanie-c-billetter/5873"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 60.8947,
+      "longitude": 11.5676
+    }
   },
   {
     "name": "Feelings",
@@ -945,7 +1041,11 @@
         "name": "Omar Rudberg",
         "link": "https://www.ticketmaster.no/artist/omar-rudberg-billetter/1007420"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 60.3973,
+      "longitude": 5.322
+    }
   },
   {
     "name": "FEST I VA",
@@ -958,7 +1058,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 59.1575,
+      "longitude": 11.3821
+    }
   },
   {
     "name": "Findings",
@@ -1004,7 +1108,11 @@
         "name": "Golfklubb",
         "link": "https://www.ticketmaster.no/artist/golfklubb-billetter/1253814"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.9296,
+      "longitude": 10.7411
+    }
   },
   {
     "name": "Fjordfesten",
@@ -1019,7 +1127,11 @@
     "homepages": [
       "https://ddec1-0-en-ctp.trendmicro.com:443/wis/clicktime/v1/query?url=https%3a%2f%2fwww.fjordfesten.no&umid=aeb51fe7-f10c-4aee-8138-1ac32d73df00&auth=a30e44ff6b981efff316a52496801914f89fc516-c968be787af947346c35ee0140ab0c3ef0ae3d6e"
     ],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 59.13,
+      "longitude": 10.2164
+    }
   },
   {
     "name": "Fjørarock",
@@ -1037,7 +1149,11 @@
       "https://www.instagram.com/fjorarock/",
       "mailto:hei@fjorarock.no"
     ],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 61.228,
+      "longitude": 7.1367
+    }
   },
   {
     "name": "Fredvikafestivalen",
@@ -1050,7 +1166,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 60.794,
+      "longitude": 10.6919
+    }
   },
   {
     "name": "Fres Festival",
@@ -1063,7 +1183,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 60.8675,
+      "longitude": 6.814
+    }
   },
   {
     "name": "Gatafestivalen",
@@ -1076,7 +1200,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 67.258,
+      "longitude": 15.3914
+    }
   },
   {
     "name": "Grenseløs i Sør",
@@ -1089,7 +1217,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 58.1626,
+      "longitude": 7.9855
+    }
   },
   {
     "name": "Grenseløsfestivalen",
@@ -1102,7 +1234,11 @@
     "description": "Til deg under 18 år\nEr du mellom 16 og 18 år har festivalen en vergeordning. Les mer om vergeordning her\nEllers er det 18års aldersgrense til festivalen og 20års aldersgrense til VIP-området.",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 69.7276,
+      "longitude": 30.0408
+    }
   },
   {
     "name": "Gressvik Summerparty",
@@ -1130,7 +1266,11 @@
         "name": "Åge Sten Nilsen",
         "link": "https://www.ticketmaster.no/artist/age-sten-nilsen-billetter/915682"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": null,
+      "longitude": null
+    }
   },
   {
     "name": "HalvØya",
@@ -1143,7 +1283,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 58.1484,
+      "longitude": 7.996
+    }
   },
   {
     "name": "Halvøyen 2025",
@@ -1156,7 +1300,11 @@
     "description": "Til deg under 18år:\nHalvøyen i Bergen har vergeordning. Les mer og fyll ut vergeskjema her.",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 60.3872,
+      "longitude": 5.315
+    }
   },
   {
     "name": "Hard Rock Adventure",
@@ -1174,7 +1322,11 @@
         "name": "Jorn",
         "link": "https://www.ticketmaster.no/artist/jorn-billetter/41728"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.267,
+      "longitude": 10.9243
+    }
   },
   {
     "name": "Heim Festival",
@@ -1187,7 +1339,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 63.7704,
+      "longitude": 9.6726
+    }
   },
   {
     "name": "Hellbotn Metalfest",
@@ -1249,7 +1405,11 @@
         "name": "Paths",
         "link": "https://www.ticketmaster.no/artist/paths-billetter/1395143"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.8464,
+      "longitude": 10.8475
+    }
   },
   {
     "name": "Hjertebankfestivalen",
@@ -1262,7 +1422,11 @@
     "description": "Til deg under 18 år\nHjertebankfestivalen har fri aldersgrense, men har 13 – 20 år som målgruppe.",
     "about": "I 2022 dro ungdom fra Bodø på studietur i det store utlandet. Der fikk de ta del i festivalen Kissing. Inspirert av opplevelsen begynte de arbeidet med en egen ungdomsfestival. Da UNG2024 var ferdig med å kartlegge ønskene fra de unge tok de kontakt med Parkenfestivalen i håp om å etablere et samarbeid. Tidspunktet kunne ikke vært bedre.\nParken var nemlig også i en idéutviklingsprosess hvor ungdom var målgruppe. Februar 2023 startet samarbeidet og oktober samme år oppfylte Samfunnsløftet fra SpareBank 1 Nord-Norge alle drømmene! Pengene de har bevilget skal gi unge mellom 13 og 20 år Hjertebank i årene som kommer!\nDen første Hjertebankfestivalen ble arrangert torsdag 13. juni 2024 i Rensåsparken midt i hjertet av Bodø!\nHjertebankfestivalen 2025 går av stabelen torsdag 19. juni 2025.\n",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 67.2806,
+      "longitude": 14.4049
+    }
   },
   {
     "name": "Høllafæst",
@@ -1275,7 +1439,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 68.2331,
+      "longitude": 14.5711
+    }
   },
   {
     "name": "Humor OverOslo",
@@ -1288,7 +1456,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 59.962,
+      "longitude": 10.7967
+    }
   },
   {
     "name": "Hyggefestivalen",
@@ -1301,7 +1473,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 59.4333,
+      "longitude": 10.2375
+    }
   },
   {
     "name": "Inferno Metal Festival",
@@ -1317,7 +1493,11 @@
       "https://infernofestival.no/no/festival/hotel/",
       "http://www.infernofestival.net"
     ],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 59.9139,
+      "longitude": 10.7522
+    }
   },
   {
     "name": "Kløbb Ka2 presenterer: Eventyrland",
@@ -1330,7 +1510,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 59.9195,
+      "longitude": 10.7526
+    }
   },
   {
     "name": "Kongsberg Jazzfestival",
@@ -1345,7 +1529,11 @@
     "homepages": [
       "http://www.kongsbergjazz.no"
     ],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 59.5889,
+      "longitude": 9.6562
+    }
   },
   {
     "name": "Kragerøbris",
@@ -1358,7 +1546,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 58.8673,
+      "longitude": 9.4579
+    }
   },
   {
     "name": "Kubafestivalen",
@@ -1371,7 +1563,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 68.2331,
+      "longitude": 14.5711
+    }
   },
   {
     "name": "Larvik Bandfestival",
@@ -1384,7 +1580,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 59.0506,
+      "longitude": 10.0534
+    }
   },
   {
     "name": "Liverpoolfestivalen",
@@ -1397,7 +1597,11 @@
     "description": "Til deg under 18 år\nFri aldersgrense. Les mer her.",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 60.792,
+      "longitude": 10.6911
+    }
   },
   {
     "name": "Mablis",
@@ -1443,7 +1647,11 @@
         "name": "Mina My",
         "link": "https://www.ticketmaster.no/artist/mina-my-billetter/1413013"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 58.9581,
+      "longitude": 5.7012
+    }
   },
   {
     "name": "Måkeskrik",
@@ -1483,7 +1691,11 @@
         "name": "Marekvist",
         "link": "https://www.ticketmaster.no/artist/marekvist-billetter/1395323"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 58.1419,
+      "longitude": 8.008
+    }
   },
   {
     "name": "Malstrømfestivalen",
@@ -1496,7 +1708,11 @@
     "description": "",
     "about": "Festivalen ønsker å støtte og være en bidragsyter til lokal vekst, både kulturelt, men også økonomisk. Festivalen ble opprettet for å dekke behovet for et kulturelt initiativ rettet mot unge voksne i kommunen og nærområdene, men også for å bidra til å sette Hønefoss på kartet som en kultur- og musikkby.\nSelv om det er rocken som er i fokus vil det likevel være rom for å bevege seg mot andre sjangre. Det er viktig for oss å vise fram lokale talenter, så deler av programmet vil være forbeholdt band eller artister fra nærområdet.\nKvinnelige artister, band og bandmedlemmer er i dag i kraftig mindretall på plakatene til andre festivaler innen samme sjanger som oss selv, som er noe vi vil kjempe for å jevne ut. Dette gjør vi ved å holde en bevissthet på andelen band med kvinnelige medlemmer som vi booker inn til å spille hos oss: 50% av bandene skal ha minimum ett kvinnelig medlem, og av denne andelen skal halvparten være kvinne-frontet eller være utelukkende bestående av kvinnelige medlemmer.",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 60.1643,
+      "longitude": 10.2516
+    }
   },
   {
     "name": "Midgardsblot",
@@ -1550,7 +1766,11 @@
         "name": "Iskald",
         "link": "https://www.ticketmaster.no/artist/iskald-billetter/1363573"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.4025,
+      "longitude": 10.4899
+    }
   },
   {
     "name": "Miniøya",
@@ -1582,7 +1802,11 @@
         "name": "SaraLy",
         "link": "https://www.ticketmaster.no/artist/saraly-billetter/1341723"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.9221,
+      "longitude": 10.7612
+    }
   },
   {
     "name": "Notodden Blues Festival",
@@ -1598,7 +1822,11 @@
       "http://bluesfest.no/",
       "https://www.facebook.com/pages/Notodden-Blues-Festival/124652855699"
     ],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 59.5653,
+      "longitude": 9.2035
+    }
   },
   {
     "name": "Olavsfest",
@@ -1644,7 +1872,11 @@
         "name": "The Impossible Green",
         "link": "https://www.ticketmaster.no/artist/the-impossible-green-billetter/1286403"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 63.4305,
+      "longitude": 10.3951
+    }
   },
   {
     "name": "Opptur",
@@ -1659,7 +1891,11 @@
     "homepages": [
       "https://oppturfestival.no/"
     ],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 67.2825,
+      "longitude": 14.399
+    }
   },
   {
     "name": "Oslo World",
@@ -1681,7 +1917,11 @@
         "name": "Ganavya",
         "link": "https://www.ticketmaster.no/artist/ganavya-billetter/1261393"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.9139,
+      "longitude": 10.7522
+    }
   },
   {
     "name": "ØryeahLYD Sommerfestival",
@@ -1694,7 +1934,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 59.5931,
+      "longitude": 11.635
+    }
   },
   {
     "name": "Palmesus Junior",
@@ -1730,7 +1974,11 @@
         "name": "Tigergutt101",
         "link": "https://www.ticketmaster.no/artist/tigergutt101-billetter/1358843"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 58.1446,
+      "longitude": 7.9956
+    }
   },
   {
     "name": "Punkorama",
@@ -1743,7 +1991,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 59.7439,
+      "longitude": 10.2046
+    }
   },
   {
     "name": "Randsfjordfestivalen",
@@ -1780,7 +2032,11 @@
         "name": "Vinni",
         "link": "https://www.ticketmaster.no/artist/vinni-billetter/885538"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 60.4984,
+      "longitude": 10.4607
+    }
   },
   {
     "name": "Ravnedalen Live",
@@ -1814,7 +2070,11 @@
         "name": "Starfunkle Dancing DJ",
         "link": "https://www.ticketmaster.no/artist/starfunkle-dancing-dj-billetter/1237184"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 58.1575,
+      "longitude": 7.9975
+    }
   },
   {
     "name": "Rondaståk",
@@ -1842,7 +2102,11 @@
         "name": "The Impossible Green",
         "link": "https://www.ticketmaster.no/artist/the-impossible-green-billetter/1286403"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 61.539,
+      "longitude": 9.248
+    }
   },
   {
     "name": "Rootsfestivalen",
@@ -1890,7 +2154,11 @@
         "name": "Hekla Stålstrenga",
         "link": "https://www.ticketmaster.no/artist/hekla-stalstrenga-billetter/924044"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": null,
+      "longitude": null
+    }
   },
   {
     "name": "Saltholmen Sommerfestival",
@@ -1903,7 +2171,11 @@
     "description": "",
     "about": "Saltholmen sommerfestival arrangeres i nydelige omgivelser på vakre Saltholmen i råde kommune, bygda mellom byene. Her får du opplevd bygdefest på sitt beste med fengende musikk fra 60, 70, 80,90 og 2000 tallet.",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 59.3837,
+      "longitude": 10.5015
+    }
   },
   {
     "name": "Seiland Barnefestival",
@@ -1916,7 +2188,11 @@
     "description": "Til deg under 18år\nSeiland Barnefestival har fri alder. Aktivitetsdag for barn med mange utendørs aktiviteter, vannaktiviteter og underholdning.",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 70.0089,
+      "longitude": 20.8333
+    }
   },
   {
     "name": "Sjamantræffen",
@@ -1929,7 +2205,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 60.7428,
+      "longitude": 10.1053
+    }
   },
   {
     "name": "Skeikampenfestivalen",
@@ -1979,7 +2259,11 @@
         "name": "Tobias Sten",
         "link": "https://www.ticketmaster.no/artist/tobias-sten-billetter/1310854"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 61.4958,
+      "longitude": 10.0276
+    }
   },
   {
     "name": "Sommerbris",
@@ -2019,7 +2303,11 @@
         "name": "Bjørn Eidsvåg",
         "link": "https://www.ticketmaster.no/artist/bjorn-eidsvag-billetter/90203"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 58.1419,
+      "longitude": 8.008
+    }
   },
   {
     "name": "Southern Discomfort",
@@ -2032,7 +2320,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 58.147,
+      "longitude": 7.9985
+    }
   },
   {
     "name": "Spornesfestivalen",
@@ -2060,7 +2352,11 @@
         "name": "Josefin Winther",
         "link": "https://www.ticketmaster.no/artist/josefin-winther-billetter/916833"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 58.4587,
+      "longitude": 8.7742
+    }
   },
   {
     "name": "Tahitifestivalen",
@@ -2073,7 +2369,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 63.1117,
+      "longitude": 7.727
+    }
   },
   {
     "name": "The Norwegian Elvis Festival",
@@ -2086,7 +2386,11 @@
     "description": "Til deg under 18 år\nKonsertene i Sør-Vågsøy Kirke har ikke aldersgrense.",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 61.915,
+      "longitude": 5.118
+    }
   },
   {
     "name": "Tjuven Musikkfest",
@@ -2099,7 +2403,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 60.7956,
+      "longitude": 11.0687
+    }
   },
   {
     "name": "Trænafestivalen",
@@ -2112,7 +2420,11 @@
     "description": "Til deg under 18år: \nTrænafestivalen har 15 års aldersgrense. MERK: campen har 18 års aldersgrense",
     "about": "Velkommen til Trænafestivalen, en verden for seg.Du finner oss 33 nautiske mil til havs, på kanten av polarsirkelen, som beviset på at paradis ikke trenger å være tropisk. Så liten og eksklusiv at den er uforglemmelig intim, så stor at den tiltrekker seg musikkens villeste navn – fra Manu Chao, Damien Rice, Wardruna og Yoshinori Hayashi.Konsertene er spredt over to spektakulære øyer, med konserter på scener i huler utgravdav havet gjennom tusener av år, i gamle kirker og kapeller, i skogen - alt under midnattssolen. Det som skjer på Træna blir med deg for alltid, så hvor langt vil du gå?",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 65.382,
+      "longitude": 12.471
+    }
   },
   {
     "name": "Trommestadfestivalen",
@@ -2125,7 +2437,11 @@
     "description": "",
     "about": "Trommestadfestivalen er en lavterskelfestival med fokus på det lokale og sosiale. Dette er festivalen for alle generasjoner og samfunnslag. Så lenge du kommer med godt humør og et smil om munnen, er du hjertelig velkommen!\nDet blir nemlig ingen festival uten glade festivaldeltakere.",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 63.4225,
+      "longitude": 10.995
+    }
   },
   {
     "name": "Trondheim Rocks",
@@ -2142,7 +2458,11 @@
       "https://www.facebook.com/TrondheimRocks",
       "https://www.instagram.com/trondheimrocks"
     ],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 63.4141,
+      "longitude": 10.4074
+    }
   },
   {
     "name": "Tundra and Lightning",
@@ -2155,7 +2475,11 @@
     "description": "",
     "about": "",
     "homepages": [],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 60.3872,
+      "longitude": 5.315
+    }
   },
   {
     "name": "Vaulen Open Air",
@@ -2201,7 +2525,11 @@
         "name": "Roc Boyz",
         "link": "https://www.ticketmaster.no/artist/roc-boyz-billetter/1172083"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 58.9473,
+      "longitude": 5.6391
+    }
   },
   {
     "name": "Vinjerock",
@@ -2217,7 +2545,11 @@
       "https://www.facebook.com/vinjerock/",
       "https://www.instagram.com/vinjerock/"
     ],
-    "lineup": []
+    "lineup": [],
+    "coordinates": {
+      "latitude": 60.894,
+      "longitude": 9.3768
+    }
   },
   {
     "name": "Ypsilon",
@@ -2266,6 +2598,10 @@
         "name": "PandaPanda",
         "link": "https://www.ticketmaster.no/artist/pandapanda-billetter/1225003"
       }
-    ]
+    ],
+    "coordinates": {
+      "latitude": 59.7433,
+      "longitude": 10.2033
+    }
   }
 ]
