@@ -78,11 +78,7 @@ const MapPage: React.FC = () => {
           <div className="bg-white rounded-lg shadow-md h-full">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-6">Kart</h2>
-<<<<<<< HEAD
               <div className="h-[calc(65vh-32px)] w-full rounded-lg overflow-hidden bg-white relative" style={{ zIndex: 1 }}>
-=======
-              <div className="h-[60vh] w-full rounded-lg overflow-hidden bg-white">
->>>>>>> 791b3995b361775b2a3b41b1807022da047c0f46
                 <FestivalMap 
                   festivals={filteredFestivalsWithSearch}
                   zoom={5}

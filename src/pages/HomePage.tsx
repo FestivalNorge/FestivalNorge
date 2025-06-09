@@ -6,7 +6,17 @@ import FestivalCard from '../components/common/FestivalCard';
 import SearchBar from '../components/common/SearchBar';
 import { Festival } from '../types';
 
-interface FestivalWithDistance extends Festival {
+// Define coordinate types
+type Coordinates = 
+  | { latitude: number; longitude: number }
+  | { lat: number | string; lng: number | string }
+  | [number | string, number | string];
+
+interface FestivalWithDistance extends Omit<Festival, 'location'> {
+  id: string;
+  location: Festival['location'] & {
+    coordinates: Coordinates;
+  };
   distance: number;
 }
 
@@ -41,6 +51,8 @@ const HomePage: React.FC = () => {
 
   // Check for saved location or geolocation permission on component mount
   useEffect(() => {
+    let isMounted = true;
+    
     const checkGeolocationPermission = async () => {
       try {
         // First, check if we have a saved location in localStorage
@@ -49,35 +61,55 @@ const HomePage: React.FC = () => {
         
         if (savedLocation && savedFestivals) {
           // If we have saved data, use it
-          setHasLocation(true);
-          setNearbyFestivals(JSON.parse(savedFestivals));
-          setIsCheckingPermission(false);
+          if (isMounted) {
+            setHasLocation(true);
+            setNearbyFestivals(JSON.parse(savedFestivals));
+            setIsCheckingPermission(false);
+          }
           return;
         }
         
         // If no saved data, check geolocation permission
         if (navigator.permissions) {
-          const permissionStatus = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
-          
-          if (permissionStatus.state === 'granted') {
-            // If permission is already granted, fetch nearby festivals
-            await handleFindNearbyFestivals();
+          try {
+            const permissionStatus = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
+            
+            if (permissionStatus.state === 'granted' && isMounted) {
+              // If permission is already granted, fetch nearby festivals
+              await handleFindNearbyFestivals();
+            }
+          } catch (permissionError) {
+            console.error('Error checking geolocation permission:', permissionError);
           }
         }
       } catch (error) {
-        console.error('Error checking geolocation permission:', error);
+        console.error('Error in checkGeolocationPermission:', error);
+        if (isMounted) {
+          setLocationError('En feil oppstod ved sjekk av plasseringstilgang');
+        }
       } finally {
-        setIsCheckingPermission(false);
+        if (isMounted) {
+          setIsCheckingPermission(false);
+        }
       }
     };
 
     checkGeolocationPermission();
-  }, []);
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [festivals]); // Add festivals to dependency array
 
   // Function to get user's location and find nearby festivals
   const handleFindNearbyFestivals = async () => {
     if (!navigator.geolocation) {
       setLocationError('Geolocation er ikke støttet av nettleseren din');
+      return;
+    }
+    
+    if (!festivals || festivals.length === 0) {
+      setLocationError('Ingen festivaler er tilgjengelige for øyeblikket');
       return;
     }
 
@@ -108,59 +140,84 @@ const HomePage: React.FC = () => {
       })));
       
       // Calculate distances and sort festivals by proximity
-      const festivalsWithDistances = festivals
-        .map(festival => {
-          try {
-            // Try to get coordinates in different possible formats
-            let festivalLat: number | null = null;
-            let festivalLng: number | null = null;
-            
-            const coords = festival.location?.coordinates;
-            
-            // Handle different coordinate formats
-            if (coords) {
-              if (typeof coords.latitude === 'number' && typeof coords.longitude === 'number') {
-                // Format: { latitude: number, longitude: number }
-                festivalLat = coords.latitude;
-                festivalLng = coords.longitude;
-              } else if (Array.isArray(coords) && coords.length >= 2) {
-                // Format: [longitude, latitude] - GeoJSON format
-                festivalLng = coords[0];
-                festivalLat = coords[1];
-              } else if (coords.lat && coords.lng) {
-                // Format: { lat: number, lng: number }
-                festivalLat = coords.lat;
-                festivalLng = coords.lng;
-              }
-            }
-            
-            // Skip if we couldn't get valid coordinates
-            if (festivalLat === null || festivalLng === null) {
-              console.log('Festival missing or has invalid coordinates:', festival.name, coords);
-              return null;
-            }
-            
-            const distance = calculateDistance(latitude, longitude, festivalLat, festivalLng);
-            
-            console.log('Festival distance:', {
-              name: festival.name,
-              festivalLat,
-              festivalLng,
-              distance,
-              userLat: latitude,
-              userLng: longitude
-            });
-            
-            return {
-              ...festival,
-              distance
-            };
-          } catch (error) {
-            console.error('Error processing festival:', festival.name, error);
-            return null;
+      const validFestivals: FestivalWithDistance[] = [];
+      
+      for (const festival of festivals) {
+        try {
+          if (!festival?.id) {
+            console.log('Festival is missing id:', festival);
+            continue;
           }
-        })
-        .filter((festival): festival is Festival & { distance: number } => festival !== null);
+          
+          if (!festival?.location?.coordinates) {
+            console.log('Festival missing location data:', festival.name);
+            continue;
+          }
+          
+          // Try to get coordinates in different possible formats
+          let festivalLat: number | null = null;
+          let festivalLng: number | null = null;
+          
+          const coords = festival.location.coordinates as any; // We'll validate the shape
+          
+          // Handle different coordinate formats
+          if (coords && typeof coords === 'object') {
+            if ('latitude' in coords && 'longitude' in coords) {
+              // Format: { latitude: number, longitude: number }
+              festivalLat = Number(coords.latitude);
+              festivalLng = Number(coords.longitude);
+            } else if ('lat' in coords && 'lng' in coords) {
+              // Format: { lat: number | string, lng: number | string }
+              festivalLat = typeof coords.lat === 'string' ? parseFloat(coords.lat) : Number(coords.lat);
+              festivalLng = typeof coords.lng === 'string' ? parseFloat(coords.lng) : Number(coords.lng);
+            }
+          } else if (Array.isArray(coords) && coords.length >= 2) {
+            // Format: [longitude, latitude] - GeoJSON format
+            festivalLng = typeof coords[0] === 'string' ? parseFloat(coords[0]) : Number(coords[0]);
+            festivalLat = typeof coords[1] === 'string' ? parseFloat(coords[1]) : Number(coords[1]);
+          }
+          
+          // Validate coordinates
+          if (festivalLat === null || festivalLng === null || 
+              isNaN(festivalLat) || isNaN(festivalLng) ||
+              festivalLat < -90 || festivalLat > 90 || 
+              festivalLng < -180 || festivalLng > 180) {
+            console.log('Festival has invalid coordinates:', festival.name, coords);
+            continue;
+          }
+            
+          const distance = calculateDistance(latitude, longitude, festivalLat, festivalLng);
+          
+          console.log('Festival distance:', {
+            name: festival.name,
+            festivalLat,
+            festivalLng,
+            distance,
+            userLat: latitude,
+            userLng: longitude
+          });
+          
+          // Create a new object with the required FestivalWithDistance type
+          const festivalWithDistance: FestivalWithDistance = {
+            ...festival,
+            id: festival.id, // Ensure id is included
+            location: {
+              ...festival.location,
+              // Keep all original location properties and override coordinates
+              coordinates: coords
+            },
+            distance
+          };
+          
+          validFestivals.push(festivalWithDistance);
+          
+        } catch (error) {
+          console.error('Error processing festival:', festival.name, error);
+          continue;
+        }
+      }
+      
+      const festivalsWithDistances = validFestivals;
       
       console.log('Festivals with distances:', festivalsWithDistances);
       
