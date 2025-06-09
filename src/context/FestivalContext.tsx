@@ -41,8 +41,19 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       if (!data || !Array.isArray(data)) {
         throw new Error('Invalid festival data received');
       }
-      setFestivals(data);
-      setFilteredFestivals(data);
+      
+      // Validate each festival before setting state
+      const validFestivals = data.filter((festival: any) => {
+        return festival && 
+               festival.id && 
+               festival.name && 
+               festival.location && 
+               festival.dates && 
+               festival.price;
+      });
+      
+      setFestivals(validFestivals);
+      setFilteredFestivals(validFestivals);
       setError(null);
     } catch (err) {
       console.error('Error fetching festivals:', err);

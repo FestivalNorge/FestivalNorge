@@ -71,7 +71,7 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false 
         <div className="space-y-2">
           <div className="flex items-center text-gray-600">
             <MapPin className="w-4 h-4 mr-2 text-primary-500" />
-            <span>{festival.location.city}</span>
+            <span>{festival.location.venue}</span>
           </div>
           
           <div className="flex items-center text-gray-600">
