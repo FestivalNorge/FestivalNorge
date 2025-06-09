@@ -2,6 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Music } from 'lucide-react';
 
+// Custom Link component that scrolls to top when clicked
+const ScrollLink = ({ to, children, ...props }: any) => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (typeof window !== 'undefined') {
+      // Smooth scroll to top
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  return (
+    <Link to={to} {...props} onClick={handleClick}>
+      {children}
+    </Link>
+  );
+};
+
 const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -42,30 +62,30 @@ const Header: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-10">
-            <Link 
+            <ScrollLink 
               to="/"
               className="font-medium text-gray-700 transition-colors hover:text-accent-500"
             >
               Hjem
-            </Link>
-            <Link 
+            </ScrollLink>
+            <ScrollLink 
               to="/festivals"
               className="font-medium text-gray-700 transition-colors hover:text-accent-500"
             >
               Festivaler
-            </Link>
-            <Link 
+            </ScrollLink>
+            <ScrollLink 
               to="/calendar"
               className="font-medium text-gray-700 transition-colors hover:text-accent-500"
             >
               Kalender
-            </Link>
-            <Link 
+            </ScrollLink>
+            <ScrollLink 
               to="/map"
               className="font-medium text-gray-700 transition-colors hover:text-accent-500"
             >
               Kart
-            </Link>
+            </ScrollLink>
             
             
           </nav>

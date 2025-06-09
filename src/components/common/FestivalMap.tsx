@@ -1,12 +1,11 @@
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { Icon } from 'leaflet';
+import { useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { Icon, LatLngExpression } from 'leaflet';
 import { Festival } from '../../types';
-import { Link } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 
-// Fix TypeScript error for Icon type
+// Fix TypeScript errors
 declare module 'leaflet' {
   export interface IconOptions {
     iconUrl: string;
@@ -18,127 +17,113 @@ declare module 'leaflet' {
   }
 }
 
-// Create custom icons
-const greenIcon = new Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-const blueIcon = new Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [35, 51],
-  iconAnchor: [17, 51],
-  popupAnchor: [1, -44],
-  shadowSize: [51, 51]
-});
-
 interface FestivalMapProps {
   festivals: Festival[];
-  zoom?: number;
-  center?: [number, number];
-  scrollWheelZoom?: boolean;
+  zoom: number;
+  scrollWheelZoom: boolean;
+  center: [number, number];
   className?: string;
-  selectedFestivalId?: string;
-  onClick?: (id: string) => void;
+  selectedFestivalId: string | undefined;
+  onClick: (id: string) => void;
 }
 
-const FestivalMap: React.FC<FestivalMapProps> = ({
-  festivals = [],
-  zoom = 5.3,
-  center = [60.472, 8.4689],
-  scrollWheelZoom = true,
-  className = '',
-  selectedFestivalId = '',
-  onClick
-}) => {
-  // Return early if no festivals or invalid center coordinates
-  if (!Array.isArray(festivals) || !center || center.length !== 2) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-100">
-        <p className="text-gray-600">Laster kart...</p>
-      </div>
-    );
-  }
+const MapCenter = ({ selectedFestivalId, festivals }: { selectedFestivalId: string | undefined, festivals: Festival[] }) => {
+  const map = useMap();
 
-  // Add a unique key to prevent multiple renders
-  const mapKey = `map-${center.join(',')}-${zoom}-${selectedFestivalId}`;
-
-  // Ensure the map container has proper height
-  React.useEffect(() => {
-    const mapContainer = document.querySelector('.leaflet-container');
-    if (mapContainer instanceof HTMLElement) {
-      mapContainer.style.height = '100%';
+  useEffect(() => {
+    if (!map) return;
+    
+    if (selectedFestivalId) {
+      const selectedFestival = festivals.find((f: Festival) => f.id === selectedFestivalId);
+      if (selectedFestival) {
+        const position: [number, number] = [
+          selectedFestival.location.coordinates.latitude,
+          selectedFestival.location.coordinates.longitude
+        ];
+        map.flyTo(position, 12);
+      }
     }
-  }, []);
+  }, [selectedFestivalId, festivals, map]);
+
+  return null;
+};
+
+const FestivalMap = ({
+  festivals,
+  zoom,
+  scrollWheelZoom,
+  center,
+  className,
+  selectedFestivalId,
+  onClick
+}: FestivalMapProps) => {
+  const getMarkerPosition = (festival: Festival): LatLngExpression => {
+    return [
+      festival.location.coordinates.latitude,
+      festival.location.coordinates.longitude
+    ];
+  };
+
+  const defaultIcon = new Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+
+  const selectedIcon = new Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
 
   return (
-    <div key={mapKey} className={`relative w-full ${className || ''}`}>
-      <div className="h-[400px] sm:h-[500px]">
-        <MapContainer
-          center={center}
-          zoom={zoom}
-          scrollWheelZoom={scrollWheelZoom}
-          style={{
-            height: '100%',
-            width: '100%',
-            position: 'relative',
-            zIndex: 1,
-            backgroundColor: 'transparent'
-          }}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+    <MapContainer
+      center={center as [number, number]}
+      zoom={zoom}
+      scrollWheelZoom={scrollWheelZoom}
+      className={className}
+    >
+      <MapCenter selectedFestivalId={selectedFestivalId} festivals={festivals} />
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      {festivals.map((festival) => {
+        const position = getMarkerPosition(festival);
+        const isCurrent = selectedFestivalId === festival.id;
+        const icon = isCurrent ? selectedIcon : defaultIcon;
 
-          {festivals.map((festival) => {
-            if (!festival || !festival.location || !festival.location.coordinates) {
-              console.error('Invalid festival data:', festival);
-              return null;
-            }
-
-            const { latitude, longitude } = festival.location.coordinates;
-            const isCurrentFestival = festival.id === selectedFestivalId;
-            return (
-              <Marker 
-                key={festival.id} 
-                position={[latitude, longitude]} 
-                icon={isCurrentFestival ? blueIcon : greenIcon}
-                eventHandlers={{
-                  click: () => onClick?.(festival.id)
-                }}
-              >
-                <Popup>
-                  <div className="max-w-[300px] p-6 text-gray-900">
-                    <Link to={`/festival/${festival.id}`} className="block w-full">
-                      <div className="flex items-center space-x-2">
-                        <div className="text-primary-500">
-                          <MapPin className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-lg">{festival.name}</h3>
-                          <p className="text-sm text-gray-600">
-                            {festival.location.venue}, {festival.location.city}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {new Date(festival.dates.start).toLocaleDateString('no-NO')} - {new Date(festival.dates.end).toLocaleDateString('no-NO')}
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                </Popup>
-              </Marker>
-            );
-          })}
-        </MapContainer>
-      </div>
-    </div>
+        return (
+          <Marker
+            key={festival.id}
+            position={position}
+            icon={icon}
+            eventHandlers={{
+              click: () => onClick(festival.id)
+            }}
+          >
+            <Popup>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <MapPin size={20} />
+                  <h3 className="font-semibold">{festival.name}</h3>
+                </div>
+                <p className="text-sm text-gray-600">
+                  {festival.location.city}, {festival.location.region}
+                </p>
+                <p className="text-sm text-gray-600">
+                  {festival.dates.start} - {festival.dates.end}
+                </p>
+              </div>
+            </Popup>
+          </Marker>
+        );
+      })}
+    </MapContainer>
   );
 };
 

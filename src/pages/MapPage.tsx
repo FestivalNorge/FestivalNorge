@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Festival } from '../types';
 import FestivalCard from '../components/common/FestivalCard';
 import FestivalMap from '../components/common/FestivalMap';
@@ -7,18 +7,26 @@ import { getFestivals } from '../services/festivalService';
 // Import Leaflet CSS
 import 'leaflet/dist/leaflet.css';
 
-interface MapPageState {
-  festivals: Festival[];
-  selectedFestival: string | undefined;
-  isLoading: boolean;
-  error: string | null;
-}
-
 const MapPage: React.FC = () => {
   const [festivals, setFestivals] = useState<Festival[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedFestival, setSelectedFestival] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const filteredFestivals = useMemo(() => {
+    if (!searchTerm) return festivals;
+    
+    const searchLower = searchTerm.toLowerCase();
+    return festivals.filter(festival => 
+      festival.name.toLowerCase().includes(searchLower) ||
+      festival.location.city.toLowerCase().includes(searchLower)
+    );
+  }, [festivals, searchTerm]);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
   useEffect(() => {
     const fetchFestivals = async () => {
@@ -37,15 +45,6 @@ const MapPage: React.FC = () => {
 
     fetchFestivals();
   }, []);
-
-  // Sort festivals with selected one at top
-  const sortedFestivals = [...festivals].sort((a, b) => {
-    const aSelected = a.id === selectedFestival;
-    const bSelected = b.id === selectedFestival;
-    if (aSelected && !bSelected) return -1;
-    if (!aSelected && bSelected) return 1;
-    return 0;
-  });
 
   if (isLoading) {
     return (
@@ -98,7 +97,7 @@ const MapPage: React.FC = () => {
           <div className="bg-white rounded-lg shadow-md">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-6">Kart</h2>
-              <div className="h-[400px] sm:h-[500px] w-full rounded-lg overflow-hidden bg-white">
+              <div className="h-[calc(65vh-32px)] w-full rounded-lg overflow-hidden bg-white">
                 <FestivalMap 
                   festivals={festivals} 
                   zoom={5.3} 
@@ -116,18 +115,44 @@ const MapPage: React.FC = () => {
           <div className="bg-white rounded-lg shadow-md">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-6">Festivaler</h2>
-              <div className="space-y-4">
-                {sortedFestivals.map((festival) => (
-                  <div 
-                    key={festival.id} 
-                    className={`cursor-pointer transition-colors ${
-                      festival.id === selectedFestival ? 'ring-2 ring-primary-500' : ''
-                    }`}
-                    onClick={() => setSelectedFestival(festival.id)}
-                  >
-                    <FestivalCard festival={festival} />
-                  </div>
-                ))}
+              <div className="flex flex-col gap-4 h-[calc(65vh-32px)]">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Søk på festivaler..."
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    className="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                  {searchTerm && (
+                    <button
+                      onClick={() => setSearchTerm('')}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+                <div className="space-y-4 flex-1 overflow-y-auto">
+                  {filteredFestivals.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                      {searchTerm ? 'Ingen festivaler funnet' : 'Ingen festivaler tilgjengelig'}
+                    </div>
+                  )}
+                  {filteredFestivals.map((festival) => (
+                    <div 
+                      key={festival.id} 
+                      className={`cursor-pointer transition-colors ${
+                        festival.id === selectedFestival ? 'ring-2 ring-primary-500' : ''
+                      }`}
+                      onClick={() => setSelectedFestival(festival.id)}
+                    >
+                      <FestivalCard festival={festival} />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
