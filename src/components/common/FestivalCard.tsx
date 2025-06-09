@@ -51,13 +51,17 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false 
           </h3>
           <div className="mt-auto">
             <div className="flex flex-wrap gap-2">
-              <span className={`badge ${getTicketStatusClass(festival.ticketAvailability)}`}>
-                {festival.ticketAvailability === 'available' ? 'Tickets Available' : 
-                 festival.ticketAvailability === 'limited' ? 'Limited Tickets' : 'Sold Out'}
-              </span>
-              <span className="badge bg-primary-100 text-primary-800">
-                {festival.averageAgeGroup.min}-{festival.averageAgeGroup.max} år
-              </span>
+              {festival.ticketAvailability && (
+                <span className={`badge ${getTicketStatusClass(festival.ticketAvailability)}`}>
+                  {festival.ticketAvailability === 'available' ? 'Tickets Available' : 
+                   festival.ticketAvailability === 'limited' ? 'Limited Tickets' : 'Sold Out'}
+                </span>
+              )}
+              {festival.averageAgeGroup && (
+                <span className="badge bg-primary-100 text-primary-800">
+                  {festival.averageAgeGroup.min}-{festival.averageAgeGroup.max} år
+                </span>
+              )}
             </div>
           </div>
         </div>

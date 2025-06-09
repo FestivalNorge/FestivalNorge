@@ -76,7 +76,7 @@ const FestivalDetailPage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/30"></div>
         <div className="container-custom relative h-full flex flex-col justify-center pb-8">
           <div className="flex flex-wrap items-center gap-4 mb-3">
-            {festival.genres.map((genre, index) => (
+            {festival.genres?.map((genre, index) => (
               <span 
                 key={index}
                 className="badge badge-secondary"
@@ -84,10 +84,12 @@ const FestivalDetailPage: React.FC = () => {
                 {genre}
               </span>
             ))}
-            <span className={`badge ${getTicketStatusClass(festival.ticketAvailability)}`}>
-              {festival.ticketAvailability === 'available' ? 'Tickets Available' : 
-               festival.ticketAvailability === 'limited' ? 'Limited Tickets' : 'Sold Out'}
-            </span>
+            {festival.ticketAvailability && (
+              <span className={`badge ${getTicketStatusClass(festival.ticketAvailability)}`}>
+                {festival.ticketAvailability === 'available' ? 'Tickets Available' : 
+                 festival.ticketAvailability === 'limited' ? 'Limited Tickets' : 'Sold Out'}
+              </span>
+            )}
           </div>
           
           <div>
