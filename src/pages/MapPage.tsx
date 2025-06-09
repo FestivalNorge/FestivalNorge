@@ -97,7 +97,7 @@ const MapPage: React.FC = () => {
           <div className="bg-white rounded-lg shadow-md">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-6">Kart</h2>
-              <div className="h-[calc(65vh-32px)] w-full rounded-lg overflow-hidden bg-white">
+              <div className="h-[calc(65vh-32px)] w-full rounded-lg overflow-hidden bg-white relative" style={{ zIndex: 1 }}>
                 <FestivalMap 
                   festivals={festivals} 
                   zoom={5.3} 

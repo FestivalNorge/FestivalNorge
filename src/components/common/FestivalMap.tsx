@@ -86,6 +86,7 @@ const FestivalMap = ({
       zoom={zoom}
       scrollWheelZoom={scrollWheelZoom}
       className={className}
+      style={{ position: 'relative', zIndex: 30 }}
     >
       <MapCenter selectedFestivalId={selectedFestivalId} festivals={festivals} />
       <TileLayer
@@ -103,7 +104,11 @@ const FestivalMap = ({
             position={position}
             icon={icon}
             eventHandlers={{
-              click: () => onClick(festival.id)
+              click: () => {
+                if (festival.id) {
+                  onClick(festival.id);
+                }
+              }
             }}
           >
             <Popup>
