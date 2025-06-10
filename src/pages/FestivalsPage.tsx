@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useFestival } from '../context/FestivalContext';
 import { Loader2 } from 'lucide-react';
@@ -39,20 +39,15 @@ const FestivalsPage: React.FC = () => {
   }, [searchParams, setSearchTerm, setSortOption, setFilterOption, setLocationFilter]);
 
   const [selectedFestival, setSelectedFestival] = useState<Festival | null>(null);
+  const [page, setPage] = useState(1);
+  const [displayedFestivals, setDisplayedFestivals] = useState<Festival[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const observer = useRef<IntersectionObserver | null>(null);
+  const loadingRef = useRef<HTMLDivElement>(null);
+  const ITEMS_PER_PAGE = 9; // 3x3 grid items per load
 
-  const handleSearch = (term: string) => {
-    // If the search term is empty, clear the selected festival
-    if (term === '') {
-      setSelectedFestival(null);
-    }
-    setSearchTerm(term);
-    updateSearchParams('search', term);
-  };
 
-  const handleSuggestionSelect = (festival: Festival) => {
-    setSelectedFestival(festival);
-    // Don't update the search term here to keep the festival name in the search box
-  };
   
   const handleSortChange = (option: SortOption) => {
     setSortOption(option);
@@ -79,10 +74,81 @@ const FestivalsPage: React.FC = () => {
     setSearchParams(newParams);
   };
 
-  // Get filtered festivals based on search, filters, and selected suggestion
-  const displayedFestivals = selectedFestival 
-    ? [selectedFestival] 
-    : filteredFestivals;
+  // Reset pagination when filters or search change
+  useEffect(() => {
+    setPage(1);
+    const initialFestivals = selectedFestival ? [selectedFestival] : filteredFestivals.slice(0, ITEMS_PER_PAGE);
+    setDisplayedFestivals(initialFestivals);
+    setHasMore(selectedFestival ? false : filteredFestivals.length > initialFestivals.length);
+  }, [selectedFestival, filteredFestivals]);
+
+  // Load more festivals when reaching the bottom
+  const loadMoreFestivals = useCallback(async () => {
+    if (selectedFestival || !hasMore || loading || isLoadingMore) return;
+    
+    setIsLoadingMore(true);
+    
+    // Add a 2-second delay before loading more content
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    const nextPage = page + 1;
+    const endIdx = Math.min(filteredFestivals.length, nextPage * ITEMS_PER_PAGE);
+    const nextFestivals = filteredFestivals.slice(0, endIdx);
+    
+    setDisplayedFestivals(nextFestivals);
+    setPage(nextPage);
+    setHasMore(endIdx < filteredFestivals.length);
+    setIsLoadingMore(false);
+  }, [page, hasMore, filteredFestivals, selectedFestival, loading, isLoadingMore]);
+
+  // Set up intersection observer for infinite scroll
+  useEffect(() => {
+    const currentObserver = loadingRef.current;
+    
+    if (currentObserver) {
+      const observerOptions = {
+        root: null,
+        rootMargin: '20px',
+        threshold: 0.1
+      };
+      
+      const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+        const [entry] = entries;
+        if (entry.isIntersecting && hasMore && !loading && !isLoadingMore) {
+          loadMoreFestivals();
+        }
+      };
+      
+      observer.current = new IntersectionObserver(handleIntersect, observerOptions);
+      
+      if (currentObserver) {
+        observer.current.observe(currentObserver);
+      }
+    }
+
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+    };
+  }, [loadMoreFestivals, hasMore, loading]);
+
+  // Handle search with debounce
+  const handleSearch = useCallback((term: string) => {
+    if (term === '') {
+      setSelectedFestival(null);
+    } else {
+      setPage(1);
+    }
+    setSearchTerm(term);
+    updateSearchParams('search', term);
+  }, [setSearchTerm]);
+
+  // Handle suggestion select
+  const handleSuggestionSelect = useCallback((festival: Festival) => {
+    setSelectedFestival(festival);
+    setPage(1);
+  }, []);
 
   // Loading state
   if (loading) {
@@ -189,6 +255,12 @@ const FestivalsPage: React.FC = () => {
                 {displayedFestivals.map((festival) => (
                   <FestivalCard key={festival.id} festival={festival} />
                 ))}
+                {!selectedFestival && hasMore && (
+                  <div ref={loadingRef} className="col-span-full flex flex-col items-center py-8 space-y-2">
+                    <Loader2 className={`h-8 w-8 text-primary-500 animate-spin ${isLoadingMore ? 'opacity-100' : 'opacity-50'}`} />
+                    <span className="text-sm text-gray-500">Laster flere festivaler...</span>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="col-span-full text-center py-12">
