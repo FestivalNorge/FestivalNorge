@@ -502,7 +502,7 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 bg-primary-50">
+      <section className="py-20 bg-primary-50">
         <div className="container-custom">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Oppdag, planlegg og nyt</h2>
           

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import { Festival } from '../../types';
@@ -119,7 +119,11 @@ const LocateControl = ({ onLocated }: { onLocated: (position: [number, number]) 
   );
 };
 
-const FestivalMap = ({
+interface MapRef {
+  flyTo: (latlng: [number, number], zoom: number, options: any) => void;
+}
+
+const FestivalMap = forwardRef<MapRef, FestivalMapProps>(({
   festivals,
   zoom,
   scrollWheelZoom,
@@ -127,7 +131,7 @@ const FestivalMap = ({
   className,
   selectedFestivalId,
   onClick
-}: FestivalMapProps) => {
+}, ref) => {
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
 
   const defaultIcon = new Icon({
@@ -155,14 +159,29 @@ const FestivalMap = ({
     shadowSize: [41, 41]
   });
 
+  const mapRef = useRef<any>(null);
+
+  useImperativeHandle(ref, () => ({
+    flyTo: (latlng: [number, number], zoom: number, options: any) => {
+      if (mapRef.current) {
+        mapRef.current.flyTo(latlng, zoom, options);
+      }
+    }
+  }));
+
   return (
-    <div className="relative w-full h-full">
+    <div className={`w-full h-full ${className || ''}`}>
       <MapContainer
-        center={center as [number, number]}
+        ref={(map) => {
+          if (map) {
+            // @ts-ignore
+            mapRef.current = map;
+          }
+        }}
+        center={center}
         zoom={zoom}
         scrollWheelZoom={scrollWheelZoom}
-        style={{ height: '100%', width: '100%' }}
-        className={className}
+        className="w-full h-full rounded-lg"
       >
         <MapCenter 
           selectedFestivalId={selectedFestivalId} 
@@ -228,6 +247,8 @@ const FestivalMap = ({
       </MapContainer>
     </div>
   );
-};
+});
+
+FestivalMap.displayName = 'FestivalMap';
 
 export default FestivalMap;

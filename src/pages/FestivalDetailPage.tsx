@@ -16,19 +16,25 @@ import { Festival, FestivalDate } from '../types';
 
 const FestivalDetailPage: React.FC = () => {
   const { id: festivalId } = useParams<{ id: string }>();
-  const { getFestivalById } = useFestival();
+  const { getFestivalById, loading: contextLoading } = useFestival();
   const [festival, setFestival] = useState<Festival | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (festivalId) {
-      const festivalData = getFestivalById(festivalId);
-      setFestival(festivalData || null);
-      setIsLoading(false);
+      // Only try to get the festival if context is not loading
+      if (!contextLoading) {
+        const festivalData = getFestivalById(festivalId);
+        setFestival(festivalData || null);
+        setIsLoading(false);
+      }
     }
-  }, [festivalId, getFestivalById]);
+  }, [festivalId, getFestivalById, contextLoading]);
 
-  if (isLoading) {
+  // Show loading state if either the context is loading or we're still waiting for the festival data
+  const showLoading = contextLoading || (isLoading && !festival);
+
+  if (showLoading) {
     return (
       <div className="min-h-screen pt-20 pb-16 flex items-center justify-center">
         <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full"></div>
@@ -155,7 +161,11 @@ const FestivalDetailPage: React.FC = () => {
             <h1 className="text-white mb-4">{festival.name}</h1>
             <div className="flex items-center text-white/90">
               <MapPin className="w-5 h-5 mr-2" />
-              <span>{festival.location.city}, {festival.location.venue}</span>
+              <span>{
+                [festival.venue, festival.location.city]
+                  .filter(Boolean) // Remove empty strings
+                  .join(', ') || 'Location information not available'
+              }</span>
             </div>
           </div>
         </div>
@@ -274,7 +284,9 @@ const FestivalDetailPage: React.FC = () => {
               <div className="space-y-4">
                 <p className="text-gray-700 mb-4">
                   <MapPin className="w-5 h-5 inline-block mr-2 text-primary-500" />
-                  {festival.location.venue}, {festival.location.city}
+                  {[festival.venue, festival.location.city]
+                    .filter(Boolean)
+                    .join(', ') || 'Location information not available'}
                 </p>
                 {festival.location.region && (
                   <p className="text-gray-600">

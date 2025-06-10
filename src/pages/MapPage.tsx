@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import FestivalCard from '../components/common/FestivalCard';
 import FestivalMap from '../components/common/FestivalMap';
 import { useFestival } from '../context/FestivalContext';
+import { Festival } from '../types';
 
 // Import Leaflet CSS
 import 'leaflet/dist/leaflet.css';
@@ -10,6 +11,20 @@ const MapPage: React.FC = () => {
   const { filteredFestivals } = useFestival();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFestival, setSelectedFestival] = useState<string | undefined>(undefined);
+  const mapRef = useRef<{ flyTo: (latlng: [number, number], zoom: number, options: any) => void }>(null);
+
+  const handleFestivalClick = (festival: Festival) => {
+    setSelectedFestival(festival.id);
+    
+    // Fly to the selected festival on the map
+    if (mapRef.current && festival.location?.coordinates) {
+      const { latitude, longitude } = festival.location.coordinates;
+      mapRef.current.flyTo([latitude, longitude], 15, {
+        duration: 1,
+        animate: true
+      });
+    }
+  };
 
   const filteredFestivalsWithSearch = useMemo(() => {
     if (!searchTerm) return filteredFestivals;
@@ -80,6 +95,7 @@ const MapPage: React.FC = () => {
               <h2 className="text-2xl font-bold mb-6">Kart</h2>
               <div className="h-[calc(65vh-32px)] w-full rounded-lg overflow-hidden bg-white relative" style={{ zIndex: 1 }}>
                 <FestivalMap 
+                  ref={mapRef}
                   festivals={filteredFestivalsWithSearch}
                   zoom={5}
                   scrollWheelZoom={false}
@@ -129,7 +145,11 @@ const MapPage: React.FC = () => {
                           className="p-1 rounded-lg bg-gradient-to-r from-accent-500 to-accent-400 mb-4"
                           onClick={() => setSelectedFestival(selectedFestival)}
                         >
-                          <FestivalCard festival={filteredFestivals.find(f => f.id === selectedFestival)!} isSelected={true} />
+                          <FestivalCard 
+                            festival={filteredFestivals.find(f => f.id === selectedFestival)!} 
+                            isSelected={true}
+                            onClick={handleFestivalClick}
+                          />
                         </div>
                       )}
                       
@@ -142,7 +162,11 @@ const MapPage: React.FC = () => {
                             className="cursor-pointer transition-all duration-200 hover:scale-[1.01] hover:ring-1 hover:ring-gray-200 rounded-lg overflow-hidden"
                             onClick={() => setSelectedFestival(festival.id)}
                           >
-                            <FestivalCard festival={festival} isSelected={false} />
+                            <FestivalCard 
+                              festival={festival} 
+                              isSelected={false}
+                              onClick={handleFestivalClick}
+                            />
                           </div>
                         ))}
                     </>

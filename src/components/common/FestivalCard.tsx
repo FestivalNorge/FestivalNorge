@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { MapPin, Calendar, Ticket, Users } from 'lucide-react';
 import { Festival } from '../../types';
@@ -8,9 +7,15 @@ interface FestivalCardProps {
   festival: Festival;
   featured?: boolean;
   isSelected?: boolean;
+  onClick?: (festival: Festival) => void;
 }
 
-const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false, isSelected = false }) => {
+const FestivalCard: React.FC<FestivalCardProps> = ({ 
+  festival, 
+  featured = false, 
+  isSelected = false,
+  onClick
+}) => {
   
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'MMM d, yyyy');
@@ -30,12 +35,20 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false,
   };
 
   return (
-    <Link 
-      to={`/festival/${festival.id}`} 
-      className={`card group festival-card-hover overflow-hidden ${
+    <div 
+      className={`card group festival-card-hover overflow-hidden cursor-pointer ${
         featured ? 'flex flex-col md:flex-row max-h-[400px]' : 'h-full flex flex-col'
       }`}
       style={isSelected ? { boxShadow: '0 0 0 2px #ff5722' } : {}}
+      onClick={(e) => {
+        e.preventDefault();
+        if (onClick) {
+          onClick(festival);
+        } else {
+          // Fallback to default behavior if no onClick handler is provided
+          window.location.href = `/festival/${festival.id}`;
+        }
+      }}
     >
       <div 
         className={`relative ${
@@ -73,7 +86,7 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false,
         <div className="space-y-2">
           <div className="flex items-center text-gray-600">
             <MapPin className="w-4 h-4 mr-2 text-primary-500" />
-            <span>{festival.location.venue}</span>
+            <span>{festival.venue}</span>
           </div>
           
           <div className="flex items-center text-gray-600">
@@ -119,7 +132,7 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false,
           </div>
         )}
       </div>
-    </Link>
+    </div>
   );
 };
 

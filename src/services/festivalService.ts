@@ -20,7 +20,7 @@ export const transformFestivalData = (raw: any): Festival => {
   const location = {
     ...defaultLocation,
     ...(raw.location ? {
-      venue: raw.location.venue || '',
+      // Don't include venue here as it's now at the root level
       city: raw.location.city || '',
       region: raw.location.region || '',
       coordinates: {
@@ -28,7 +28,6 @@ export const transformFestivalData = (raw: any): Festival => {
         longitude: raw.location.coordinates?.longitude || 0
       }
     } : {
-      venue: '',
       city: '',
       coordinates: {
         latitude: 0,
@@ -36,6 +35,9 @@ export const transformFestivalData = (raw: any): Festival => {
       }
     })
   };
+  
+  // Get venue from root level or default to empty string
+  const venue = raw.venue || '';
 
   // Parse dates from string format
   const parseDate = (dateStr: string): Date => {
@@ -96,33 +98,40 @@ export const transformFestivalData = (raw: any): Festival => {
     fullPass: 0
   };
 
-  return {
+  // Create the festival object with all required fields
+  const festival: Festival = {
     id: raw.id || uuidv4(),
-    name: raw.name || '',
-    about: raw.about || '',
+    name: raw.name || 'Unnamed Festival',
+    venue: venue,
     location: location,
     dates: dates,
     price: price,
     ageLimit: raw.ageLimit || 18,
     description: raw.description || '',
+    about: raw.about || '',
     homepages: Array.isArray(raw.homepages) ? raw.homepages : [],
-    detailsLink: raw.details_link || '',
-    ticketLink: raw.ticket_link || '',
+    detailsLink: raw.detailsLink || '',
+    ticketLink: raw.ticketLink || '',
+    genres: Array.isArray(raw.genres) ? raw.genres : [],
+    lineup: Array.isArray(raw.lineup) ? raw.lineup : [],
+    ticketAvailability: raw.ticketAvailability || 'unknown',
+    popularity: raw.popularity || 0,
+    imageUrl: raw.imageUrl || '',
     website: raw.website || '',
-    genres: raw.genres || [],
-    lineup: Array.isArray(raw.lineup) ? raw.lineup.map((artist: { name: string; link: string }) => ({
-      name: artist.name || '',
-      genre: '',
-      headliner: false,
-      link: artist.link || ''
-    })) : [],
-    ticketAvailability: 'available',
-    popularity: 0,
-    imageUrl: raw.image_url || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Crect width="100%25" height="100%25" fill="black"/%3E%3C/svg%3E',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    featured: false
-  } as Festival;
+    featured: raw.featured || false,
+    createdAt: raw.createdAt ? new Date(raw.createdAt) : new Date(),
+    updatedAt: raw.updatedAt ? new Date(raw.updatedAt) : new Date()
+  };
+
+  // Add optional fields if they exist
+  if (raw.averageAgeGroup) {
+    festival.averageAgeGroup = raw.averageAgeGroup;
+  }
+  if (raw.tags) {
+    festival.tags = raw.tags;
+  }
+
+  return festival;
 };
 
 // Function to fetch all festivals from Firestore

@@ -38,6 +38,7 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       setLoading(true);
       const data = await getFestivals();
+      
       if (!data || !Array.isArray(data)) {
         throw new Error('Invalid festival data received');
       }
@@ -52,17 +53,25 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                festival.price;
       });
 
-      // Transform festivals to ensure consistent coordinate format
-      const transformedFestivals = validFestivals.map(festival => ({
-        ...festival,
-        location: {
-          ...festival.location,
-          coordinates: festival.location.coordinates || {
-            latitude: 0,
-            longitude: 0
+      // Transform festivals to ensure consistent data format
+      const transformedFestivals = validFestivals.map(festival => {
+        // Create a copy of location without venue (if it exists)
+        const locationData = festival.location || {};
+        const { venue, ...locationWithoutVenue } = locationData as any;
+        
+        return {
+          ...festival,
+          // Use venue from root if it exists, otherwise from location (for backward compatibility)
+          venue: festival.venue || venue,
+          location: {
+            ...locationWithoutVenue,
+            coordinates: festival.location.coordinates || {
+              latitude: 0,
+              longitude: 0
+            }
           }
-        }
-      }));
+        };
+      });
 
       setFestivals(transformedFestivals);
       setFilteredFestivals(transformedFestivals);

@@ -5,7 +5,6 @@ export interface Coordinates {
 
 export interface Location {
   city: string;
-  venue: string;
   region: string;
   coordinates: Coordinates;
 }
@@ -37,6 +36,7 @@ export interface Artist {
 export interface Festival {
   id?: string;
   name: string;
+  venue: string;
   location: Location;
   dates: FestivalDate;
   price: Price;
