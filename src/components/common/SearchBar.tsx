@@ -6,14 +6,18 @@ import { Festival } from '../../types';
 
 interface SearchBarProps {
   onSearch?: (term: string) => void;
+  onSuggestionSelect?: (festival: Festival) => void;
   placeholder?: string;
   className?: string;
+  disableSuggestions?: boolean;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ 
   onSearch, 
+  onSuggestionSelect,
   placeholder = 'Søk etter festivaler, steder eller sjangere...',
-  className = ''
+  className = '',
+  disableSuggestions = false
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<Festival[]>([]);
@@ -49,15 +53,16 @@ const SearchBar: React.FC<SearchBarProps> = ({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    // Use capture phase to ensure we catch the event before other handlers
+    document.addEventListener('mousedown', handleClickOutside, true);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside, true);
     };
   }, []);
 
   // Filter suggestions based on search term
   useEffect(() => {
-    if (searchTerm.trim() === '') {
+    if (disableSuggestions || searchTerm.trim() === '') {
       setSuggestions([]);
       setShowSuggestions(false);
       return;
@@ -78,7 +83,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
     setSuggestions(filtered.slice(0, 5)); // Show max 5 suggestions
     setShowSuggestions(filtered.length > 0);
     setActiveSuggestion(0);
-  }, [searchTerm, allFestivals]);
+  }, [searchTerm, allFestivals, disableSuggestions]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,10 +100,21 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const handleSuggestionClick = (festival: Festival, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setSearchTerm(festival.name);
+    e.nativeEvent.stopImmediatePropagation(); // Stop all event propagation
+    
+    // Update the search term and hide suggestions
+    const newSearchTerm = festival.name;
+    setSearchTerm(newSearchTerm);
     setShowSuggestions(false);
-    // Navigate directly to the festival page
-    navigate(`/festival/${festival.id}`);
+    
+    // Call the onSuggestionSelect callback if provided
+    if (onSuggestionSelect) {
+      // Create a new object to ensure React detects the change
+      const selectedFestival = { ...festival };
+      onSuggestionSelect(selectedFestival);
+    } else {
+      navigate(`/festival/${festival.id}`);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -118,10 +134,18 @@ const SearchBar: React.FC<SearchBarProps> = ({
       setActiveSuggestion(prev => (prev > 0 ? prev - 1 : 0));
     }
     
-    // Handle enter - navigate to the selected festival
+    // Handle enter - select the suggestion
     if (e.key === 'Enter' && showSuggestions && activeSuggestion >= 0) {
       e.preventDefault();
-      handleSuggestionClick(suggestions[activeSuggestion], e as unknown as React.MouseEvent);
+      const selectedFestival = suggestions[activeSuggestion];
+      setSearchTerm(selectedFestival.name);
+      setShowSuggestions(false);
+      
+      if (onSuggestionSelect) {
+        onSuggestionSelect(selectedFestival);
+      } else {
+        navigate(`/festival/${selectedFestival.id}`);
+      }
     }
   };
 
@@ -132,13 +156,26 @@ const SearchBar: React.FC<SearchBarProps> = ({
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onFocus={() => searchTerm.trim() !== '' && setShowSuggestions(true)}
-            onKeyDown={handleKeyDown}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearchTerm(value);
+              if (!disableSuggestions) {
+                setShowSuggestions(value.trim() !== '');
+              }
+            }}
+            onFocus={() => !disableSuggestions && searchTerm.trim() !== '' && setShowSuggestions(true)}
+            onKeyDown={!disableSuggestions ? handleKeyDown : undefined}
+            onClick={(e) => {
+              if (disableSuggestions) return;
+              e.stopPropagation();
+              if (searchTerm.trim() !== '') {
+                setShowSuggestions(true);
+              }
+            }}
             placeholder={placeholder}
             className="input pr-10 shadow-lg focus:ring-accent-500 focus:border-accent-500 w-full"
-            aria-autocomplete="list"
-            aria-controls="search-suggestions"
+            aria-autocomplete={disableSuggestions ? 'none' : 'list'}
+            aria-controls={disableSuggestions ? undefined : 'search-suggestions'}
             autoComplete="off"
           />
           <button

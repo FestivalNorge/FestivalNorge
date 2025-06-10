@@ -1,6 +1,6 @@
 import { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { Icon } from 'leaflet';
+import { Icon, Marker as LeafletMarker } from 'leaflet';
 import { Festival } from '../../types';
 import { MapPin, LocateFixed } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
@@ -33,6 +33,7 @@ const MapCenter = ({ selectedFestivalId, festivals, userLocation }: {
   userLocation: [number, number] | null 
 }) => {
   const map = useMap();
+  // Remove unused popupRef
 
   useEffect(() => {
     if (!map) return;
@@ -46,7 +47,13 @@ const MapCenter = ({ selectedFestivalId, festivals, userLocation }: {
             coordinates.latitude,
             coordinates.longitude
           ];
-          map.flyTo(position, 12);
+          
+          // Fly to the position
+          map.flyTo(position, 15, {
+            duration: 1
+          });
+          
+          // The popup will be opened by the marker's ref callback
         }
       }
     } else if (userLocation) {
@@ -159,7 +166,8 @@ const FestivalMap = forwardRef<MapRef, FestivalMapProps>(({
     shadowSize: [41, 41]
   });
 
-  const mapRef = useRef<any>(null);
+  const mapRef = useRef<{ flyTo: (latlng: [number, number], zoom: number, options: any) => void }>(null);
+  const selectedMarkerRef = useRef<LeafletMarker | null>(null);
 
   useImperativeHandle(ref, () => ({
     flyTo: (latlng: [number, number], zoom: number, options: any) => {
@@ -223,20 +231,40 @@ const FestivalMap = forwardRef<MapRef, FestivalMapProps>(({
               key={festival.id}
               position={position}
               icon={icon}
+              ref={(ref) => {
+                if (ref && isCurrent) {
+                  selectedMarkerRef.current = ref;
+                  // If this is the selected festival, open its popup
+                  setTimeout(() => {
+                    if (ref && ref.openPopup) {
+                      ref.openPopup();
+                    }
+                  }, 100);
+                }
+              }}
               eventHandlers={{
-                click: () => festival.id && onClick(festival.id)
+                click: () => festival.id && onClick(festival.id),
+                popupopen: () => {
+                  if (festival.id) {
+                    onClick(festival.id);
+                  }
+                },
+                popupclose: () => {
+                  // Clear selection when popup is closed
+                  onClick('');
+                }
               }}
             >
               <Popup>
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <MapPin size={20} />
-                    <h3 className="font-semibold">{festival.name}</h3>
+                <div className="flex flex-col gap-1 p-1">
+                  <div className="flex items-center gap-1">
+                    <MapPin size={16} className="text-primary-500 flex-shrink-0" />
+                    <h3 className="text-base font-semibold leading-tight">{festival.name}</h3>
                   </div>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-xs text-gray-600">
                     {festival.location.city}, {festival.location.region}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-xs text-gray-600">
                     {festival.dates.start} - {festival.dates.end}
                   </p>
                 </div>

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useRef } from 'react';
 import { Festival, SortOption, FilterOption, LocationFilter } from '../types';
 import { getFestivals } from '../services/festivalService';
 
@@ -12,6 +12,8 @@ interface FestivalContextType {
   sortOption: SortOption;
   filterOption: FilterOption;
   locationFilter: LocationFilter;
+  userLocation: { lat: number; lng: number } | null;
+  locationError: string | null;
   setSearchTerm: (term: string) => void;
   setSortOption: (option: SortOption) => void;
   setFilterOption: (option: FilterOption) => void;
@@ -19,6 +21,7 @@ interface FestivalContextType {
   getFestivalById: (id: string) => Festival | undefined;
   getUpcomingFestivals: () => Festival[];
   getFestivalsByMonth: (month: number, year: number) => Festival[];
+  getUserLocation: () => void;
 }
 
 const FestivalContext = createContext<FestivalContextType | undefined>(undefined);
@@ -32,6 +35,9 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [sortOption, setSortOption] = useState<SortOption>('popularity');
   const [filterOption, setFilterOption] = useState<FilterOption>('all');
   const [locationFilter, setLocationFilter] = useState<LocationFilter>('all');
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const locationRequested = useRef(false);
 
   // Fetch festivals from Firebase
   const fetchFestivals = useCallback(async () => {
@@ -87,10 +93,69 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, []);
 
+  // Get user's current location
+  const getUserLocation = useCallback(() => {
+    if (locationRequested.current) return;
+    
+    locationRequested.current = true;
+    setLocationError(null);
+    
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          // Don't set a default location - just keep it null
+          // This will make the button show the error state
+          locationRequested.current = false; // Allow retry
+          setLocationError('Kunne ikke hente posisjon. Prøv igjen.');
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    } else {
+      console.log('Geolocation is not supported by this browser.');
+      // Don't set a default location - just keep it null
+      locationRequested.current = false; // Allow retry
+      setLocationError('Nettleseren din støtter ikke posisjonering.');
+    }
+  }, []);
+
+  // Calculate distance between two points in kilometers using Haversine formula
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a = 
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in kilometers
+  };
+
   // Initial data fetch
   useEffect(() => {
     fetchFestivals();
   }, [fetchFestivals]);
+  
+  // Get user's location when sort option changes to 'location'
+  useEffect(() => {
+    if (sortOption === 'location' && !userLocation && !locationError) {
+      getUserLocation();
+    }
+  }, [sortOption, userLocation, getUserLocation, locationError]);
+  
+  // Reset location request when sort option changes from 'location'
+  useEffect(() => {
+    if (sortOption !== 'location') {
+      locationRequested.current = false;
+    }
+  }, [sortOption]);
 
   // Apply filters and sort whenever the dependencies change
   useEffect(() => {
@@ -150,6 +215,24 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       case 'price':
         return sortedList.sort((a, b) => a.price.fullPass - b.price.fullPass);
       case 'location':
+        if (userLocation) {
+          return sortedList.sort((a, b) => {
+            const aDistance = calculateDistance(
+              userLocation.lat, 
+              userLocation.lng, 
+              a.location.coordinates.latitude, 
+              a.location.coordinates.longitude
+            );
+            const bDistance = calculateDistance(
+              userLocation.lat, 
+              userLocation.lng, 
+              b.location.coordinates.latitude, 
+              b.location.coordinates.longitude
+            );
+            return aDistance - bDistance;
+          });
+        }
+        // Fallback to alphabetical sort if location is not available
         return sortedList.sort((a, b) => 
           a.location.city.localeCompare(b.location.city)
         );
@@ -199,13 +282,16 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         sortOption,
         filterOption,
         locationFilter,
+        userLocation,
+        locationError,
         setSearchTerm,
         setSortOption,
         setFilterOption,
         setLocationFilter,
         getFestivalById,
         getUpcomingFestivals,
-        getFestivalsByMonth
+        getFestivalsByMonth,
+        getUserLocation,
       }}
     >
       {children}

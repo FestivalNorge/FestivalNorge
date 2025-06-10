@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import FestivalCard from '../components/common/FestivalCard';
 import FestivalMap from '../components/common/FestivalMap';
 import { useFestival } from '../context/FestivalContext';
@@ -12,20 +12,38 @@ const MapPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFestival, setSelectedFestival] = useState<string | undefined>(undefined);
   const mapRef = useRef<{ flyTo: (latlng: [number, number], zoom: number, options: any) => void }>(null);
+  const listContainerRef = useRef<HTMLDivElement>(null);
+
+  // Handle festival selection effects
+  useEffect(() => {
+    if (selectedFestival && listContainerRef.current) {
+      // Scroll to top of the list
+      listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      // Fly to the selected festival on the map
+      const selected = filteredFestivals.find(f => f.id === selectedFestival);
+      if (selected?.location?.coordinates && mapRef.current) {
+        const { latitude, longitude } = selected.location.coordinates;
+        mapRef.current.flyTo([latitude, longitude], 15, {
+          duration: 1,
+          animate: true
+        });
+        
+        // Trigger a small delay to ensure the map has flown to the location before opening the popup
+        const timer = setTimeout(() => {
+          // This will be handled by the FestivalMap component's MapCenter effect
+        }, 500);
+        
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [selectedFestival, filteredFestivals]);
 
   const handleFestivalClick = (festival: Festival) => {
     setSelectedFestival(festival.id);
-    
-    // Fly to the selected festival on the map
-    if (mapRef.current && festival.location?.coordinates) {
-      const { latitude, longitude } = festival.location.coordinates;
-      mapRef.current.flyTo([latitude, longitude], 15, {
-        duration: 1,
-        animate: true
-      });
-    }
   };
 
+  // Memoize the filtered festivals to prevent unnecessary re-renders
   const filteredFestivalsWithSearch = useMemo(() => {
     if (!searchTerm) return filteredFestivals;
     
@@ -75,7 +93,7 @@ const MapPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen pt-28 pb-16">
+    <div className="min-h-screen pt-28 pb-32">
       <div className="container-custom">
         {/* Page Header */}
         <div className="mb-10">
@@ -98,10 +116,10 @@ const MapPage: React.FC = () => {
                   ref={mapRef}
                   festivals={filteredFestivalsWithSearch}
                   zoom={5}
-                  scrollWheelZoom={false}
+                  scrollWheelZoom={true}
                   center={[62.4208, 8.9309]} 
                   selectedFestivalId={selectedFestival}
-                  onClick={(id) => setSelectedFestival(id)}
+                  onClick={(id) => id !== '' ? setSelectedFestival(id) : setSelectedFestival(undefined)}
                 />
               </div>
             </div>
@@ -131,7 +149,10 @@ const MapPage: React.FC = () => {
                     </button>
                   )}
                 </div>
-                <div className="space-y-4 flex-1 overflow-y-auto">
+                <div 
+                  ref={listContainerRef}
+                  className="space-y-4 flex-1 overflow-y-auto"
+                >
                   {filteredFestivals.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
                       {searchTerm ? 'Ingen festivaler funnet' : 'Ingen festivaler tilgjengelig'}

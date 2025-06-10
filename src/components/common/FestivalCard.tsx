@@ -18,7 +18,7 @@ const FestivalCard: React.FC<FestivalCardProps> = ({
 }) => {
   
   const formatDate = (dateString: string) => {
-    return format(new Date(dateString), 'MMM d, yyyy');
+    return format(new Date(dateString), 'MMM d');
   };
   
   const getTicketStatusClass = (status: string) => {

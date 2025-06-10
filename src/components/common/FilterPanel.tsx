@@ -6,18 +6,24 @@ interface FilterPanelProps {
   sortOption: SortOption;
   filterOption: FilterOption;
   locationFilter: LocationFilter;
+  userLocation: { lat: number; lng: number } | null;
+  locationError: string | null;
   onSortChange: (option: SortOption) => void;
   onFilterChange: (option: FilterOption) => void;
   onLocationChange: (location: LocationFilter) => void;
+  onRetryLocation: () => void;
 }
 
 const FilterPanel: React.FC<FilterPanelProps> = ({ 
   sortOption, 
   filterOption,
   locationFilter,
+  userLocation,
+  locationError,
   onSortChange, 
   onFilterChange,
-  onLocationChange
+  onLocationChange,
+  onRetryLocation
 }) => {
   const genres: string[] = ['Rock', 'Pop', 'Elektronisk', 'Hip-hop', 'Jazz', 'Folkemusikk', 'Metal', 'Indie'];
   const cities: string[] = ['Oslo', 'Bergen', 'Stavanger', 'Trondheim', 'Kristiansand', 'Tromsø', 'Bodø', 'Molde', 'Kristiansund', 'Ålesund', 'Lillehammer'];
@@ -78,21 +84,61 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               Pris
             </div>
           </button>
-          <button
-            onClick={() => onSortChange('location')}
-            className={`w-full text-left px-4 py-2.5 rounded-lg transition-all ${
-              sortOption === 'location'
-                ? 'bg-primary-50 text-primary-700 font-medium'
-                : 'hover:bg-gray-50 text-gray-700'
-            }`}
-          >
-            <div className="flex items-center">
-              <MapPin className={`w-4 h-4 mr-3 ${
-                sortOption === 'location' ? 'text-primary-500' : 'text-gray-400'
-              }`} />
-              Sted
-            </div>
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => onSortChange('location')}
+              className={`w-full text-left px-4 py-2.5 rounded-lg transition-all ${
+                sortOption === 'location'
+                  ? 'bg-primary-50 text-primary-700 font-medium'
+                  : 'hover:bg-gray-50 text-gray-700'
+              } ${
+                sortOption === 'location' && locationError ? 'pr-10' : ''
+              }`}
+              disabled={sortOption === 'location' && userLocation === null && !locationError}
+            >
+              <div className="flex items-center">
+                {sortOption === 'location' && userLocation === null && !locationError ? (
+                  <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <MapPin className={`w-4 h-4 mr-3 ${
+                    sortOption === 'location' ? 'text-primary-500' : 'text-gray-400'
+                  }`} />
+                )}
+                {sortOption === 'location' && userLocation === null && !locationError 
+                  ? 'Finner din posisjon...' 
+                  : locationError 
+                    ? 'Nærmest meg'
+                    : 'Nærmest meg'}
+              </div>
+            </button>
+            
+            {sortOption === 'location' && locationError && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRetryLocation();
+                }}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                title="Prøv igjen"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500">
+                  <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                  <path d="M3 3v5h5"></path>
+                  <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
+                  <path d="M16 16h5v5"></path>
+                </svg>
+              </button>
+            )}
+            
+            {sortOption === 'location' && locationError && (
+              <div className="absolute left-0 right-0 mt-1 text-xs text-red-500 px-4">
+                {locationError}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
