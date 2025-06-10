@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { Icon, LatLngExpression } from 'leaflet';
+import { Icon } from 'leaflet';
 import { Festival } from '../../types';
-import { MapPin } from 'lucide-react';
+import { MapPin, LocateFixed } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 
 // Fix TypeScript errors
@@ -27,7 +27,11 @@ interface FestivalMapProps {
   onClick: (id: string) => void;
 }
 
-const MapCenter = ({ selectedFestivalId, festivals }: { selectedFestivalId: string | undefined, festivals: Festival[] }) => {
+const MapCenter = ({ selectedFestivalId, festivals, userLocation }: { 
+  selectedFestivalId: string | undefined, 
+  festivals: Festival[],
+  userLocation: [number, number] | null 
+}) => {
   const map = useMap();
 
   useEffect(() => {
@@ -45,10 +49,74 @@ const MapCenter = ({ selectedFestivalId, festivals }: { selectedFestivalId: stri
           map.flyTo(position, 12);
         }
       }
+    } else if (userLocation) {
+      // Center on user location if no festival is selected
+      map.flyTo(userLocation, 13);
     }
-  }, [selectedFestivalId, festivals, map]);
+  }, [selectedFestivalId, festivals, map, userLocation]);
 
   return null;
+};
+
+// Component to locate the user
+const LocateControl = ({ onLocated }: { onLocated: (position: [number, number]) => void }) => {
+  const map = useMap();
+  const [isLocating, setIsLocating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleLocate = () => {
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by your browser');
+      return;
+    }
+
+    setIsLocating(true);
+    setError(null);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const userPosition: [number, number] = [latitude, longitude];
+        onLocated(userPosition);
+        map.flyTo(userPosition, 13);
+        setIsLocating(false);
+      },
+      (err) => {
+        console.error('Error getting location:', err);
+        setError('Unable to retrieve your location');
+        setIsLocating(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    );
+  };
+
+  return (
+    <div className="leaflet-top leaflet-right">
+      <div className="leaflet-control leaflet-bar">
+        <button 
+          onClick={handleLocate}
+          className="bg-white p-2 hover:bg-gray-100"
+          title="Find my location"
+          disabled={isLocating}
+        >
+          {isLocating ? (
+            <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          ) : (
+            <LocateFixed className="w-6 h-6 text-blue-600" />
+          )}
+        </button>
+      </div>
+      {error && (
+        <div className="leaflet-control leaflet-bar bg-white p-2 text-red-500 text-sm">
+          {error}
+        </div>
+      )}
+    </div>
+  );
 };
 
 const FestivalMap = ({
@@ -60,20 +128,7 @@ const FestivalMap = ({
   selectedFestivalId,
   onClick
 }: FestivalMapProps) => {
-  const getMarkerPosition = (festival: Festival): LatLngExpression => {
-    // Get coordinates directly from festival.location.coordinates
-    const coordinates = festival.location.coordinates;
-    
-    // If coordinates don't exist, return default position
-    if (!coordinates) {
-      return [62.4208, 8.9309]; // Norway's center
-    }
-    
-    return [
-      coordinates.latitude,
-      coordinates.longitude
-    ];
-  };
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
 
   const defaultIcon = new Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
@@ -91,6 +146,15 @@ const FestivalMap = ({
     shadowSize: [41, 41]
   });
 
+  // User location icon
+  const userLocationIcon = new Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+
   return (
     <div className="relative w-full h-full">
       <MapContainer
@@ -100,12 +164,28 @@ const FestivalMap = ({
         style={{ height: '100%', width: '100%' }}
         className={className}
       >
-        <MapCenter selectedFestivalId={selectedFestivalId} festivals={festivals} />
+        <MapCenter 
+          selectedFestivalId={selectedFestivalId} 
+          festivals={festivals} 
+          userLocation={userLocation}
+        />
+        <LocateControl onLocated={setUserLocation} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           errorTileUrl="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png"
         />
+        {/* User location marker */}
+        {userLocation && (
+          <Marker 
+            position={userLocation} 
+            icon={userLocationIcon}
+          >
+            <Popup>Your location</Popup>
+          </Marker>
+        )}
+        
+        {/* Festival markers */}
         {festivals.map((festival) => {
           const position: [number, number] = [
             festival.location.coordinates.latitude,

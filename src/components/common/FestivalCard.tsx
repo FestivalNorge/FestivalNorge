@@ -7,9 +7,10 @@ import { Festival } from '../../types';
 interface FestivalCardProps {
   festival: Festival;
   featured?: boolean;
+  isSelected?: boolean;
 }
 
-const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false }) => {
+const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false, isSelected = false }) => {
   
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'MMM d, yyyy');
@@ -34,6 +35,7 @@ const FestivalCard: React.FC<FestivalCardProps> = ({ festival, featured = false 
       className={`card group festival-card-hover overflow-hidden ${
         featured ? 'flex flex-col md:flex-row max-h-[400px]' : 'h-full flex flex-col'
       }`}
+      style={isSelected ? { boxShadow: '0 0 0 2px #ff5722' } : {}}
     >
       <div 
         className={`relative ${

@@ -6,6 +6,29 @@ import FestivalCard from '../components/common/FestivalCard';
 import SearchBar from '../components/common/SearchBar';
 import { Festival } from '../types';
 
+// Skeleton loader component for FestivalCard
+const FestivalCardSkeleton: React.FC<{ className?: string }> = ({ className = '' }) => (
+  <div className={`bg-white rounded-lg shadow-md overflow-hidden animate-pulse ${className}`}>
+    <div className="h-48 bg-gray-200"></div>
+    <div className="p-4">
+      <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+      <div className="h-4 bg-gray-100 rounded w-1/2 mb-4"></div>
+      <div className="flex justify-between items-center">
+        <div className="h-4 bg-gray-100 rounded w-1/3"></div>
+        <div className="h-4 bg-gray-100 rounded w-1/4"></div>
+      </div>
+    </div>
+  </div>
+);
+
+// Skeleton loader for the section header
+const SectionHeaderSkeleton: React.FC = () => (
+  <div className="animate-pulse">
+    <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
+    <div className="h-4 bg-gray-100 rounded w-1/2"></div>
+  </div>
+);
+
 // Define coordinate types
 type Coordinates = 
   | { latitude: number; longitude: number }
@@ -41,7 +64,7 @@ function calculateDistance(
 }
 
 const HomePage: React.FC = () => {
-  const { popularFestivals, getUpcomingFestivals, festivals } = useFestival();
+  const { popularFestivals, getUpcomingFestivals, festivals, loading, error } = useFestival();
   const upcomingFestivals = getUpcomingFestivals();
   const [nearbyFestivals, setNearbyFestivals] = useState<FestivalWithDistance[]>([]);
   const [locationError, setLocationError] = useState<string | null>(null);
@@ -319,23 +342,45 @@ const HomePage: React.FC = () => {
       {/* Popular Festivals Section */}
       <section className="py-20">
         <div className="container-custom">
-          <div className="flex flex-col sm:flex-row sm:justify-between mb-6 gap-4">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900">Populære Festivaler</h2>
-              <p className="text-gray-600">Oppdag de mest populære festivalene i hele Norge</p>
+          {loading ? (
+            <div className="mb-8">
+              <SectionHeaderSkeleton />
             </div>
-            <div className="flex items-start sm:items-center">
-              <Link to="/festivals" className="text-accent-500 hover:text-accent-600 flex items-center h-full py-2">
-                <span className="mr-1">Alle Festivaler</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+          ) : (
+            <div className="flex flex-col sm:flex-row sm:justify-between mb-6 gap-4">
+              <div>
+                <h2 className="text-3xl font-bold text-gray-900">Populære Festivaler</h2>
+                <p className="text-gray-600">Oppdag de mest populære festivalene i hele Norge</p>
+              </div>
+              <div className="flex items-start sm:items-center">
+                <Link to="/festivals" className="text-accent-500 hover:text-accent-600 flex items-center h-full py-2">
+                  <span className="mr-1">Alle Festivaler</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
             </div>
-          </div>
+          )}
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {popularFestivals.slice(0, 3).map(festival => (
-              <FestivalCard key={festival.id} festival={festival} />
-            ))}
+            {loading ? (
+              // Show skeleton loaders while loading
+              Array(6).fill(0).map((_, index) => (
+                <FestivalCardSkeleton key={`popular-skeleton-${index}`} />
+              ))
+            ) : error ? (
+              <div className="col-span-3 text-center py-8 text-gray-500">
+                <AlertCircle className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                <p>Kunne ikke laste populære festivaler. Prøv å laste siden på nytt.</p>
+              </div>
+            ) : popularFestivals.length > 0 ? (
+              popularFestivals.map(festival => (
+                <FestivalCard key={festival.id} festival={festival} />
+              ))
+            ) : (
+              <div className="col-span-3 text-center py-8 text-gray-500">
+                Ingen populære festivaler funnet.
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -343,27 +388,49 @@ const HomePage: React.FC = () => {
       {/* Upcoming Festivals */}
       <section className="py-20">
         <div className="container-custom">
-          <div className="flex flex-col sm:flex-row sm:justify-between mb-6 gap-4">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Kommende Festivaler</h2>
-              <p className="text-gray-600">Planlegg din neste festival opplevelse</p>
+          {loading ? (
+            <div className="mb-8">
+              <SectionHeaderSkeleton />
             </div>
-            <Link to="/calendar" className="text-accent-500 hover:text-accent-600 flex items-center">
-              <span className="mr-1">Kalender</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row sm:justify-between mb-6 gap-4">
+              <div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">Kommende Festivaler</h2>
+                <p className="text-gray-600">Planlegg din neste festival opplevelse</p>
+              </div>
+              <Link to="/calendar" className="text-accent-500 hover:text-accent-600 flex items-center">
+                <span className="mr-1">Kalender</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          )}
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {upcomingFestivals.slice(0, 4).map(festival => (
-              <FestivalCard key={festival.id} festival={festival} />
-            ))}
+            {loading ? (
+              // Show skeleton loaders while loading
+              Array(4).fill(0).map((_, index) => (
+                <FestivalCardSkeleton key={`upcoming-skeleton-${index}`} />
+              ))
+            ) : error ? (
+              <div className="col-span-2 text-center py-8 text-gray-500">
+                <AlertCircle className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                <p>Kunne ikke laste kommende festivaler. Prøv å laste siden på nytt.</p>
+              </div>
+            ) : upcomingFestivals.length > 0 ? (
+              upcomingFestivals.slice(0, 4).map(festival => (
+                <FestivalCard key={festival.id} festival={festival} />
+              ))
+            ) : (
+              <div className="col-span-2 text-center py-8 text-gray-500">
+                Ingen kommende festivaler funnet.
+              </div>
+            )}
           </div>
         </div>
       </section>
       
       {/* Festivals Near You Section */}
-      <section className="py-16 mb-16">
+      <section className="py-20 mb-16">
         <div className="container-custom">
           {!hasLocation ? (
             <div className="text-center mb-10">
@@ -444,9 +511,9 @@ const HomePage: React.FC = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-100 text-primary-600 mb-4">
                 <Calendar className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Festivaler nær deg</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Alle Festivaler</h3>
               <p className="text-gray-600">
-                Oppdag en samling av musikk- og kulturfestivaler som foregår nær deg.
+                Oppdag en samling av musikk- og kulturfestivaler som foregår i hele Norge.
               </p>
             </div>
             
@@ -454,9 +521,9 @@ const HomePage: React.FC = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary-100 text-secondary-600 mb-4">
                 <Map className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Chat med andre deltagere</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Festivalkalender</h3>
               <p className="text-gray-600">
-                Bli med i gruppechatter med andre som skal til samme festivaler.
+                Se alle kommende festivaler i kalenderen for å finne den som passer deg.
               </p>
             </div>
             
@@ -464,9 +531,9 @@ const HomePage: React.FC = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent-100 text-accent-600 mb-4">
                 <Star className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Lagre favoritter</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Festivaler nær deg</h3>
               <p className="text-gray-600">
-                Opprett en konto for å lagre festivaler, få personlige anbefalinger, påminnelser og mer.
+                Ved å tillatte stedslokasjon kan du finne festivaler nær deg.
               </p>
             </div>
           </div>

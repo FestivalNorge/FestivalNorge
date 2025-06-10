@@ -116,22 +116,37 @@ const MapPage: React.FC = () => {
                   )}
                 </div>
                 <div className="space-y-4 flex-1 overflow-y-auto">
-                  {filteredFestivals.length === 0 && (
+                  {filteredFestivals.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
                       {searchTerm ? 'Ingen festivaler funnet' : 'Ingen festivaler tilgjengelig'}
                     </div>
+                  ) : (
+                    <>
+                      {/* Selected festival card at the top */}
+                      {selectedFestival && filteredFestivals.find(f => f.id === selectedFestival) && (
+                        <div 
+                          key={`selected-${selectedFestival}`}
+                          className="p-1 rounded-lg bg-gradient-to-r from-accent-500 to-accent-400 mb-4"
+                          onClick={() => setSelectedFestival(selectedFestival)}
+                        >
+                          <FestivalCard festival={filteredFestivals.find(f => f.id === selectedFestival)!} isSelected={true} />
+                        </div>
+                      )}
+                      
+                      {/* Remaining festivals */}
+                      {filteredFestivals
+                        .filter(festival => !selectedFestival || festival.id !== selectedFestival)
+                        .map((festival) => (
+                          <div 
+                            key={festival.id}
+                            className="cursor-pointer transition-all duration-200 hover:scale-[1.01] hover:ring-1 hover:ring-gray-200 rounded-lg overflow-hidden"
+                            onClick={() => setSelectedFestival(festival.id)}
+                          >
+                            <FestivalCard festival={festival} isSelected={false} />
+                          </div>
+                        ))}
+                    </>
                   )}
-                  {filteredFestivals.map((festival) => (
-                    <div 
-                      key={festival.id} 
-                      className={`cursor-pointer transition-colors ${
-                        festival.id === selectedFestival ? 'ring-2 ring-primary-500' : ''
-                      }`}
-                      onClick={() => setSelectedFestival(festival.id)}
-                    >
-                      <FestivalCard festival={festival} />
-                    </div>
-                  ))}
                 </div>
               </div>
             </div>

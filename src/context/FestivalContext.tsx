@@ -157,7 +157,7 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Get popular festivals
   const popularFestivals = festivals
     .sort((a, b) => b.popularity - a.popularity)
-    .slice(0, 4);
+    .slice(0, 6); // Show top 6 popular festivals
 
   // Get upcoming festivals (starting from today)
   const getUpcomingFestivals = (): Festival[] => {
