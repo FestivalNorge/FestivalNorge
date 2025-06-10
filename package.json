@@ -3,7 +3,6 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "homepage": "https://FestivalNorge.github.io/FestivalNorge",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -13,8 +12,13 @@
     "init:festivals": "node dist/scripts/init-festivals.js",
     "upload:festival": "node dist/scripts/uploadFestivals.js",
     "upload:festivals": "node scripts/upload-festivals.cjs",
+    
+    "emulate": "firebase emulators:start",
+    "preview:deploy": "firebase hosting:channel:deploy preview-$(git rev-parse --short HEAD) --expires 7d",
+    "deploy:staging": "firebase deploy -P staging",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "firebase deploy",
+    "deploy:prod": "npm run build && firebase deploy -P production"
   },
   "dependencies": {
     "@firebase/analytics": "^0.10.16",
@@ -44,7 +48,6 @@
     "eslint": "^9.9.1",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.11",
-    "gh-pages": "^6.3.0",
     "globals": "^15.9.0",
     "postcss": "^8.5.4",
     "tailwindcss": "^3.4.17",

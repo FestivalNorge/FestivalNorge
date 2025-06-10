@@ -2,10 +2,27 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
-  base: mode === 'production' ? '/FestivalNorge/' : '/', // <- dynamic base for local vs deploy
-}));
+  base: '/', // Base path for Firebase hosting
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          firebase: ['firebase/app', 'firebase/firestore', 'firebase/analytics'],
+        },
+      },
+    },
+  },
+  server: {
+    port: 3000,
+    open: true,
+  },
+});
