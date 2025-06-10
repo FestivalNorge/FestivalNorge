@@ -74,32 +74,38 @@ const FestivalsPage: React.FC = () => {
     setSearchParams(newParams);
   };
 
-  // Reset pagination when filters or search change
+  // Reset pagination when filters, search, or filteredFestivals change
   useEffect(() => {
     setPage(1);
-    const initialFestivals = selectedFestival ? [selectedFestival] : filteredFestivals.slice(0, ITEMS_PER_PAGE);
+    const initialFestivals = selectedFestival 
+      ? [selectedFestival] 
+      : filteredFestivals.slice(0, ITEMS_PER_PAGE);
+    
     setDisplayedFestivals(initialFestivals);
-    setHasMore(selectedFestival ? false : filteredFestivals.length > initialFestivals.length);
-  }, [selectedFestival, filteredFestivals]);
+    setHasMore(selectedFestival ? false : filteredFestivals.length > ITEMS_PER_PAGE);
+  }, [selectedFestival, filteredFestivals, ITEMS_PER_PAGE]);
 
   // Load more festivals when reaching the bottom
-  const loadMoreFestivals = useCallback(async () => {
+  const loadMoreFestivals = useCallback(() => {
     if (selectedFestival || !hasMore || loading || isLoadingMore) return;
     
     setIsLoadingMore(true);
     
-    // Add a 2-second delay before loading more content
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
+    // Calculate the next page items
     const nextPage = page + 1;
+    const startIdx = 0; // Always start from the beginning since we replace the entire list
     const endIdx = Math.min(filteredFestivals.length, nextPage * ITEMS_PER_PAGE);
-    const nextFestivals = filteredFestivals.slice(0, endIdx);
+    const nextFestivals = filteredFestivals.slice(startIdx, endIdx);
     
-    setDisplayedFestivals(nextFestivals);
-    setPage(nextPage);
-    setHasMore(endIdx < filteredFestivals.length);
-    setIsLoadingMore(false);
-  }, [page, hasMore, filteredFestivals, selectedFestival, loading, isLoadingMore]);
+    // Add a 1-second delay before updating the UI
+    setTimeout(() => {
+      // Update state in a single batch
+      setDisplayedFestivals(nextFestivals);
+      setPage(nextPage);
+      setHasMore(endIdx < filteredFestivals.length);
+      setIsLoadingMore(false);
+    }, 1000);
+  }, [page, hasMore, filteredFestivals, selectedFestival, loading, isLoadingMore, ITEMS_PER_PAGE]);
 
   // Set up intersection observer for infinite scroll
   useEffect(() => {
