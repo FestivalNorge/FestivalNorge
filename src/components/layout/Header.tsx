@@ -56,7 +56,7 @@ const Header: React.FC = () => {
           <Link to="/" className="flex items-center space-x-2">
             <Music className="w-8 h-8 text-primary-500" />
             <span className="text-xl font-heading font-bold text-primary-500">
-              FestivalNorge
+              StageFinder
             </span>
           </Link>
 
