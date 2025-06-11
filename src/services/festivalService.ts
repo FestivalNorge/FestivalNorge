@@ -2,6 +2,7 @@ import { Festival } from '../types/festival';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../data/firebaseConfig';
 import { v4 as uuidv4 } from 'uuid';
+import { Coordinates } from '../types';
 
 // Helper function to transform raw festival data
 export const transformFestivalData = (raw: any): Festival => {
@@ -179,4 +180,46 @@ export const getFestivalById = async (id: string): Promise<Festival | null> => {
     console.error('Error fetching festival:', error);
     return null;
   }
+};
+
+
+
+// Calculate Haversine distance in km
+export const calculateDistance = (
+  lat1: number, lon1: number,
+  lat2: number, lon2: number
+): number => {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
+export interface FestivalWithDistance extends Festival {
+  distance: number;
+}
+
+export const getNearbyFestivals = async (
+  userLocation: Coordinates,
+  maxDistanceKm: number = 50
+): Promise<FestivalWithDistance[]> => {
+  const all = await getFestivals();
+  const withDistances = all.map(f => {
+    const distance = calculateDistance(
+      userLocation.latitude,
+      userLocation.longitude,
+      f.location.coordinates.latitude,
+      f.location.coordinates.longitude
+    );
+    return { ...f, distance };
+  });
+  
+  return withDistances
+    .filter(f => f.distance <= maxDistanceKm)
+    .sort((a, b) => a.distance - b.distance);
 };

@@ -1,12 +1,14 @@
+// src/pages/HomePage.tsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Map, Star, ArrowRight, MapPin, AlertCircle } from 'lucide-react';
+import {Calendar, Map, Star, ArrowRight, MapPin, AlertCircle} from 'lucide-react';
 import { useFestival } from '../context/FestivalContext';
 import FestivalCard from '../components/common/FestivalCard';
 import SearchBar from '../components/common/SearchBar';
-import { Festival } from '../types';
+import { useLocation } from '../context/LocationContext';
+import { getNearbyFestivals, FestivalWithDistance } from '../services/festivalService';
 
-// Skeleton loader component for FestivalCard
+// Skeleton loaders
 const FestivalCardSkeleton: React.FC<{ className?: string }> = ({ className = '' }) => (
   <div className={`bg-white rounded-lg shadow-md overflow-hidden animate-pulse ${className}`}>
     <div className="h-48 bg-gray-200"></div>
@@ -21,312 +23,80 @@ const FestivalCardSkeleton: React.FC<{ className?: string }> = ({ className = ''
   </div>
 );
 
-// Skeleton loader for the section header
 const SectionHeaderSkeleton: React.FC = () => (
-  <div className="animate-pulse">
+  <div className="animate-pulse mb-6">
     <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
     <div className="h-4 bg-gray-100 rounded w-1/2"></div>
   </div>
 );
 
-// Define coordinate types
-type Coordinates = 
-  | { latitude: number; longitude: number }
-  | { lat: number | string; lng: number | string }
-  | [number | string, number | string];
-
-interface FestivalWithDistance extends Omit<Festival, 'location'> {
-  id: string;
-  location: Festival['location'] & {
-    coordinates: Coordinates;
-  };
-  distance: number;
-}
-
-// Helper function to calculate distance between two coordinates in km
-function calculateDistance(
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
-): number {
-  const R = 6371; // Earth's radius in km
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) *
-      Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c; // Distance in km
-}
-
 const HomePage: React.FC = () => {
-  const { popularFestivals, getUpcomingFestivals, festivals, loading, error } = useFestival();
+  // 1) FestivalContext
+  const {popularFestivals, getUpcomingFestivals, loading, error} = useFestival();
   const upcomingFestivals = getUpcomingFestivals();
+
+  // 2) LocationContext
+  const { location: userLocation, requestLocation, locationError } = useLocation();
+
+  // 3) Local state for “nearby” workflow
+  const [isRequestingLocation, setIsRequestingLocation] = useState(false);
+  const [isFetchingNearby, setIsFetchingNearby] = useState(false);
   const [nearbyFestivals, setNearbyFestivals] = useState<FestivalWithDistance[]>([]);
-  const [locationError, setLocationError] = useState<string | null>(null);
-  const [isLoadingLocation, setIsLoadingLocation] = useState<boolean>(false);
-  const [hasLocation, setHasLocation] = useState<boolean>(false);
-  const [isCheckingPermission, setIsCheckingPermission] = useState<boolean>(true);
+  const [hasRequestedLocation, setHasRequestedLocation] = useState(false);
 
-  // Check for saved location or geolocation permission on component mount
-  useEffect(() => {
-    let isMounted = true;
-    
-    const checkGeolocationPermission = async () => {
-      try {
-        // First, check if we have a saved location in localStorage
-        const savedLocation = localStorage.getItem('userLocation');
-        const savedFestivals = localStorage.getItem('nearbyFestivals');
-        
-        if (savedLocation && savedFestivals) {
-          // If we have saved data, use it
-          if (isMounted) {
-            setHasLocation(true);
-            setNearbyFestivals(JSON.parse(savedFestivals));
-            setIsCheckingPermission(false);
-          }
-          return;
-        }
-        
-        // If no saved data, check geolocation permission
-        if (navigator.permissions) {
-          try {
-            const permissionStatus = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
-            
-            if (permissionStatus.state === 'granted' && isMounted) {
-              // If permission is already granted, fetch nearby festivals
-              await handleFindNearbyFestivals();
-            }
-          } catch (permissionError) {
-            console.error('Error checking geolocation permission:', permissionError);
-          }
-        }
-      } catch (error) {
-        console.error('Error in checkGeolocationPermission:', error);
-        if (isMounted) {
-          setLocationError('En feil oppstod ved sjekk av plasseringstilgang');
-        }
-      } finally {
-        if (isMounted) {
-          setIsCheckingPermission(false);
-        }
-      }
-    };
-
-    checkGeolocationPermission();
-    
-    return () => {
-      isMounted = false;
-    };
-  }, [festivals]); // Add festivals to dependency array
-
-  // Function to get user's location and find nearby festivals
-  const handleFindNearbyFestivals = async () => {
-    if (!navigator.geolocation) {
-      setLocationError('Geolocation er ikke støttet av nettleseren din');
-      return;
-    }
-    
-    if (!festivals || festivals.length === 0) {
-      setLocationError('Ingen festivaler er tilgjengelige for øyeblikket');
-      return;
-    }
-
-    setIsLoadingLocation(true);
-    setLocationError(null);
-    
-    try {
-      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-          resolve,
-          reject,
-          {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
-          }
-        );
-      });
-
-      const { latitude, longitude } = position.coords;
-      console.log('User location:', { latitude, longitude });
-      console.log('Total festivals:', festivals.length);
-      
-      // Log the first few festivals to check their structure
-      console.log('Sample festival locations:', festivals.slice(0, 3).map(f => ({
-        name: f.name,
-        coordinates: f.location?.coordinates
-      })));
-      
-      // Calculate distances and sort festivals by proximity
-      const validFestivals: FestivalWithDistance[] = [];
-      
-      for (const festival of festivals) {
-        try {
-          if (!festival?.id) {
-            console.log('Festival is missing id:', festival);
-            continue;
-          }
-          
-          if (!festival?.location?.coordinates) {
-            console.log('Festival missing location data:', festival.name);
-            continue;
-          }
-          
-          // Try to get coordinates in different possible formats
-          let festivalLat: number | null = null;
-          let festivalLng: number | null = null;
-          
-          const coords = festival.location.coordinates as any; // We'll validate the shape
-          
-          // Handle different coordinate formats
-          if (coords && typeof coords === 'object') {
-            if ('latitude' in coords && 'longitude' in coords) {
-              // Format: { latitude: number, longitude: number }
-              festivalLat = Number(coords.latitude);
-              festivalLng = Number(coords.longitude);
-            } else if ('lat' in coords && 'lng' in coords) {
-              // Format: { lat: number | string, lng: number | string }
-              festivalLat = typeof coords.lat === 'string' ? parseFloat(coords.lat) : Number(coords.lat);
-              festivalLng = typeof coords.lng === 'string' ? parseFloat(coords.lng) : Number(coords.lng);
-            }
-          } else if (Array.isArray(coords) && coords.length >= 2) {
-            // Format: [longitude, latitude] - GeoJSON format
-            festivalLng = typeof coords[0] === 'string' ? parseFloat(coords[0]) : Number(coords[0]);
-            festivalLat = typeof coords[1] === 'string' ? parseFloat(coords[1]) : Number(coords[1]);
-          }
-          
-          // Validate coordinates
-          if (festivalLat === null || festivalLng === null || 
-              isNaN(festivalLat) || isNaN(festivalLng) ||
-              festivalLat < -90 || festivalLat > 90 || 
-              festivalLng < -180 || festivalLng > 180) {
-            console.log('Festival has invalid coordinates:', festival.name, coords);
-            continue;
-          }
-            
-          const distance = calculateDistance(latitude, longitude, festivalLat, festivalLng);
-          
-          console.log('Festival distance:', {
-            name: festival.name,
-            festivalLat,
-            festivalLng,
-            distance,
-            userLat: latitude,
-            userLng: longitude
-          });
-          
-          // Create a new object with the required FestivalWithDistance type
-          const festivalWithDistance: FestivalWithDistance = {
-            ...festival,
-            id: festival.id, // Ensure id is included
-            location: {
-              ...festival.location,
-              // Keep all original location properties and override coordinates
-              coordinates: coords
-            },
-            distance
-          };
-          
-          validFestivals.push(festivalWithDistance);
-          
-        } catch (error) {
-          console.error('Error processing festival:', festival.name, error);
-          continue;
-        }
-      }
-      
-      const festivalsWithDistances = validFestivals;
-      
-      console.log('Festivals with distances:', festivalsWithDistances);
-      
-      if (festivalsWithDistances.length === 0) {
-        console.error('No festivals with valid coordinates found');
-        setLocationError('Fant ingen festivaler med gyldige koordinater');
-        return;
-      }
-      
-      // Sort by distance and take the first 3
-      const nearestFestivals = [...festivalsWithDistances]
-        .sort((a, b) => a.distance - b.distance)
-        .slice(0, 3);
-        
-      console.log('Nearest festivals:', nearestFestivals);
-      
-      if (nearestFestivals.length === 0) {
-        setLocationError('Fant ingen festivaler i nærheten av din plassering');
-        return;
-      }
-      
-      // Save to state
-      setNearbyFestivals(nearestFestivals);
-      setHasLocation(true);
-      
-      // Save to localStorage for persistence
-      localStorage.setItem('userLocation', JSON.stringify({ 
-        latitude, 
-        longitude,
-        timestamp: new Date().toISOString() 
-      }));
-      localStorage.setItem('nearbyFestivals', JSON.stringify(nearestFestivals));
-      
-    } catch (error) {
-      console.error('Error getting location:', error);
-      
-      let errorMessage = 'Kunne ikke hente din posisjon. ';
-      
-      if (error instanceof GeolocationPositionError) {
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            errorMessage += 'Tilgang til posisjon ble nektet. Vennligst tillat posisjonstilgang i nettleserinnstillingene dine.';
-            break;
-          case error.POSITION_UNAVAILABLE:
-            errorMessage += 'Posisjonsinformasjon er ikke tilgjengelig.';
-            break;
-          case error.TIMEOUT:
-            errorMessage += 'Forespørselen om posisjonering tok for lang tid. Vennligst prøv igjen.';
-            break;
-        }
-      } else {
-        errorMessage += 'En ukjent feil oppstod.';
-      }
-      
-      setLocationError(errorMessage);
-    } finally {
-      setIsLoadingLocation(false);
-    }
+  // Fire off geolocation when user clicks the button
+  const handleRequestLocation = () => {
+    setIsRequestingLocation(true);
+    setHasRequestedLocation(true);
+    requestLocation();
   };
 
-  // Don't show anything while checking permission to prevent layout shift
-  if (isCheckingPermission) {
-    return null;
-  }
+  // Use the same handler for the button click
+
+  // When userLocation changes, fetch nearby festivals
+  useEffect(() => {
+    if (!userLocation) {
+      // If we were requesting location but got no location (error or denied)
+      if (hasRequestedLocation) {
+        setIsRequestingLocation(false);
+      }
+      return;
+    }
+
+    // We have a location, fetch nearby festivals
+    const fetchNearby = async () => {
+      try {
+        setIsFetchingNearby(true);
+        const nearby = await getNearbyFestivals(userLocation, 50); // 50 km radius
+        setNearbyFestivals(nearby.slice(0, 3));
+      } catch (err) {
+        console.error('Error fetching nearby:', err);
+      } finally {
+        setIsFetchingNearby(false);
+        setIsRequestingLocation(false);
+      }
+    };
+
+    fetchNearby();
+  }, [userLocation, hasRequestedLocation]);
 
   return (
     <>
-      {/* Hero Section */}
+      {/* Hero */}
       <section className="relative h-screen min-h-[600px] flex items-center bg-hero-pattern bg-cover bg-center">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-900/90 to-primary-900/70"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-900/90 to-primary-900/70" />
         <div className="container-custom relative z-10">
           <div className="max-w-6xl animate-fade-in">
-            <h1 className="text-white mb-6">
-              Opplev Norges beste festivaler
-            </h1>
+            <h1 className="text-white mb-6">Opplev Norges beste festivaler</h1>
             <p className="text-white/90 text-lg mb-8">
-            Finn og utforske de mest spennende musikk- og kulturfestivalene i hele Norge.
+              Finn og utforske de mest spennende musikk- og kulturfestivalene i hele Norge.
             </p>
-            
             <div className="max-w-2xl w-full mb-10">
-              <SearchBar 
+              <SearchBar
                 placeholder="Søk etter festivaler, steder eller sjangere..."
                 className="w-full"
               />
             </div>
-            
             <div className="flex flex-wrap gap-4">
               <Link to="/festivals" className="btn btn-accent">
                 Alle Festivaler
@@ -338,65 +108,49 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
-      
-      {/* Popular Festivals Section */}
+
+      {/* Popular */}
       <section className="py-20">
         <div className="container-custom">
           {loading ? (
-            <div className="mb-8">
-              <SectionHeaderSkeleton />
-            </div>
+            <SectionHeaderSkeleton />
           ) : (
             <div className="flex flex-col sm:flex-row sm:justify-between mb-6 gap-4">
               <div>
                 <h2 className="text-3xl font-bold text-gray-900">Populære Festivaler</h2>
                 <p className="text-gray-600">Oppdag de mest populære festivalene i hele Norge</p>
               </div>
-              <div className="flex items-start sm:items-center">
-                <Link to="/festivals" className="text-accent-500 hover:text-accent-600 flex items-center h-full py-2">
-                  <span className="mr-1">Alle Festivaler</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
+              <Link to="/festivals" className="text-accent-500 hover:text-accent-600 flex items-center">
+                <span className="mr-1">Alle Festivaler</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
           )}
-          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {loading ? (
-              // Show skeleton loaders while loading
-              Array(6).fill(0).map((_, index) => (
-                <FestivalCardSkeleton key={`popular-skeleton-${index}`} />
-              ))
-            ) : error ? (
-              <div className="col-span-3 text-center py-8 text-gray-500">
-                <AlertCircle className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                <p>Kunne ikke laste populære festivaler. Prøv å laste siden på nytt.</p>
-              </div>
-            ) : popularFestivals.length > 0 ? (
-              popularFestivals.map(festival => (
-                <FestivalCard key={festival.id} festival={festival} />
-              ))
-            ) : (
-              <div className="col-span-3 text-center py-8 text-gray-500">
-                Ingen populære festivaler funnet.
-              </div>
-            )}
+            {loading
+              ? Array.from({ length: 6 }).map((_, i) => <FestivalCardSkeleton key={i} />)
+              : error
+              ? (
+                <div className="col-span-3 text-center py-8 text-gray-500">
+                  <AlertCircle className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                  <p>Kunne ikke laste populære festivaler. Prøv på nytt.</p>
+                </div>
+              )
+              : popularFestivals.map(f => <FestivalCard key={f.id} festival={f} />)}
           </div>
         </div>
       </section>
-      
-      {/* Upcoming Festivals */}
+
+      {/* Upcoming */}
       <section className="py-20">
         <div className="container-custom">
           {loading ? (
-            <div className="mb-8">
-              <SectionHeaderSkeleton />
-            </div>
+            <SectionHeaderSkeleton />
           ) : (
             <div className="flex flex-col sm:flex-row sm:justify-between mb-6 gap-4">
               <div>
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">Kommende Festivaler</h2>
-                <p className="text-gray-600">Planlegg din neste festival opplevelse</p>
+                <p className="text-gray-600">Planlegg din neste festivalopplevelse</p>
               </div>
               <Link to="/calendar" className="text-accent-500 hover:text-accent-600 flex items-center">
                 <span className="mr-1">Kalender</span>
@@ -404,108 +158,90 @@ const HomePage: React.FC = () => {
               </Link>
             </div>
           )}
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {loading ? (
-              // Show skeleton loaders while loading
-              Array(4).fill(0).map((_, index) => (
-                <FestivalCardSkeleton key={`upcoming-skeleton-${index}`} />
-              ))
-            ) : error ? (
-              <div className="col-span-2 text-center py-8 text-gray-500">
-                <AlertCircle className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                <p>Kunne ikke laste kommende festivaler. Prøv å laste siden på nytt.</p>
-              </div>
-            ) : upcomingFestivals.length > 0 ? (
-              upcomingFestivals.slice(0, 4).map(festival => (
-                <FestivalCard key={festival.id} festival={festival} />
-              ))
-            ) : (
-              <div className="col-span-2 text-center py-8 text-gray-500">
-                Ingen kommende festivaler funnet.
-              </div>
-            )}
+            {loading
+              ? Array.from({ length: 4 }).map((_, i) => <FestivalCardSkeleton key={i} />)
+              : error
+              ? (
+                <div className="col-span-2 text-center py-8 text-gray-500">
+                  <AlertCircle className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                  <p>Kunne ikke laste kommende festivaler. Prøv på nytt.</p>
+                </div>
+              )
+              : upcomingFestivals.slice(0, 4).map(f => <FestivalCard key={f.id} festival={f} />)}
           </div>
         </div>
       </section>
-      
-      {/* Festivals Near You Section */}
+
+      {/* Festivals Near You */}
       <section className="py-20 mb-16">
         <div className="container-custom">
-          {!hasLocation ? (
+          {!userLocation ? (
+            // Step 1: Ask user for permission or show loading
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Finn festivaler i nærheten</h2>
               <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-                Oppdag festivaler i nærheten av deg for å finne din neste opplevelse
+                Se hvilke festivaler som arrangeres i nærheten av deg ved å dele din posisjon.
               </p>
-              <button
-                onClick={handleFindNearbyFestivals}
-                disabled={isLoadingLocation}
-                className="btn btn-accent inline-flex items-center"
-              >
-                {isLoadingLocation ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Leter etter festivaler...
-                  </>
-                ) : (
-                  <>
-                    <MapPin className="w-4 h-4 mr-2" />
-                    Vis festivaler i nærheten
-                  </>
-                )}
-              </button>
+              {isRequestingLocation ? (
+                <p className="text-center py-2">Henter posisjon…</p>
+              ) : (
+                <button
+                  onClick={handleRequestLocation}
+                  className="btn btn-accent inline-flex items-center"
+                  disabled={isRequestingLocation}
+                >
+                  <MapPin className="w-4 h-4 mr-2" />
+                  Vis festivaler i nærheten
+                </button>
+              )}
             </div>
           ) : locationError ? (
+            // Show error if there was one
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 max-w-2xl mx-auto mb-8">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <AlertCircle className="h-5 w-5 text-yellow-400" aria-hidden="true" />
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-yellow-700">{locationError}</p>
-                </div>
+              <div className="flex items-center">
+                <AlertCircle className="h-5 w-5 text-yellow-400" />
+                <p className="ml-3 text-sm text-yellow-700">{locationError}</p>
               </div>
             </div>
-          ) : (
+          ) : isFetchingNearby ? (
+            // Step 4: Fetching nearby festivals
+            <p className="text-center py-8">Laster festivaler i nærheten…</p>
+          ) : nearbyFestivals.length > 0 ? (
+            // Step 5: Show results
             <>
               <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">Festivaler i nærheten av deg</h2>
-                <Link to="/map" className="text-accent-500 hover:text-accent-600 flex items-center text-sm mt-2 sm:mt-0">
+                <Link to="/map" className="text-accent-500 hover:text-accent-600 flex items-center text-sm">
                   <span className="mr-1">Se alle på kart</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
-              {nearbyFestivals.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                  {nearbyFestivals.map((festival) => (
-                    <div key={festival.id} className="relative">
-                      <FestivalCard festival={festival} />
-                      <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-gray-700 flex items-center shadow-sm">
-                        <MapPin className="w-3 h-3 mr-1 text-accent-500" />
-                        {festival.distance < 1 
-                          ? `${Math.round(festival.distance * 1000)} m unna` 
-                          : `${festival.distance.toFixed(1)} km unna`}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-600 text-center py-8">Ingen festivaler funnet i nærheten</p>
-              )}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                {nearbyFestivals.map(f => (
+                  <div key={f.id} className="relative">
+                    <FestivalCard 
+                      festival={f} 
+                      showDistance 
+                      distance={f.distance}
+                    />
+                  </div>
+                ))}
+              </div>
             </>
+          ) : (
+            // Step 6: No festivals found
+            <p className="text-gray-600 text-center py-8">Ingen festivaler funnet i nærheten</p>
           )}
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Features */}
       <section className="py-20 bg-primary-50">
         <div className="container-custom">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Oppdag, planlegg og nyt</h2>
-          
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+            Oppdag, planlegg og nyt
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-lg shadow-md p-6 text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-100 text-primary-600 mb-4">
@@ -516,7 +252,6 @@ const HomePage: React.FC = () => {
                 Oppdag en samling av musikk- og kulturfestivaler som foregår i hele Norge.
               </p>
             </div>
-            
             <div className="bg-white rounded-lg shadow-md p-6 text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary-100 text-secondary-600 mb-4">
                 <Map className="w-8 h-8" />
@@ -526,14 +261,13 @@ const HomePage: React.FC = () => {
                 Se alle kommende festivaler i kalenderen for å finne den som passer deg.
               </p>
             </div>
-            
             <div className="bg-white rounded-lg shadow-md p-6 text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent-100 text-accent-600 mb-4">
                 <Star className="w-8 h-8" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Festivaler nær deg</h3>
               <p className="text-gray-600">
-                Ved å tillatte stedslokasjon kan du finne festivaler nær deg.
+                Ved å tillate stedslokasjon kan du finne festivaler nær deg.
               </p>
             </div>
           </div>
