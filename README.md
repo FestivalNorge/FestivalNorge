@@ -2,7 +2,7 @@
 
 An interactive web app for exploring festivals in Norway. Built with **React**, **Vite**.
 
-📍 **Live site**: [https://FestivalNorge.github.io/FestivalNorge/](https://FestivalNorge.github.io/FestivalNorge/)
+📍 **Live site**: https://stagefinder.no/
 
 ---
 
