@@ -1,6 +1,7 @@
-import React, { createContext, useState, useContext, useEffect, useCallback, useRef } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Festival, SortOption, FilterOption, LocationFilter } from '../types';
 import { getFestivals } from '../services/festivalService';
+import { useLocation } from './LocationContext';
 
 interface FestivalContextType {
   festivals: Festival[];
@@ -35,8 +36,14 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [sortOption, setSortOption] = useState<SortOption>('popularity');
   const [filterOption, setFilterOption] = useState<FilterOption>('all');
   const [locationFilter, setLocationFilter] = useState<LocationFilter>('all');
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [locationError, setLocationError] = useState<string | null>(null);
+
+  // Get location data from LocationContext
+  const { location: locCoords, locationError, requestLocation } = useLocation();
+  // Memoize to keep stable reference between renders
+  const userLocation = useMemo(() => {
+    return locCoords ? { lat: locCoords.latitude, lng: locCoords.longitude } : null;
+  }, [locCoords]);
+  // Keep a ref to avoid spamming requestLocation
   const locationRequested = useRef(false);
 
   // Fetch festivals from Firebase
@@ -93,37 +100,18 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, []);
 
-  // Get user's current location
+  // Proxy to LocationContext.requestLocation
   const getUserLocation = useCallback(() => {
     if (locationRequested.current) return;
-    
     locationRequested.current = true;
-    setLocationError(null);
-    
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          });
-        },
-        (error) => {
-          console.error('Error getting location:', error);
-          // Don't set a default location - just keep it null
-          // This will make the button show the error state
-          locationRequested.current = false; // Allow retry
-          setLocationError('Kunne ikke hente posisjon. Prøv igjen.');
-        },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-      );
-    } else {
-      console.log('Geolocation is not supported by this browser.');
-      // Don't set a default location - just keep it null
-      locationRequested.current = false; // Allow retry
-      setLocationError('Nettleseren din støtter ikke posisjonering.');
-    }
-  }, []);
+    requestLocation()
+      .finally(() => {
+        // Allow retry if location still not available after request
+        if (!locCoords) {
+          locationRequested.current = false;
+        }
+      });
+  }, [requestLocation, locCoords]);
 
   // Calculate distance between two points in kilometers using Haversine formula
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
@@ -143,14 +131,14 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     fetchFestivals();
   }, [fetchFestivals]);
   
-  // Get user's location when sort option changes to 'location'
+  // Trigger location request when sorting by location and no location yet
   useEffect(() => {
     if (sortOption === 'location' && !userLocation && !locationError) {
       getUserLocation();
     }
-  }, [sortOption, userLocation, getUserLocation, locationError]);
+  }, [sortOption, userLocation, locationError, getUserLocation]);
   
-  // Reset location request when sort option changes from 'location'
+  // Reset locationRequested flag if user switches away from location sort
   useEffect(() => {
     if (sortOption !== 'location') {
       locationRequested.current = false;
@@ -199,7 +187,7 @@ export const FestivalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     result = sortFestivals(result, sortOption);
     
     setFilteredFestivals(result);
-  }, [festivals, searchTerm, sortOption, filterOption, locationFilter]);
+  }, [festivals, searchTerm, sortOption, filterOption, locationFilter, userLocation]);
 
   // Sort festivals based on the selected option
   const sortFestivals = (festivalList: Festival[], option: SortOption): Festival[] => {

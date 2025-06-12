@@ -8,6 +8,7 @@ interface FestivalCardProps {
   featured?: boolean;
   isSelected?: boolean;
   showDistance?: boolean;
+  showGenres?: boolean;
   distance?: number;
   onClick?: (festival: Festival) => void;
 }
@@ -17,6 +18,7 @@ const FestivalCard: React.FC<FestivalCardProps> = ({
   featured = false, 
   isSelected = false,
   showDistance = false,
+  showGenres = true,
   distance,
   onClick
 }) => {
@@ -49,9 +51,9 @@ const FestivalCard: React.FC<FestivalCardProps> = ({
   return (
     <div 
       className={`card group overflow-hidden cursor-pointer rounded-lg ${
-        featured ? 'flex flex-col md:flex-row max-h-[400px]' : 'h-full flex flex-col'
+        featured ? 'flex flex-col md:flex-row max-h-[400px]' : 'flex flex-col'
       }`}
-      style={isSelected ? { boxShadow: '0 0 0 2px #ff5722' } : {}}
+      style={isSelected ? { boxShadow: '0 0 0 4px #ff5722' } : {}}
       onClick={(e) => {
         e.preventDefault();
         if (onClick) {
@@ -127,7 +129,7 @@ const FestivalCard: React.FC<FestivalCardProps> = ({
           </div>
         </div>
 
-        {festival.genres.length > 0 && (
+        {showGenres && festival.genres.length > 0 && (
           <div className="mt-3">
             <div className="flex flex-wrap gap-2">
               {festival.genres.slice(0, 4).map((genre, index) => (

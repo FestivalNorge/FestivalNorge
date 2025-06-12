@@ -1,9 +1,10 @@
-import { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
+import { useEffect, useState, forwardRef, useImperativeHandle, useRef, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon, Marker as LeafletMarker } from 'leaflet';
 import { Festival } from '../../types';
 import { MapPin, LocateFixed } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
+import { useLocation } from '../../context/LocationContext';
 
 // Fix TypeScript errors
 declare module 'leaflet' {
@@ -33,8 +34,6 @@ const MapCenter = ({ selectedFestivalId, festivals, userLocation }: {
   userLocation: [number, number] | null 
 }) => {
   const map = useMap();
-  // Remove unused popupRef
-
   useEffect(() => {
     if (!map) return;
     
@@ -66,60 +65,44 @@ const MapCenter = ({ selectedFestivalId, festivals, userLocation }: {
 };
 
 // Component to locate the user
-const LocateControl = ({ onLocated }: { onLocated: (position: [number, number]) => void }) => {
+const LocateControl = () => {
   const map = useMap();
+  const { requestLocation, location, locationError } = useLocation();
   const [isLocating, setIsLocating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleLocate = () => {
-    if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser');
-      return;
-    }
-
     setIsLocating(true);
-    setError(null);
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        const userPosition: [number, number] = [latitude, longitude];
-        onLocated(userPosition);
-        map.flyTo(userPosition, 13);
-        setIsLocating(false);
-      },
-      (err) => {
-        console.error('Error getting location:', err);
-        setError('Unable to retrieve your location');
-        setIsLocating(false);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
-      }
-    );
+    requestLocation().finally(() => {
+      setIsLocating(false);
+    });
   };
+
+  // When location becomes available, fly to it
+  useEffect(() => {
+    if (location && isLocating) {
+      map.flyTo([location.latitude, location.longitude], 13);
+    }
+  }, [location, isLocating, map]);
 
   return (
     <div className="leaflet-top leaflet-right">
       <div className="leaflet-control leaflet-bar">
-        <button 
+        <button
           onClick={handleLocate}
           className="bg-white p-2 hover:bg-gray-100"
-          title="Find my location"
+          title="Finn min posisjon"
           disabled={isLocating}
         >
           {isLocating ? (
-            <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
           ) : (
             <LocateFixed className="w-6 h-6 text-blue-600" />
           )}
         </button>
       </div>
-      {error && (
-        <div className="leaflet-control leaflet-bar bg-white p-2 text-red-500 text-sm">
-          {error}
+      {locationError && (
+        <div className="leaflet-control leaflet-bar bg-white p-2 text-red-500 text-sm max-w-[160px]">
+          {locationError}
         </div>
       )}
     </div>
@@ -139,7 +122,8 @@ const FestivalMap = forwardRef<MapRef, FestivalMapProps>(({
   selectedFestivalId,
   onClick
 }, ref) => {
-  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+  const { location: locCoords } = useLocation();
+  const userLocation = useMemo(() => locCoords ? [locCoords.latitude, locCoords.longitude] as [number, number] : null, [locCoords]);
 
   const defaultIcon = new Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
@@ -196,7 +180,7 @@ const FestivalMap = forwardRef<MapRef, FestivalMapProps>(({
           festivals={festivals} 
           userLocation={userLocation}
         />
-        <LocateControl onLocated={setUserLocation} />
+        <LocateControl />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
