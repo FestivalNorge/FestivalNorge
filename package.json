@@ -14,7 +14,7 @@
     "upload:festivals": "node scripts/upload-festivals.cjs",
     
     "emulate": "firebase emulators:start",
-    "preview:deploy": "firebase hosting:channel:deploy preview-$(git rev-parse --short HEAD) --expires 7d",
+    "preview:deploy": "firebase hosting:channel:deploy preview-$(git rev-parse --short HEAD) --expires 1d",
     "deploy:staging": "firebase deploy -P staging",
     "predeploy": "npm run build",
     "deploy": "firebase deploy",

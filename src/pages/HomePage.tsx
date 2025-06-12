@@ -87,7 +87,7 @@ const HomePage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-primary-900/90 to-primary-900/70" />
         <div className="container-custom relative z-10">
           <div className="max-w-6xl animate-fade-in">
-            <h1 className="text-white mb-6">Opplev Norges beste festivaler</h1>
+            <h1 className="text-white mb-6">Utforsk festivaler i hele Norge</h1>
             <p className="text-white/90 text-lg mb-8">
               Finn og utforske de mest spennende musikk- og kulturfestivalene i hele Norge.
             </p>
