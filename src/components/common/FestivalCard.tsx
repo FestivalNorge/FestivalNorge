@@ -7,6 +7,9 @@ interface FestivalCardProps {
   festival: Festival;
   featured?: boolean;
   isSelected?: boolean;
+  showDistance?: boolean;
+  showGenres?: boolean;
+  distance?: number;
   onClick?: (festival: Festival) => void;
 }
 
@@ -14,6 +17,9 @@ const FestivalCard: React.FC<FestivalCardProps> = ({
   festival, 
   featured = false, 
   isSelected = false,
+  showDistance = false,
+  showGenres = true,
+  distance,
   onClick
 }) => {
   
@@ -34,12 +40,20 @@ const FestivalCard: React.FC<FestivalCardProps> = ({
     }
   };
 
+  const getDistanceText = (distance: number) => {
+    if (distance < 1) {
+      return `${Math.round(distance * 1000)} m unna`;
+    } else {
+      return `${distance.toFixed(1)} km unna`;
+    }
+  };
+
   return (
     <div 
-      className={`card group festival-card-hover overflow-hidden cursor-pointer ${
-        featured ? 'flex flex-col md:flex-row max-h-[400px]' : 'h-full flex flex-col'
+      className={`card group overflow-hidden cursor-pointer rounded-lg ${
+        featured ? 'flex flex-col md:flex-row max-h-[400px]' : 'flex flex-col'
       }`}
-      style={isSelected ? { boxShadow: '0 0 0 2px #ff5722' } : {}}
+      style={isSelected ? { boxShadow: '0 0 0 4px #ff5722' } : {}}
       onClick={(e) => {
         e.preventDefault();
         if (onClick) {
@@ -51,9 +65,9 @@ const FestivalCard: React.FC<FestivalCardProps> = ({
       }}
     >
       <div 
-        className={`relative ${
-          featured ? 'md:w-1/2 h-64 md:h-full' : 'h-96'
-        } overflow-hidden`}
+        className={`relative rounded-t-lg overflow-hidden ${
+          featured ? 'md:w-1/2 h-64 md:h-full md:rounded-l-lg md:rounded-tr-none' : 'h-96'
+        }`}
       >
         <img 
           src={festival.imageUrl} 
@@ -65,17 +79,25 @@ const FestivalCard: React.FC<FestivalCardProps> = ({
             {festival.name}
           </h3>
           <div className="mt-auto">
-            <div className="flex flex-wrap gap-2">
-              {festival.ticketAvailability && (
-                <span className={`badge ${getTicketStatusClass(festival.ticketAvailability)}`}>
-                  {festival.ticketAvailability === 'available' ? 'Tickets Available' : 
-                   festival.ticketAvailability === 'limited' ? 'Limited Tickets' : 'Sold Out'}
-                </span>
-              )}
-              {festival.averageAgeGroup && (
-                <span className="badge bg-primary-100 text-primary-800">
-                  {festival.averageAgeGroup.min}-{festival.averageAgeGroup.max} år
-                </span>
+            <div className="flex flex-wrap justify-between items-center gap-2">
+              <div className="flex flex-wrap gap-2">
+                {festival.ticketAvailability && (
+                  <span className={`badge ${getTicketStatusClass(festival.ticketAvailability)}`}>
+                    {festival.ticketAvailability === 'available' ? 'Tickets Available' : 
+                     festival.ticketAvailability === 'limited' ? 'Limited Tickets' : 'Sold Out'}
+                  </span>
+                )}
+                {festival.averageAgeGroup && (
+                  <span className="badge bg-primary-100 text-primary-800">
+                    {festival.averageAgeGroup.min}-{festival.averageAgeGroup.max} år
+                  </span>
+                )}
+              </div>
+              {showDistance && (
+                <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-gray-700 flex items-center shadow-sm">
+                  <MapPin className="w-3 h-3 mr-1 text-accent-500" />
+                  {distance !== undefined ? getDistanceText(distance) : 'Distance not available'}
+                </div>
               )}
             </div>
           </div>
@@ -107,7 +129,7 @@ const FestivalCard: React.FC<FestivalCardProps> = ({
           </div>
         </div>
 
-        {festival.genres.length > 0 && (
+        {showGenres && festival.genres.length > 0 && (
           <div className="mt-3">
             <div className="flex flex-wrap gap-2">
               {festival.genres.slice(0, 4).map((genre, index) => (

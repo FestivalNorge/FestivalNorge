@@ -2,6 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Music, Mail } from 'lucide-react';
 
+declare global {
+  interface Window {
+    UC_UI?: {
+      showSecondLayer: () => void;
+    };
+  }
+}
+
 const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-900 text-white pt-24 pb-8">
@@ -11,7 +19,7 @@ const Footer: React.FC = () => {
           <div className="space-y-2">
           <div className="flex items-center space-x-2">
               <Music className="w-8 h-8 text-accent-500" />
-              <span className="text-xl font-heading font-bold">FestivalNorge</span>
+              <span className="text-xl font-heading font-bold">StageFinder</span>
             </div>
             <p className="text-gray-400 max-w-xs">
             Din destinasjon for å oppdage de beste musikk- og kulturfestivalene i hele Norge.
@@ -104,9 +112,15 @@ const Footer: React.FC = () => {
         <div className="border-t border-gray-800 mt-10 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              &copy; {new Date().getFullYear()} FestivalNorge
+              &copy; {new Date().getFullYear()} StageFinder
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
+              <button 
+                onClick={() => window.UC_UI && window.UC_UI.showSecondLayer()}
+                className="text-gray-400 hover:text-accent-500 text-sm transition-colors"
+              >
+                Administrer cookies
+              </button>
               <Link to="/privacy" className="text-gray-400 hover:text-accent-500 text-sm transition-colors">
                 Personvern
               </Link>

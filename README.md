@@ -1,4 +1,4 @@
-# FestivalNorge
+# StageFinder
 
 An interactive web app for exploring festivals in Norway. Built with **React**, **Vite**.
 

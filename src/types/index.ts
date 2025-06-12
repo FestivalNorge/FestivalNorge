@@ -7,7 +7,8 @@ export type {
   FestivalDate,
   Price,
   AgeGroup,
-  Artist
+  Artist,
+  Coordinates
 } from './festival';
 
 export type SortOption = 'name' | 'date' | 'popularity' | 'price' | 'location';
