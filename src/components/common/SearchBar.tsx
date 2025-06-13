@@ -10,6 +10,7 @@ interface SearchBarProps {
   placeholder?: string;
   className?: string;
   disableSuggestions?: boolean;
+  value?: string;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ 
@@ -17,12 +18,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
   onSuggestionSelect,
   placeholder = 'Søk etter festivaler, steder eller sjangere...',
   className = '',
-  disableSuggestions = false
+  disableSuggestions = false,
+  value = ''
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(value);
   const [suggestions, setSuggestions] = useState<Festival[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [activeSuggestion, setActiveSuggestion] = useState(0);
+  const [activeSuggestion, setActiveSuggestion] = useState(-1); // Start with -1 for no selection
   const [allFestivals, setAllFestivals] = useState<Festival[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -60,11 +62,17 @@ const SearchBar: React.FC<SearchBarProps> = ({
     };
   }, []);
 
+  // Update internal searchTerm when value prop changes
+  useEffect(() => {
+    setSearchTerm(value);
+  }, [value]);
+
   // Filter suggestions based on search term
   useEffect(() => {
     if (disableSuggestions || searchTerm.trim() === '') {
       setSuggestions([]);
       setShowSuggestions(false);
+      setActiveSuggestion(-1);
       return;
     }
 
@@ -82,18 +90,28 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
     setSuggestions(filtered.slice(0, 5)); // Show max 5 suggestions
     setShowSuggestions(filtered.length > 0);
-    setActiveSuggestion(0);
+    setActiveSuggestion(-1); // Reset active suggestion when search term changes
   }, [searchTerm, allFestivals, disableSuggestions]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setShowSuggestions(false);
     
-    // Only perform search if no suggestion is selected
-    if (onSearch) {
+    // If a suggestion is selected, let the suggestion click handler handle it
+    if (activeSuggestion >= 0 && suggestions[activeSuggestion]) {
+      const selectedFestival = suggestions[activeSuggestion];
+      setSearchTerm(selectedFestival.name);
+      if (onSuggestionSelect) {
+        onSuggestionSelect(selectedFestival);
+      } else {
+        navigate(`/festival/${selectedFestival.id}`);
+      }
+    } else if (onSearch) {
+      // If there's an onSearch handler, use it
       onSearch(searchTerm);
     } else {
-      navigate(`/festival?search=${encodeURIComponent(searchTerm)}`);
+      // Otherwise, navigate to FestivalsPage with the search term
+      navigate(`/festivals?search=${encodeURIComponent(searchTerm)}`);
     }
   };
 
@@ -118,20 +136,28 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (suggestions.length === 0) return;
+    if (suggestions.length === 0 || !showSuggestions) return;
 
     // Handle arrow down
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setActiveSuggestion(prev => 
-        prev < suggestions.length - 1 ? prev + 1 : prev
-      );
+      setActiveSuggestion(prev => {
+        // If no suggestion is selected, select the first one
+        if (prev === -1) return 0;
+        // Otherwise move to next suggestion or stay at last
+        return prev < suggestions.length - 1 ? prev + 1 : prev;
+      });
     }
     
     // Handle arrow up
     if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setActiveSuggestion(prev => (prev > 0 ? prev - 1 : 0));
+      setActiveSuggestion(prev => {
+        // If at the first suggestion or none selected, move to no selection
+        if (prev <= 0) return -1;
+        // Otherwise move to previous suggestion
+        return prev - 1;
+      });
     }
     
     // Handle enter - select the suggestion
@@ -163,7 +189,12 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 setShowSuggestions(value.trim() !== '');
               }
             }}
-            onFocus={() => !disableSuggestions && searchTerm.trim() !== '' && setShowSuggestions(true)}
+            onFocus={() => {
+              if (!disableSuggestions) {
+                setShowSuggestions(searchTerm.trim() !== '');
+                setActiveSuggestion(-1); // Reset selection when input is focused
+              }
+            }}
             onKeyDown={!disableSuggestions ? handleKeyDown : undefined}
             onClick={(e) => {
               if (disableSuggestions) return;
@@ -199,9 +230,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
               key={festival.id}
               onClick={(e) => handleSuggestionClick(festival, e)}
               onMouseEnter={() => setActiveSuggestion(index)}
-              className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                index === activeSuggestion ? 'bg-accent-50' : ''
-              }`}
+              className={`px-4 py-3 text-left w-full hover:bg-gray-100 ${index === activeSuggestion ? 'bg-gray-100' : ''}`}
               role="option"
               aria-selected={index === activeSuggestion}
             >

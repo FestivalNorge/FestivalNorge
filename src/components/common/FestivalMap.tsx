@@ -69,20 +69,45 @@ const LocateControl = () => {
   const map = useMap();
   const { requestLocation, location, locationError } = useLocation();
   const [isLocating, setIsLocating] = useState(false);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
-  const handleLocate = () => {
-    setIsLocating(true);
-    requestLocation().finally(() => {
-      setIsLocating(false);
-    });
+  // Check permission status on mount
+  useEffect(() => {
+    navigator.permissions.query({ name: 'geolocation' as PermissionName })
+      .then(permissionStatus => {
+        setHasPermission(permissionStatus.state === 'granted');
+        
+        permissionStatus.onchange = () => {
+          setHasPermission(permissionStatus.state === 'granted');
+        };
+      })
+      .catch(() => setHasPermission(false));
+  }, []);
+
+  const handleLocate = async () => {
+    if (location) {
+      // If we already have location, just fly to it
+      map.flyTo([location.latitude, location.longitude], 13);
+      return;
+    }
+
+    // Request location if we don't have it yet
+    if (hasPermission !== false) {
+      setIsLocating(true);
+      try {
+        await requestLocation();
+      } finally {
+        setIsLocating(false);
+      }
+    }
   };
 
-  // When location becomes available, fly to it
+  // Auto-fly to location when it becomes available
   useEffect(() => {
-    if (location && isLocating) {
+    if (location) {
       map.flyTo([location.latitude, location.longitude], 13);
     }
-  }, [location, isLocating, map]);
+  }, [location, map]);
 
   return (
     <div className="leaflet-top leaflet-right">

@@ -25,6 +25,7 @@ const FestivalsPage: React.FC = () => {
   } = useFestival();
   
   const [searchParams, setSearchParams] = useSearchParams();
+  const currentSearchTerm = searchParams.get('search') || '';
   
   useEffect(() => {
     const searchTerm = searchParams.get('search') || '';
@@ -39,10 +40,11 @@ const FestivalsPage: React.FC = () => {
   }, [searchParams, setSearchTerm, setSortOption, setFilterOption, setLocationFilter]);
 
   const [selectedFestival, setSelectedFestival] = useState<Festival | null>(null);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [displayedFestivals, setDisplayedFestivals] = useState<Festival[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
   const loadingRef = useRef<HTMLDivElement>(null);
   const ITEMS_PER_PAGE = 9; // 3x3 grid items per load
@@ -76,68 +78,68 @@ const FestivalsPage: React.FC = () => {
 
   // Reset pagination when filters, search, or filteredFestivals change
   useEffect(() => {
-    setPage(1);
-    const initialFestivals = selectedFestival 
-      ? [selectedFestival] 
-      : filteredFestivals.slice(0, ITEMS_PER_PAGE);
-    
-    setDisplayedFestivals(initialFestivals);
-    setHasMore(selectedFestival ? false : filteredFestivals.length > ITEMS_PER_PAGE);
-  }, [selectedFestival, filteredFestivals, ITEMS_PER_PAGE]);
+    setPage(0);
+    setDisplayedFestivals([]);
+    setHasMore(true);
+    setInitialLoadComplete(false);
+  }, [filteredFestivals, selectedFestival]);
 
   // Load more festivals when reaching the bottom
   const loadMoreFestivals = useCallback(() => {
-    if (selectedFestival || !hasMore || loading || isLoadingMore) return;
+    if (selectedFestival || !hasMore || loading || isLoadingMore || filteredFestivals.length === 0) {
+      return;
+    }
     
     setIsLoadingMore(true);
     
     // Calculate the next page items
     const nextPage = page + 1;
-    const startIdx = 0; // Always start from the beginning since we replace the entire list
-    const endIdx = Math.min(filteredFestivals.length, nextPage * ITEMS_PER_PAGE);
+    const startIdx = 0; // Always start from the beginning
+    const endIdx = Math.min(filteredFestivals.length, (nextPage + 1) * ITEMS_PER_PAGE);
     const nextFestivals = filteredFestivals.slice(startIdx, endIdx);
     
-    // Add a 1-second delay before updating the UI
-    setTimeout(() => {
-      // Update state in a single batch
-      setDisplayedFestivals(nextFestivals);
-      setPage(nextPage);
-      setHasMore(endIdx < filteredFestivals.length);
-      setIsLoadingMore(false);
-    }, 1000);
+    setDisplayedFestivals(nextFestivals);
+    setPage(nextPage);
+    setHasMore(endIdx < filteredFestivals.length);
+    setInitialLoadComplete(true);
+    setIsLoadingMore(false);
   }, [page, hasMore, filteredFestivals, selectedFestival, loading, isLoadingMore, ITEMS_PER_PAGE]);
+  
+  // Initial load
+  useEffect(() => {
+    if (!loading && filteredFestivals.length > 0 && !initialLoadComplete) {
+      loadMoreFestivals();
+    }
+  }, [loading, filteredFestivals, initialLoadComplete, loadMoreFestivals]);
 
   // Set up intersection observer for infinite scroll
   useEffect(() => {
     const currentObserver = loadingRef.current;
     
-    if (currentObserver) {
-      const observerOptions = {
-        root: null,
-        rootMargin: '20px',
-        threshold: 0.1
-      };
-      
-      const handleIntersect = (entries: IntersectionObserverEntry[]) => {
-        const [entry] = entries;
-        if (entry.isIntersecting && hasMore && !loading && !isLoadingMore) {
-          loadMoreFestivals();
-        }
-      };
-      
-      observer.current = new IntersectionObserver(handleIntersect, observerOptions);
-      
-      if (currentObserver) {
-        observer.current.observe(currentObserver);
-      }
-    }
-
-    return () => {
-      if (observer.current) {
-        observer.current.disconnect();
+    if (!currentObserver || !initialLoadComplete) return;
+    
+    const observerOptions = {
+      root: null,
+      rootMargin: '100px', // Start loading a bit before reaching the bottom
+      threshold: 0.1
+    };
+    
+    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+      const [entry] = entries;
+      if (entry.isIntersecting && hasMore && !loading && !isLoadingMore) {
+        loadMoreFestivals();
       }
     };
-  }, [loadMoreFestivals, hasMore, loading]);
+    
+    const observerInstance = new IntersectionObserver(handleIntersect, observerOptions);
+    observerInstance.observe(currentObserver);
+    
+    return () => {
+      if (observerInstance) {
+        observerInstance.disconnect();
+      }
+    };
+  }, [loadMoreFestivals, hasMore, loading, isLoadingMore, initialLoadComplete]);
 
   // Handle search with debounce
   const handleSearch = useCallback((term: string) => {
@@ -215,6 +217,7 @@ const FestivalsPage: React.FC = () => {
             </p>
             <div className="mb-8">
               <SearchBar 
+                value={currentSearchTerm}
                 onSearch={handleSearch}
                 onSuggestionSelect={handleSuggestionSelect}
                 placeholder="Søk etter festivaler..."
@@ -256,7 +259,14 @@ const FestivalsPage: React.FC = () => {
             </div>
             
             {/* Festival Cards */}
-            {displayedFestivals.length > 0 ? (
+            {loading ? (
+              <div className="col-span-full flex justify-center py-12">
+                <div className="flex flex-col items-center space-y-4">
+                  <Loader2 className="h-12 w-12 text-primary-500 animate-spin" />
+                  <p className="text-gray-600">Laster festivaler...</p>
+                </div>
+              </div>
+            ) : displayedFestivals.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {displayedFestivals.map((festival) => (
                   <FestivalCard key={festival.id} festival={festival} />
