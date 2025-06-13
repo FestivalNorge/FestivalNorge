@@ -13,11 +13,11 @@
     "upload:festival": "node dist/scripts/uploadFestivals.js",
     "upload:festivals": "node scripts/upload-festivals.cjs",
     
-    "emulate": "firebase emulators:start",
-    "preview:deploy": "firebase hosting:channel:deploy preview-$(git rev-parse --short HEAD) --expires 1d",
-    "deploy:staging": "firebase deploy -P staging",
+    "emulate": "npm run build && firebase emulators:start",
+    "preview:deploy": "npm run build && firebase hosting:channel:deploy preview-$(git rev-parse --short HEAD) --expires 1d",
+    "deploy:staging": "npm run build && firebase deploy -P staging",
     "predeploy": "npm run build",
-    "deploy": "firebase deploy",
+    "deploy": "npm run build && firebase deploy",
     "deploy:prod": "npm run build && firebase deploy -P production"
   },
   "dependencies": {

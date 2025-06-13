@@ -90,44 +90,6 @@ const FestivalDetailPage: React.FC = () => {
     }
   };
 
-  // Remove the duplicate code block
-  // const { id: festivalId } = useParams<{ id: string }>();
-  // const { getFestivalById } = useFestival();
-  // const [festival, setFestival] = useState<Festival | null>(null);
-  // const [isLoading, setIsLoading] = useState(true);
-
-  // useEffect(() => {
-  //   if (festivalId) {
-  //     const festivalData = getFestivalById(festivalId);
-  //     setFestival(festivalData || null);
-  //     setIsLoading(false);
-  //   }
-  // }, [festivalId, getFestivalById]);
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="min-h-screen pt-20 pb-16 flex items-center justify-center">
-  //       <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full"></div>
-  //     </div>
-  //   );
-  // }
-
-  // if (!festival) {
-  //   return (
-  //     <div className="min-h-screen pt-20 pb-16">
-  //       <div className="container-custom text-center py-20">
-  //         <h2 className="text-3xl font-bold mb-4">Festival Not Found</h2>
-  //         <p className="text-gray-600 mb-8">
-  //           The festival you're looking for doesn't exist or has been removed.
-  //         </p>
-  //         <Link to="/festivals" className="btn btn-primary">
-  //           Browse All Festivals
-  //         </Link>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   return (
     <div className="min-h-screen pt-20 pb-16">
       {/* Hero Section with Festival Image */}

@@ -69,20 +69,58 @@ const LocateControl = () => {
   const map = useMap();
   const { requestLocation, location, locationError } = useLocation();
   const [isLocating, setIsLocating] = useState(false);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
-  const handleLocate = () => {
+  // Check permission status on mount
+  useEffect(() => {
+    // Only run in browser environment
+    if (typeof navigator === 'undefined' || !navigator.permissions) return;
+    
+    navigator.permissions.query({ name: 'geolocation' as PermissionName })
+      .then(permissionStatus => {
+        setHasPermission(permissionStatus.state === 'granted');
+        
+        // Listen for permission changes
+        const handlePermissionChange = () => {
+          setHasPermission(permissionStatus.state === 'granted');
+        };
+        
+        permissionStatus.addEventListener('change', handlePermissionChange);
+        
+        // Cleanup
+        return () => {
+          permissionStatus.removeEventListener('change', handlePermissionChange);
+        };
+      })
+      .catch(() => setHasPermission(false));
+  }, []);
+
+  const handleLocate = async () => {
+    if (location) {
+      // If we already have location, just fly to it
+      map.flyTo([location.latitude, location.longitude], 13);
+      return;
+    }
+
+    // Always try to request location when the button is clicked
     setIsLocating(true);
-    requestLocation().finally(() => {
+    try {
+      // This will trigger the permission request if needed
+      await requestLocation();
+    } catch (error) {
+      console.error('Error getting location:', error);
+      // The error will be handled by the LocationContext and shown in the UI
+    } finally {
       setIsLocating(false);
-    });
+    }
   };
 
-  // When location becomes available, fly to it
+  // Auto-fly to location when it becomes available
   useEffect(() => {
-    if (location && isLocating) {
+    if (location) {
       map.flyTo([location.latitude, location.longitude], 13);
     }
-  }, [location, isLocating, map]);
+  }, [location, map]);
 
   return (
     <div className="leaflet-top leaflet-right">

@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "festivalnorge-beaba"
+    "default": "festivalnorge-beaba",
+    "staging": "festivalnorge-staging",
+    "production": "festivalnorge-beaba"
   }
 }

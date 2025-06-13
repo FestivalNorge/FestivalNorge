@@ -28,6 +28,20 @@ export const LocationProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setLocation(coords);
     localStorage.setItem('userLocation', JSON.stringify(coords));
   }, []);
+  
+  // Function to check if we have permission to access location
+  const checkPermission = useCallback(async () => {
+    if (!('permissions' in navigator)) return 'prompt';
+    
+    try {
+      const permissionStatus = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
+      permissionStatusRef.current = permissionStatus;
+      return permissionStatus.state;
+    } catch (error) {
+      console.error('Error checking geolocation permission:', error);
+      return 'prompt';
+    }
+  }, []);
 
   // Function to handle position errors
   const handlePositionError = useCallback((error: GeolocationPositionError) => {
@@ -59,83 +73,70 @@ export const LocationProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, []);
 
-  // Check for existing permission and start watching if granted
+  // Cleanup function
   useEffect(() => {
-    if (!('geolocation' in navigator)) {
-      setLocationError('Geolocation is not supported by your browser');
-      return;
-    }
-
-    const checkAndWatch = async () => {
-      try {
-        // Check if permission is already granted
-        const permissionStatus = await navigator.permissions.query({ 
-          name: 'geolocation' as PermissionName 
-        });
-        permissionStatusRef.current = permissionStatus;
-
-        if (permissionStatus.state === 'granted') {
-          startWatching();
-        }
-
-        // Handle permission changes
-        permissionStatus.onchange = () => {
-          if (permissionStatus.state === 'granted') {
-            startWatching();
-          } else {
-            stopWatching();
-            setLocation(null);
-            localStorage.removeItem('userLocation');
-          }
-        };
-      } catch (error) {
-        console.error('Error checking geolocation permission:', error);
-      }
-    };
-
-    checkAndWatch();
-
-    // Cleanup function
     return () => {
       stopWatching();
       if (permissionStatusRef.current) {
         permissionStatusRef.current.onchange = null;
       }
     };
-  }, [startWatching, stopWatching]);
+  }, [stopWatching]);
 
   // Function to manually request location
-  const requestLocation = useCallback(() => {
-    return new Promise<Coordinates>((resolve, reject) => {
-      if (!navigator.geolocation) {
-        const error = new Error('Geolocation is not supported');
-        setLocationError(error.message);
-        reject(error);
-        return;
-      }
+  const requestLocation = useCallback(async () => {
+    if (!navigator.geolocation) {
+      const error = new Error('Geolocation is not supported');
+      setLocationError(error.message);
+      throw error;
+    }
 
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const coords = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          };
-          handlePositionUpdate(position);
-          resolve(coords);
-        },
-        (error) => {
-          const errorMsg = getGeolocationErrorMessage(error);
-          setLocationError(errorMsg);
-          reject(new Error(errorMsg));
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0 // Force fresh location
-        }
-      );
+    // Check permission first
+    const permission = await checkPermission();
+    if (permission === 'denied') {
+      const error = new Error('Permission to access location was denied');
+      setLocationError(getGeolocationErrorMessage({ code: 1 } as GeolocationPositionError));
+      throw error;
+    }
+
+    return new Promise<Coordinates>((resolve, reject) => {
+      // First try with high accuracy, but shorter timeout
+      const tryGetPosition = (attempts = 0) => {
+        const isHighAccuracy = attempts < 2; // Only try high accuracy twice
+        const timeout = isHighAccuracy ? 10000 : 20000; // 10s for high accuracy, 20s for low
+        
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const coords = {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
+            };
+            handlePositionUpdate(position);
+            // Start watching position after successful location
+            startWatching();
+            resolve(coords);
+          },
+          (error) => {
+            if (attempts < 1) {
+              // Try again with lower accuracy
+              tryGetPosition(attempts + 1);
+            } else {
+              const errorMsg = getGeolocationErrorMessage(error);
+              setLocationError(errorMsg);
+              reject(new Error(errorMsg));
+            }
+          },
+          {
+            enableHighAccuracy: isHighAccuracy,
+            timeout,
+            maximumAge: isHighAccuracy ? 0 : 5 * 60 * 1000 // 0 for high accuracy, 5 min for low
+          }
+        );
+      };
+
+      tryGetPosition(0);
     });
-  }, [handlePositionUpdate]);
+  }, [handlePositionUpdate, checkPermission, startWatching]);
 
   return (
     <LocationContext.Provider value={{ 
