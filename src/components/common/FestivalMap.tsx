@@ -73,12 +73,23 @@ const LocateControl = () => {
 
   // Check permission status on mount
   useEffect(() => {
+    // Only run in browser environment
+    if (typeof navigator === 'undefined' || !navigator.permissions) return;
+    
     navigator.permissions.query({ name: 'geolocation' as PermissionName })
       .then(permissionStatus => {
         setHasPermission(permissionStatus.state === 'granted');
         
-        permissionStatus.onchange = () => {
+        // Listen for permission changes
+        const handlePermissionChange = () => {
           setHasPermission(permissionStatus.state === 'granted');
+        };
+        
+        permissionStatus.addEventListener('change', handlePermissionChange);
+        
+        // Cleanup
+        return () => {
+          permissionStatus.removeEventListener('change', handlePermissionChange);
         };
       })
       .catch(() => setHasPermission(false));
@@ -91,14 +102,16 @@ const LocateControl = () => {
       return;
     }
 
-    // Request location if we don't have it yet
-    if (hasPermission !== false) {
-      setIsLocating(true);
-      try {
-        await requestLocation();
-      } finally {
-        setIsLocating(false);
-      }
+    // Always try to request location when the button is clicked
+    setIsLocating(true);
+    try {
+      // This will trigger the permission request if needed
+      await requestLocation();
+    } catch (error) {
+      console.error('Error getting location:', error);
+      // The error will be handled by the LocationContext and shown in the UI
+    } finally {
+      setIsLocating(false);
     }
   };
 
