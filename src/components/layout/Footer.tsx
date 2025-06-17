@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Music, Mail } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 declare global {
   interface Window {
@@ -11,6 +12,8 @@ declare global {
 }
 
 const Footer: React.FC = () => {
+  const { t, i18n } = useTranslation();
+
   return (
     <footer className="bg-gray-900 text-white pt-24 pb-8">
       <div className="container-custom">
@@ -19,10 +22,10 @@ const Footer: React.FC = () => {
           <div className="space-y-2">
           <div className="flex items-center space-x-2">
               <Music className="w-8 h-8 text-accent-500" />
-              <span className="text-xl font-heading font-bold">StageFinder</span>
+              <span className="text-xl font-heading font-bold">{t("footer.title")}</span>
             </div>
             <p className="text-gray-400 max-w-xs">
-            Din destinasjon for å oppdage de beste musikk- og kulturfestivalene i hele Norge.
+            {t("footer.description")}
             </p>
           </div>
 
@@ -30,23 +33,23 @@ const Footer: React.FC = () => {
           <div>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-gray-400 hover:text-accent-500 transition-colors">
-                  Hjem
+                <Link to={`/${i18n.language}/home`} className="text-gray-400 hover:text-accent-500 transition-colors">
+                  {t("footer.pages.home")}
                 </Link>
               </li>
               <li>
-                <Link to="/festivals" className="text-gray-400 hover:text-accent-500 transition-colors">
-                  Alle Festivaler
+                <Link to={`/${i18n.language}/festivals`} className="text-gray-400 hover:text-accent-500 transition-colors">
+                  {t("footer.pages.festivals")}
                 </Link>
               </li>
               <li>
-                <Link to="/calendar" className="text-gray-400 hover:text-accent-500 transition-colors">
-                  Festival Kalender
+                <Link to={`/${i18n.language}/calendar`} className="text-gray-400 hover:text-accent-500 transition-colors">
+                  {t("footer.pages.calendar")}
                 </Link>
               </li>
               <li>
-                <Link to="/map" className="text-gray-400 hover:text-accent-500 transition-colors">
-                  Festival Kart
+                <Link to={`/${i18n.language}/map`} className="text-gray-400 hover:text-accent-500 transition-colors">
+                  {t("footer.pages.map")}
                 </Link>
               </li>
             </ul>
@@ -56,27 +59,27 @@ const Footer: React.FC = () => {
           <div>
             <ul className="space-y-2">
               <li>
-                <Link to="/festivals?genre=rock" className="text-gray-400 hover:text-accent-500 transition-colors">
+                <Link to={`/${i18n.language}/festivals?genre=rock`} className="text-gray-400 hover:text-accent-500 transition-colors">
                   Rock
                 </Link>
               </li>
               <li>
-                <Link to="/festivals?genre=pop" className="text-gray-400 hover:text-accent-500 transition-colors">
+                <Link to={`/${i18n.language}/festivals?genre=pop`} className="text-gray-400 hover:text-accent-500 transition-colors">
                   Pop
                 </Link>
               </li>
               <li>
-                <Link to="/festivals?genre=electronic" className="text-gray-400 hover:text-accent-500 transition-colors">
+                <Link to= {`/${i18n.language}/festivals?genre=electronic`} className="text-gray-400 hover:text-accent-500 transition-colors">
                   Electronic
                 </Link>
               </li>
               <li>
-                <Link to="/festivals?genre=jazz" className="text-gray-400 hover:text-accent-500 transition-colors">
+                <Link to={`/${i18n.language}/festivals?genre=jazz`} className="text-gray-400 hover:text-accent-500 transition-colors">
                   Jazz
                 </Link>
               </li>
               <li>
-                <Link to="/festivals?genre=folk" className="text-gray-400 hover:text-accent-500 transition-colors">
+                <Link to={`/${i18n.language}/festivals?genre=folk`} className="text-gray-400 hover:text-accent-500 transition-colors">
                   Folk
                 </Link>
               </li>
@@ -86,13 +89,13 @@ const Footer: React.FC = () => {
           {/* Newsletter */}
           <div>
             <p className="text-gray-400 mb-4">
-              Abonner på vårt nyhetsbrev for å få oppdatert informasjon om festivaler.
+              {t("footer.newsletter.title")}
             </p>
             <form className="space-y-2">
               <div className="flex">
                 <input
                   type="email"
-                  placeholder="Din e-postadresse"
+                  placeholder={t("footer.newsletter.placeholder")}
                   className="flex-grow px-3 py-2 bg-gray-800 rounded-l-md border border-gray-700 focus:outline-none focus:ring-1 focus:ring-accent-500"
                 />
                 <button
@@ -103,7 +106,7 @@ const Footer: React.FC = () => {
                 </button>
               </div>
               <p className="text-xs text-gray-500">
-                Vi respekterer ditt personvern. Du kan avslutte når du vil.
+                {t("footer.newsletter.disclaimer")}
               </p>
             </form>
           </div>
@@ -119,16 +122,16 @@ const Footer: React.FC = () => {
                 onClick={() => window.UC_UI && window.UC_UI.showSecondLayer()}
                 className="text-gray-400 hover:text-accent-500 text-sm transition-colors"
               >
-                Administrer cookies
+                {t("footer.info.cookies")}
               </button>
-              <Link to="/privacy" className="text-gray-400 hover:text-accent-500 text-sm transition-colors">
-                Personvern
+              <Link to={`/${i18n.language}/privacy`} className="text-gray-400 hover:text-accent-500 text-sm transition-colors">
+                {t("footer.info.privacy")}
               </Link>
-              <Link to="/terms" className="text-gray-400 hover:text-accent-500 text-sm transition-colors">
-                Vilkår og betingelser
+              <Link to={`/${i18n.language}/terms`} className="text-gray-400 hover:text-accent-500 text-sm transition-colors">
+                {t("footer.info.terms")}
               </Link>
-              <Link to="/contact" className="text-gray-400 hover:text-accent-500 text-sm transition-colors">
-                Kontakt Oss
+              <Link to={`/${i18n.language}/contact`} className="text-gray-400 hover:text-accent-500 text-sm transition-colors">
+                {t("footer.info.contact")}
               </Link>
             </div>
           </div>

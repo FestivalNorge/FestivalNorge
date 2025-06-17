@@ -1,0 +1,134 @@
+{
+    "home": {
+      "title": "Utforsk festivaler i hele Norge",
+      "description": "Finn og utforsk de mest spennende musikk- og kulturfestivalene i hele Norge",
+      "all_festivals_btn": "Alle festivaler",
+      "map_btn": "Kart over festivaler",
+      "popular_festivals": {
+        "title": "Populære Festivaler",
+        "description": "Oppdag de mest populære festivalene i Norge",
+        "all_festivals_btn": "Alle festivaler"
+      },
+      "upcoming_festivals": {
+        "title": "Kommende Festivaler",
+        "description": "Planlegg din neste festivalopplevelse",
+        "calendar_btn": "Kalender"
+      },
+      "nearYou": {
+        "title": "Festivaler nær deg",
+        "description": "Se festivalene nær deg",
+        "map_btn": "Kart",
+        "request_location": "Finn festivaler i nærheten",
+        "request_location_btn": "Vis festivaler i nærheten",
+        "request_location_description": "Se hvilke festivaler som arrangeres i nærheten av deg ved å tillate stedslokasjon."
+      },
+      "features": {
+        "title": "Oppdag, planlegg og nyt",
+        "all_festivals_title": "Alle Festivaler",
+        "all_festivals_description": "Oppdag en samling av musikk- og kulturfestivaler som foregår i hele Norge.",
+        "calendar_title": "Festivalkalender",
+        "calendar_description": "Se alle kommende festivaler i kalenderen for å finne den som passer deg.",
+        "nearYou_title": "Festivaler nær deg",
+        "nearYou_description": "Ved å tillate stedslokasjon kan du finne festivaler nær deg."
+      }
+    },
+    "header": {
+        "home": "Hjem",
+        "festivals": "Festivaler",
+        "calendar": "Kalender",
+        "map": "Kart",
+        "language": "Språk"
+    },
+    "footer": {
+        "title": "StageFinder",
+        "description": "Din destinasjon for å oppdage de beste musikk- og kulturfestivalene i hele Norge.",
+        "pages": {
+            "home": "Hjem",
+            "festivals": "Alle Festivaler",
+            "calendar": "Festival Kalender",
+            "map": "Festival Kart"
+        },
+        "newsletter": {
+            "title": "Abonner på vårt nyhetsbrev for å få oppdatert informasjon om festivaler.",
+            "placeholder": "Din e-postadresse",
+            "disclaimer": "Vi respekterer ditt personvern. Du kan avslutte når du vil."
+        },
+        "info": {
+            "cookies": "Administrer cookies",
+            "privacy": "Personvern",
+            "terms": "Vilkår og betingelser",
+            "contact": "Kontakt oss"
+        }
+    },
+    "all_festivals": {
+        "title": "Utforsk festivaler",
+        "description": "Utforsk de mest spennende festivalene som foregår i Norge. Filtrér, sorter og finn din neste opplevelse.",
+        "search_result_one": "Fant <0>{{count}}</0> festival",
+        "search_result_other": "Fant <0>{{count}}</0> festivaler",
+        "search_result_with_filter_one": "Fant <0>{{count}}</0> festival i sjangeren <0>{{filter}}</0>",
+        "search_result_with_filter_other": "Fant <0>{{count}}</0> festivaler i sjangeren <0>{{filter}}</0>"
+    },
+    "calendar": {
+        "title": "Festival Kalender",
+        "description": "Se alle kommende festivaler i kalenderen for å finne den som passer deg.",
+        "filter_city": {
+            "title": "Filtrer etter by",
+            "placeholder": "Alle byer"
+        },
+        "filter_genre": {
+            "title": "Filtrer etter sjanger",
+            "placeholder": "Alle sjangere"
+        }
+    },
+    "map": {
+        "title": "Festival Kart",
+        "description": "Se festivaler på kartet over Norge. Trykk på markørene for mer informasjon.",
+        "list_title": "Festivaler",
+        "list_placeholder": "Søk på festivaler..."
+    },
+    "filter_panel" : {
+        "location": {
+            "title": "Nærmest meg",
+            "placeholder": "Nærmest meg"
+        },
+        "sort": {
+            "title": "Sorter etter",
+            "popularity": "Popularitet",
+            "date": "Dato",
+            "price": "Pris"
+        },
+        "filter_city": {
+            "title": "Filtrer etter by",
+            "placeholder": "Alle byer"
+        },
+        "filter_genre": {
+            "title": "Filtrer etter sjanger",
+            "placeholder": "Alle sjangere"
+        }
+    },
+    "common": {
+        "loading": "Laster festivaler...",
+        "loading_more_festivals": "Laster flere festivaler...",
+        "loading_nearby_festivals": "Laster festivaler nærheten...",
+        "getting_location": "Henter lokasjon...",
+        "loading_suggestions": "Laster forslag...",
+        "reset_filters": "Nullstill filter"
+    },
+    "error": {
+        "failed_to_load_upcoming_festivals": "Kunne ikke laste kommende festivaler. Prøv på nytt.",
+        "failed_to_load_popular_festivals": "Kunne ikke laste populære festivaler. Prøv på nytt.",
+        "failed_to_load_all_festivals": "Kunne ikke laste alle festivaler. Prøv på nytt.",
+        "failed_to_load_festivals_nearby": "Kunne ikke laste festivaler nær deg. Prøv på nytt.",
+        "failed_to_load_festivals": "Kunne ikke laste festivaler.",
+        "location_permission_denied": "Du må tillate stedslokasjon for å finne festivaler nær deg.",
+        "location_error": "Kunne ikke hente lokasjonen. Prøv på nytt.",
+        "try_again": "Prøv igjen",
+        "no_festivals_nearby": "Ingen festivaler funnet nær deg.",
+        "no_festivals_available": "Ingen festivaler tilgjengelig",
+        "no_results": "Ingen festivaler funnet",
+        "no_search_results": "Ingen festivaler funnet. Prøv et annet søk."
+    },
+    "search": {
+        "placeholder": "Søk etter festivaler, steder eller sjangere..."
+    }
+}

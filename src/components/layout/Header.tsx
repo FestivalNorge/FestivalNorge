@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Music } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../common/languageSwitcher';
 
 // Custom Link component that scrolls to top when clicked
 const ScrollLink = ({ to, children, ...props }: any) => {
@@ -25,6 +27,7 @@ const ScrollLink = ({ to, children, ...props }: any) => {
 const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const { t, i18n } = useTranslation();
   
   const handleMenuToggle = () => {
     if (mobileMenuOpen) {
@@ -63,30 +66,30 @@ const Header: React.FC = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-10">
             <ScrollLink 
-              to="/"
+              to={`/${i18n.language}/home`}
               className="font-medium text-gray-700 transition-colors hover:text-accent-500"
             >
-              Hjem
+              {t("header.home")}
             </ScrollLink>
             <ScrollLink 
-              to="/festivals"
+              to={`/${i18n.language}/festivals`}
               className="font-medium text-gray-700 transition-colors hover:text-accent-500"
             >
-              Festivaler
+              {t("header.festivals")}
             </ScrollLink>
             <ScrollLink 
-              to="/calendar"
+              to={`/${i18n.language}/calendar`}
               className="font-medium text-gray-700 transition-colors hover:text-accent-500"
             >
-              Kalender
+              {t("header.calendar")}
             </ScrollLink>
             <ScrollLink 
-              to="/map"
+              to={`/${i18n.language}/map`}
               className="font-medium text-gray-700 transition-colors hover:text-accent-500"
             >
-              Kart
+              {t("header.map")}
             </ScrollLink>
-            
+            <LanguageSwitcher />
             
           </nav>
 
@@ -117,32 +120,32 @@ const Header: React.FC = () => {
             <nav className={`w-full ${isClosing ? 'animate-slide-up' : 'animate-slide-down'}`}>
               <div className="flex flex-col space-y-1 p-2">
                 <Link 
-                  to="/"
+                  to={`/${i18n.language}/home`}
                   className="font-medium text-gray-700 hover:text-accent-500 py-2 px-4 text-lg rounded-lg hover:bg-gray-100 transition-colors duration-200"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Hjem
+                  {t("header.home")}
                 </Link>
                 <Link 
-                  to="/festivals"
+                  to={`/${i18n.language}/festivals`}
                   className="font-medium text-gray-700 hover:text-accent-500 py-2 px-4 text-lg rounded-lg hover:bg-gray-100 transition-colors duration-200"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Festivaler
+                  {t("header.festivals")}
                 </Link>
                 <Link 
-                  to="/calendar"
+                  to={`/${i18n.language}/calendar`}
                   className="font-medium text-gray-700 hover:text-accent-500 py-2 px-4 text-lg rounded-lg hover:bg-gray-100 transition-colors duration-200"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Kalender
+                  {t("header.calendar")}
                 </Link>
                 <Link 
-                  to="/map"
+                  to={`/${i18n.language}/map`}
                   className="font-medium text-gray-700 hover:text-accent-500 py-2 px-4 text-lg rounded-lg hover:bg-gray-100 transition-colors duration-200"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Kart
+                  {t("header.map")}
                 </Link>
               </div>
             </nav>

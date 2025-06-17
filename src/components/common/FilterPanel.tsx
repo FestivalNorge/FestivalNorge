@@ -1,6 +1,7 @@
 import React from 'react';
 import { Filter, CalendarDays, MapPin, CreditCard, TrendingUp } from 'lucide-react';
 import { SortOption, FilterOption, LocationFilter } from '../../types';
+import { useTranslation } from 'react-i18next';
 
 interface FilterPanelProps {
   sortOption: SortOption;
@@ -25,6 +26,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   onLocationChange,
   onRetryLocation
 }) => {
+  const { t } = useTranslation();
   const genres: string[] = ['Rock', 'Pop', 'Elektronisk', 'Hip-hop', 'Jazz', 'Folkemusikk', 'Metal', 'Indie'];
   const cities: string[] = ['Oslo', 'Bergen', 'Stavanger', 'Trondheim', 'Kristiansand', 'Tromsø', 'Bodø', 'Molde', 'Kristiansund', 'Ålesund', 'Lillehammer'];
 
@@ -36,7 +38,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           <div className="bg-primary-50 p-2 rounded-lg">
             <TrendingUp className="w-5 h-5 text-primary-500" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900">Sorter etter</h3>
+          <h3 className="text-lg font-semibold text-gray-900">{t('filter_panel.sort.title')}</h3>
         </div>
         <div className="space-y-2">
           <button
@@ -51,7 +53,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               <TrendingUp className={`w-4 h-4 mr-3 ${
                 sortOption === 'popularity' ? 'text-primary-500' : 'text-gray-400'
               }`} />
-              Popularitet
+              {t('filter_panel.sort.popularity')}
             </div>
           </button>
           <button
@@ -66,7 +68,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               <CalendarDays className={`w-4 h-4 mr-3 ${
                 sortOption === 'date' ? 'text-primary-500' : 'text-gray-400'
               }`} />
-              Dato
+              {t('filter_panel.sort.date')}
             </div>
           </button>
           <button
@@ -81,7 +83,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               <CreditCard className={`w-4 h-4 mr-3 ${
                 sortOption === 'price' ? 'text-primary-500' : 'text-gray-400'
               }`} />
-              Pris
+              {t('filter_panel.sort.price')}
             </div>
           </button>
           <div className="relative">
@@ -108,10 +110,10 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                   }`} />
                 )}
                 {sortOption === 'location' && userLocation === null && !locationError 
-                  ? 'Finner din posisjon...' 
+                  ? t('common.getting_location') 
                   : locationError 
-                    ? 'Nærmest meg'
-                    : 'Nærmest meg'}
+                    ? t('error.location_error')
+                    : t('filter_panel.location.title')}
               </div>
             </button>
             
@@ -122,7 +124,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                   onRetryLocation();
                 }}
                 className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 transition-colors"
-                title="Prøv igjen"
+                title={t('error.try_again')}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500">
                   <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
@@ -148,7 +150,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           <div className="bg-secondary-50 p-2 rounded-lg">
             <MapPin className="w-5 h-5 text-secondary-500" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900">Filtrer etter by</h3>
+          <h3 className="text-lg font-semibold text-gray-900">{t('filter_panel.filter_city.title')}</h3>
         </div>
         <div className="space-y-2">
           <select
@@ -156,7 +158,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             onChange={(e) => onLocationChange(e.target.value as LocationFilter)}
             className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           >
-            <option value="all">Alle byer</option>
+            <option value="all">{t('filter_panel.filter_city.placeholder')}</option>
             {cities.map((city) => (
               <option key={city} value={city.toLowerCase()}>
                 {city}
@@ -172,7 +174,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           <div className="bg-accent-50 p-2 rounded-lg">
             <Filter className="w-5 h-5 text-accent-500" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900">Filtrer etter sjanger</h3>
+          <h3 className="text-lg font-semibold text-gray-900">{t('filter_panel.filter_genre.title')}</h3>
         </div>
         <div className="space-y-2">
           <select
@@ -180,7 +182,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             onChange={(e) => onFilterChange(e.target.value as FilterOption)}
             className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           >
-            <option value="all">Alle sjangere</option>
+            <option value="all">{t('filter_panel.filter_genre.placeholder')}</option>
             {genres.map((genre) => (
               <option key={genre} value={genre.toLowerCase()}>
                 {genre}

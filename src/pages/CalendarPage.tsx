@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useFestival } from '../context/FestivalContext';
 import CalendarView from '../components/common/CalendarView';
 import { ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const CalendarPage: React.FC = () => {
   const { festivals } = useFestival();
@@ -11,6 +12,7 @@ const CalendarPage: React.FC = () => {
   const [isGenreOpen, setIsGenreOpen] = useState(false);
   const locationRef = useRef<HTMLDivElement>(null);
   const genreRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -71,9 +73,9 @@ const CalendarPage: React.FC = () => {
       <div className="container-custom">
         {/* Page Header */}
         <div className="mb-6">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Festivalkalender</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('calendar.title')}</h1>
           <p className="text-lg text-gray-600 max-w-3xl mb-6">
-            Browse upcoming festivals by date. This calendar view helps you plan your festival schedule throughout the year.
+            {t('calendar.description')}
           </p>
           
           {/* Filters */}
@@ -82,7 +84,7 @@ const CalendarPage: React.FC = () => {
               {/* Location Filter */}
               <div className="relative flex-1" ref={locationRef}>
                 <label htmlFor="location-filter" className="block text-sm font-medium text-gray-700 mb-1">
-                  By
+                  {t('calendar.filter_city.title')}
                 </label>
                 <div className="relative">
                   <button
@@ -94,7 +96,7 @@ const CalendarPage: React.FC = () => {
                       if (isGenreOpen) setIsGenreOpen(false);
                     }}
                   >
-                    <span className="truncate">{selectedLocation === 'all' ? 'Alle byer' : selectedLocation}</span>
+                    <span className="truncate">{selectedLocation === 'all' ? t('calendar.filter_city.placeholder') : selectedLocation}</span>
                     <ChevronDown className={`w-5 h-5 ml-2 flex-shrink-0 transition-transform ${isLocationOpen ? 'transform rotate-180' : ''}`} />
                   </button>
                   
@@ -109,7 +111,7 @@ const CalendarPage: React.FC = () => {
                             setIsLocationOpen(false);
                           }}
                         >
-                          Alle byer
+                          {t('calendar.filter_city.placeholder')}
                         </button>
                         {locations.map((location) => (
                           <button
@@ -132,7 +134,7 @@ const CalendarPage: React.FC = () => {
               {/* Genre Filter */}
               <div className="relative flex-1" ref={genreRef}>
                 <label htmlFor="genre-filter" className="block text-sm font-medium text-gray-700 mb-1">
-                  Sjanger
+                  {t('calendar.filter_genre.title')}
                 </label>
                 <div className="relative">
                   <button
@@ -144,7 +146,7 @@ const CalendarPage: React.FC = () => {
                       if (isLocationOpen) setIsLocationOpen(false);
                     }}
                   >
-                    <span className="truncate">{selectedGenre === 'all' ? 'Alle sjangre' : selectedGenre}</span>
+                    <span className="truncate">{selectedGenre === 'all' ? t('calendar.filter_genre.placeholder') : selectedGenre}</span>
                     <ChevronDown className={`w-5 h-5 ml-2 flex-shrink-0 transition-transform ${isGenreOpen ? 'transform rotate-180' : ''}`} />
                   </button>
                   
@@ -159,7 +161,7 @@ const CalendarPage: React.FC = () => {
                             setIsGenreOpen(false);
                           }}
                         >
-                          Alle sjangre
+                          {t('calendar.filter_genre.placeholder')}
                         </button>
                         {genres.map((genre) => (
                           <button
