@@ -96,7 +96,7 @@ const CalendarPage: React.FC = () => {
                       if (isGenreOpen) setIsGenreOpen(false);
                     }}
                   >
-                    <span className="truncate">{selectedLocation === 'all' ? 'Alle byer' : selectedLocation}</span>
+                    <span className="truncate">{selectedLocation === 'all' ? t('calendar.filter_city.placeholder') : selectedLocation}</span>
                     <ChevronDown className={`w-5 h-5 ml-2 flex-shrink-0 transition-transform ${isLocationOpen ? 'transform rotate-180' : ''}`} />
                   </button>
                   
@@ -146,7 +146,7 @@ const CalendarPage: React.FC = () => {
                       if (isLocationOpen) setIsLocationOpen(false);
                     }}
                   >
-                    <span className="truncate">{selectedGenre === 'all' ? 'Alle sjangre' : selectedGenre}</span>
+                    <span className="truncate">{selectedGenre === 'all' ? t('calendar.filter_genre.placeholder') : selectedGenre}</span>
                     <ChevronDown className={`w-5 h-5 ml-2 flex-shrink-0 transition-transform ${isGenreOpen ? 'transform rotate-180' : ''}`} />
                   </button>
                   

@@ -3,11 +3,11 @@ import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getFestivals } from '../../services/festivalService';
 import { Festival } from '../../types';
+import { useTranslation } from 'react-i18next';
 
 interface SearchBarProps {
   onSearch?: (term: string) => void;
   onSuggestionSelect?: (festival: Festival) => void;
-  placeholder?: string;
   className?: string;
   disableSuggestions?: boolean;
   value?: string;
@@ -16,7 +16,6 @@ interface SearchBarProps {
 const SearchBar: React.FC<SearchBarProps> = ({ 
   onSearch, 
   onSuggestionSelect,
-  placeholder = 'Søk etter festivaler, steder eller sjangere...',
   className = '',
   disableSuggestions = false,
   value = ''
@@ -29,6 +28,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const placeholder = t('search.placeholder') ?? "";
 
   // Load all festivals on component mount
   useEffect(() => {

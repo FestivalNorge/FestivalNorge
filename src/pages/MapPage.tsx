@@ -137,13 +137,13 @@ const MapPage: React.FC = () => {
                     </button>
                   )}
                 </div>
-                <div className="space-y-4 flex-1 overflow-y-auto px-2">
-                  {filteredFestivals.length === 0 ? (
+                <div className="flex-1 overflow-y-auto px-2 pt-1 pb-4 space-y-4">
+                  {filteredFestivalsWithSearch.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
                       {searchTerm ? t("error.no_results") : t("error.no_festivals_available")}
                     </div>
                   ) : (
-                    filteredFestivals.map((festival) => (
+                    filteredFestivalsWithSearch.map((festival) => (
                       <FestivalCard
                         key={festival.id}
                         festival={festival}

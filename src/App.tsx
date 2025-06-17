@@ -1,5 +1,6 @@
 // src/App.tsx
 import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import i18n from '@/config/i18n';
 
 import { FestivalProvider } from '@/context/FestivalContext';
@@ -20,29 +21,38 @@ import MapPage             from '@/pages/MapPage';
 /*  Wrapper: keeps i18next.language === :lang param                    */
 /* ------------------------------------------------------------------ */
 const LangRoutes: React.FC = () => {
-  const { lang } = useParams<{ lang: string }>();
-  const safeLang = ['no', 'en'].includes(lang || '') ? lang! : 'no';
+  const { lang }   = useParams<{ lang?: string }>();   // "no" | "en" | undefined
+  const safeLang   = ['no', 'en'].includes(lang || '') ? lang! : 'no';
 
-  if (i18n.language !== safeLang) {
-    i18n.changeLanguage(safeLang);
+  /* If i18next is out of sync, just change it. No navigation. */
+  useEffect(() => {
+    if (i18n.language !== safeLang) {
+      i18n.changeLanguage(safeLang);
+    }
+  }, [safeLang]);
+
+  /* If the URL completely lacks a language segment, redirect once. */
+  if (!lang) {
+    return <Navigate to={`/${i18n.language}/home`} replace />;
   }
 
   return (
     <Routes>
-      {/* /:lang/home, /:lang/festivals, … */}
-      <Route path="home"                element={<HomePage />} />
-      <Route path="festivals"           element={<FestivalsPage />} />
-      <Route path="festival/:id"        element={<FestivalDetailPage />} />
-      <Route path="calendar"            element={<CalendarPage />} />
-      <Route path="map"                 element={<MapPage />} />
-
-      {/* /:lang → /:lang/home */}
+      <Route path="home"      element={<HomePage />} />
+      <Route path="festivals" element={<FestivalsPage />} />
+      <Route path="festival/:id" element={<FestivalDetailPage />} />
+      <Route path="calendar"  element={<CalendarPage />} />
+      <Route path="map"       element={<MapPage />} />
+      {/* fallbacks */}
       <Route index       element={<Navigate to="home" replace />} />
-      {/* anything unknown under the lang → /:lang/home */}
       <Route path="*"    element={<Navigate to="home" replace />} />
     </Routes>
   );
 };
+
+const LangRedirect: React.FC = () => (
+  <Navigate to={`/${i18n.language}/home`} replace />
+);
 
 /* ------------------------------------------------------------------ */
 /*  App                                                               */
@@ -58,11 +68,12 @@ function App() {
 
             <main className="flex-grow">
               <Routes>
-                {/* language-prefixed subtree */}
-                <Route path="/:lang/*" element={<LangRoutes />} />
+                {/* root or any path without language → use current i18n language */}
+                <Route path="/"  element={<LangRedirect />} />
+                <Route path="*"  element={<LangRedirect />} />
 
-                {/* any un-prefixed URL → default language (no) */}
-                <Route path="*" element={<Navigate to="/no/home" replace />} />
+                {/* all real routes */}
+                <Route path="/:lang/*" element={<LangRoutes />} />
               </Routes>
             </main>
 

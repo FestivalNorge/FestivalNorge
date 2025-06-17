@@ -1,7 +1,9 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { MapPin, Calendar, Ticket, Users } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Festival } from '../../types';
+import i18n from '@/config/i18n';
 
 interface FestivalCardProps {
   festival: Festival;
@@ -22,6 +24,9 @@ const FestivalCard: React.FC<FestivalCardProps> = ({
   distance,
   onClick
 }) => {
+  const navigate = useNavigate();
+  const { lang } = useParams<{ lang?: string }>();
+  const currentLang = lang || i18n.language;
   
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'MMM d');
@@ -59,8 +64,8 @@ const FestivalCard: React.FC<FestivalCardProps> = ({
         if (onClick) {
           onClick(festival);
         } else {
-          // Fallback to default behavior if no onClick handler is provided
-          window.location.href = `/festival/${festival.id}`;
+          // Use React Router's navigate with language prefix
+          navigate(`/${currentLang}/festival/${festival.id}`);
         }
       }}
     >

@@ -63,13 +63,13 @@ const LanguageSwitcher: React.FC = () => {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
-          <ul className="py-1">
+        <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[140px]">
+          <ul className="py-0">
             {LANGUAGES.map((l) => (
               <li key={l.code}>
                 <button
                   onClick={() => handleSelect(l.code)}
-                  className={`flex w-full items-center gap-4 px-4 py-2 text-sm hover:bg-gray-100 transition ${language === l.code ? 'bg-gray-100 font-semibold' : ''}`}
+                  className={`flex w-full items-center gap-4 px-10 py-2 text-sm hover:bg-gray-100 transition ${language === l.code ? 'bg-gray-100 font-semibold' : ''}`}
                 >
                   <span className={`fi fi-${COUNTRY_CODES[l.code]} rounded-full w-4 h-4`} />
                   {l.label}

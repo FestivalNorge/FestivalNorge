@@ -32,9 +32,6 @@
         "nearYou_description": "Ved å tillate stedslokasjon kan du finne festivaler nær deg."
       }
     },
-    "search": {
-        "placeholder": "Søk etter festivaler, steder eller sjangere..."
-    },
     "header": {
         "home": "Hjem",
         "festivals": "Festivaler",
@@ -69,35 +66,7 @@
         "search_result_one": "Fant <0>{{count}}</0> festival",
         "search_result_other": "Fant <0>{{count}}</0> festivaler",
         "search_result_with_filter_one": "Fant <0>{{count}}</0> festival i sjangeren <0>{{filter}}</0>",
-        "search_result_with_filter_other": "Fant <0>{{count}}</0> festivaler i sjangeren <0>{{filter}}</0>",
-        "location": {
-            "title": "Nærmest meg",
-            "placeholder": "Nærmest meg"
-        },
-        "sort": {
-            "title": "Sorter etter",
-            "popularity": "Popularitet",
-            "date": "Dato",
-            "price": "Pris"
-        },
-        "filter_city": {
-            "title": "Filtrer etter by",
-            "placeholder": "Alle byer"
-        },
-        "filter_genre": {
-            "title": "Filtrer etter sjanger",
-            "placeholder": "Alle sjangere"
-        }
-    },
-    "genres": {
-        "rock": "Rock",
-        "pop": "Pop",
-        "electronic": "Elektronisk",
-        "folk": "Folkemusikk",
-        "metal": "Metall",
-        "jazz": "Jazz",
-        "indie": "Indie",
-        "hip-hop": "Hip-hop"
+        "search_result_with_filter_other": "Fant <0>{{count}}</0> festivaler i sjangeren <0>{{filter}}</0>"
     },
     "calendar": {
         "title": "Festival Kalender",
@@ -116,6 +85,26 @@
         "description": "Se festivaler på kartet over Norge. Trykk på markørene for mer informasjon.",
         "list_title": "Festivaler",
         "list_placeholder": "Søk på festivaler..."
+    },
+    "filter_panel" : {
+        "location": {
+            "title": "Nærmest meg",
+            "placeholder": "Nærmest meg"
+        },
+        "sort": {
+            "title": "Sorter etter",
+            "popularity": "Popularitet",
+            "date": "Dato",
+            "price": "Pris"
+        },
+        "filter_city": {
+            "title": "Filtrer etter by",
+            "placeholder": "Alle byer"
+        },
+        "filter_genre": {
+            "title": "Filtrer etter sjanger",
+            "placeholder": "Alle sjangere"
+        }
     },
     "common": {
         "loading": "Laster festivaler...",
@@ -138,5 +127,8 @@
         "no_festivals_available": "Ingen festivaler tilgjengelig",
         "no_results": "Ingen festivaler funnet",
         "no_search_results": "Ingen festivaler funnet. Prøv et annet søk."
+    },
+    "search": {
+        "placeholder": "Søk etter festivaler, steder eller sjangere..."
     }
 }
