@@ -6,6 +6,7 @@ import FestivalCard from '../components/common/FestivalCard';
 import SearchBar from '../components/common/SearchBar';
 import FilterPanel from '../components/common/FilterPanel';
 import { SortOption, FilterOption, LocationFilter, Festival } from '../types';
+import { useTranslation, Trans } from 'react-i18next';
 
 const FestivalsPage: React.FC = () => {
   const { 
@@ -26,6 +27,7 @@ const FestivalsPage: React.FC = () => {
   
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSearchTerm = searchParams.get('search') || '';
+  const { t } = useTranslation();
   
   useEffect(() => {
     const searchTerm = searchParams.get('search') || '';
@@ -45,9 +47,9 @@ const FestivalsPage: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
-  const observer = useRef<IntersectionObserver | null>(null);
   const loadingRef = useRef<HTMLDivElement>(null);
   const ITEMS_PER_PAGE = 9; // 3x3 grid items per load
+
 
 
   
@@ -164,7 +166,7 @@ const FestivalsPage: React.FC = () => {
       <div className="min-h-screen pt-28 pb-16 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-12 w-12 text-primary-500 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Laster festivaler...</p>
+          <p className="text-gray-600">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -182,7 +184,7 @@ const FestivalsPage: React.FC = () => {
               </svg>
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-medium text-red-700">Kunne ikke laste festivaler</h3>
+              <h3 className="text-lg font-medium text-red-700">{t("error.failed_to_load_festivals")}</h3>
               <div className="mt-2 text-sm text-red-600">
                 <p>{error}</p>
               </div>
@@ -191,7 +193,7 @@ const FestivalsPage: React.FC = () => {
                   onClick={() => window.location.reload()}
                   className="btn btn-error"
                 >
-                  Prøv igjen
+                  {t("error.try_again")}
                 </button>
               </div>
             </div>
@@ -211,16 +213,16 @@ const FestivalsPage: React.FC = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-primary-900/90 to-primary-900/70"></div>
           </div>
           <div className="relative h-full flex flex-col justify-center px-8 md:px-12">
-            <h1 className="text-white mb-4 max-w-2xl">Utforsk festivaler</h1>
+            <h1 className="text-white mb-4 max-w-2xl">{t("all_festivals.title")}</h1>
             <p className="text-white/90 text-lg mb-6 max-w-2xl">
-              Utforsk de mest spennende festivalene som foregår i Norge. Filtrér, sorter og finn din neste opplevelse.
+              {t("all_festivals.description")}
             </p>
             <div className="mb-8">
               <SearchBar 
                 value={currentSearchTerm}
                 onSearch={handleSearch}
                 onSuggestionSelect={handleSuggestionSelect}
-                placeholder="Søk etter festivaler..."
+                placeholder={t("search.placeholder")}
                 disableSuggestions={true}
               />
             </div>
@@ -251,10 +253,16 @@ const FestivalsPage: React.FC = () => {
             {/* Results Count */}
             <div className="bg-white rounded-lg shadow-md p-4 mb-6">
               <p className="text-gray-600">
-                Fant <span className="font-semibold text-primary-500">{filteredFestivals.length}</span> festivaler
-                {filterOption !== 'all' && (
-                  <span> i kategorien <span className="font-semibold text-primary-500">{filterOption}</span></span>
-                )}
+                <Trans i18nKey={filterOption === 'all'
+                      ? 'all_festivals.search_result'
+                      : 'all_festivals.search_result_with_filter'
+                  }
+                  count={filteredFestivals.length}
+                  components={[<strong key="c" />]}
+                  values={{count: filteredFestivals.length, filter:filterOption === 'all' ? undefined
+                        : t(`genres.${filterOption}`, { defaultValue: filterOption })
+                  }}
+                />
               </p>
             </div>
             
@@ -263,7 +271,7 @@ const FestivalsPage: React.FC = () => {
               <div className="col-span-full flex justify-center py-12">
                 <div className="flex flex-col items-center space-y-4">
                   <Loader2 className="h-12 w-12 text-primary-500 animate-spin" />
-                  <p className="text-gray-600">Laster festivaler...</p>
+                  <p className="text-gray-600">{t("common.loading")}</p>
                 </div>
               </div>
             ) : displayedFestivals.length > 0 ? (
@@ -274,13 +282,13 @@ const FestivalsPage: React.FC = () => {
                 {!selectedFestival && hasMore && (
                   <div ref={loadingRef} className="col-span-full flex flex-col items-center py-8 space-y-2">
                     <Loader2 className={`h-8 w-8 text-primary-500 animate-spin ${isLoadingMore ? 'opacity-100' : 'opacity-50'}`} />
-                    <span className="text-sm text-gray-500">Laster flere festivaler...</span>
+                    <span className="text-sm text-gray-500">{t("common.loading_more_festivals")}</span>
                   </div>
                 )}
               </div>
             ) : (
               <div className="col-span-full text-center py-12">
-                <p className="text-gray-500 text-lg mb-4">Ingen festivaler funnet. Prøv et annet søk.</p>
+                <p className="text-gray-500 text-lg mb-4">{t("common.no_search_results")}</p>
                 <button
                   onClick={() => {
                     setSelectedFestival(null);
@@ -292,7 +300,7 @@ const FestivalsPage: React.FC = () => {
                   }}
                   className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
                 >
-                  Tilbakestill filtre
+                  {t("common.reset_filters")}
                 </button>
               </div>
             )}

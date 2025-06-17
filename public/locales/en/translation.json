@@ -1,0 +1,142 @@
+{
+  "home": {
+    "title": "Explore Festivals Across Norway",
+    "description": "Find and explore the most exciting music and cultural festivals across Norway",
+    "all_festivals_btn": "All Festivals",
+    "map_btn": "Festival Map",
+    "popular_festivals": {
+      "title": "Popular Festivals",
+      "description": "Discover the most popular festivals in Norway",
+      "btn": "All Festivals"
+    },
+    "upcoming_festivals": {
+      "title": "Upcoming Festivals",
+      "description": "Plan your next festival experience",
+      "btn": "Calendar"
+    },
+    "nearYou": {
+      "title": "Festivals Near You",
+      "description": "See festivals near you",
+      "map_btn": "Map",
+      "request_location": "Find festivals nearby",
+      "request_location_btn": "Show Nearby Festivals",
+      "request_location_description": "See which festivals are happening near you by allowing location access."
+    },
+    "info": {
+      "title": "Discover, Plan, and Enjoy",
+      "all_festivals_title": "All Festivals",
+      "all_festivals_description": "Explore a collection of music and cultural festivals taking place across Norway.",
+      "calendar_title": "Festival Calendar",
+      "calendar_description": "See all upcoming festivals in the calendar to find one that suits you.",
+      "map_title": "Festivals Near You",
+      "map_description": "By allowing location access, you can find festivals near you."
+    }
+  },
+  "search": {
+    "placeholder": "Search for festivals, locations or genres..."
+  },
+  "header": {
+    "home": "Home",
+    "festivals": "Festivals",
+    "calendar": "Calendar",
+    "map": "Map",
+    "language": "Language"
+  },
+  "footer": {
+    "title": "StageFinder",
+    "description": "Your destination to discover the best music and cultural festivals across Norway.",
+    "pages": {
+      "home": "Home",
+      "festivals": "All Festivals",
+      "calendar": "Festival Calendar",
+      "map": "Festival Map"
+    },
+    "newsletter": {
+      "title": "Subscribe to our newsletter for updates on festivals.",
+      "placeholder": "Your email address",
+      "disclaimer": "We respect your privacy. You can unsubscribe at any time."
+    },
+    "info": {
+      "cookies": "Manage cookies",
+      "privacy": "Privacy Policy",
+      "terms": "Terms and Conditions",
+      "contact": "Contact Us"
+    }
+  },
+  "all_festivals": {
+    "title": "Explore Festivals",
+    "description": "Discover the most exciting festivals happening in Norway. Filter, sort, and find your next experience.",
+    "search_result_one": "Found <0>{{count}}</0> festival",
+    "search_result_other": "Found <0>{{count}}</0> festivals",
+    "search_result_with_filter_one": "Found <0>{{count}}</0> festival in the genre <0>{{filter}}</0>",
+    "search_result_with_filter_other": "Found <0>{{count}}</0> festivals in the genre <0>{{filter}}</0>",
+    "location": {
+      "title": "Closest to Me",
+      "placeholder": "Closest to Me",
+      "finding_location": "Finding location..."
+    },
+    "sort": {
+      "title": "Sort by",
+      "popularity": "Popularity",
+      "date": "Date",
+      "price": "Price"
+    },
+    "filter_city": {
+      "title": "Filter by City",
+      "placeholder": "All Cities"
+    },
+    "filter_genre": {
+      "title": "Filter by Genre",
+      "placeholder": "All Genres"
+    }
+  },
+  "genres": {
+    "rock": "Rock",
+    "pop": "Pop",
+    "electronic": "Electronic",
+    "folk": "Folk",
+    "metal": "Metal",
+    "jazz": "Jazz",
+    "indie": "Indie",
+    "hip-hop": "Hip-hop"
+  },
+  "calendar": {
+    "title": "Festival Calendar",
+    "description": "See all upcoming festivals in the calendar to find one that suits you.",
+    "filter_city": {
+      "title": "Filter by City",
+      "placeholder": "All Cities"
+    },
+    "filter_genre": {
+      "title": "Filter by Genre",
+      "placeholder": "All Genres"
+    }
+  },
+  "map": {
+    "title": "Festival Map",
+    "description": "View festivals on the map of Norway. Tap on the markers for more info.",
+    "list_title": "Festivals",
+    "list_placeholder": "Search festivals..."
+  },
+  "common": {
+    "loading": "Loading festivals...",
+    "getting_location": "Finding location...",
+    "loading_more_festivals": "Loading more festivals...",
+    "loading_suggestions": "Loading suggestions...",
+    "reset_filters": "Reset Filters"
+  },
+  "error": {
+    "failed_to_load_upcoming_festivals": "Failed to load upcoming festivals. Please try again.",
+    "failed_to_load_popular_festivals": "Failed to load popular festivals. Please try again.",
+    "failed_to_load_all_festivals": "Failed to load all festivals. Please try again.",
+    "failed_to_load_festivals_nearby": "Failed to load festivals near you. Please try again.",
+    "failed_to_load_festivals": "Failed to load festivals.",
+    "location_permission_denied": "You must allow location access to find nearby festivals.",
+    "location_error": "Could not retrieve location. Please try again.",
+    "try_again": "Try Again",
+    "no_festivals_nearby": "No festivals found near you.",
+    "no_festivals_available": "No festivals available",
+    "no_results": "No festivals found",
+    "no_search_results": "No festivals found. Try another search."
+  }
+}

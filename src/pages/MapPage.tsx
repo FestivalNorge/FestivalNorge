@@ -3,6 +3,7 @@ import FestivalCard from '../components/common/FestivalCard';
 import FestivalMap from '../components/common/FestivalMap';
 import { useFestival } from '../context/FestivalContext';
 import { Festival } from '../types';
+import { useTranslation } from 'react-i18next';
 
 // Import Leaflet CSS
 import 'leaflet/dist/leaflet.css';
@@ -10,6 +11,7 @@ import 'leaflet/dist/leaflet.css';
 const MapPage: React.FC = () => {
   const { filteredFestivals } = useFestival();
   const [searchTerm, setSearchTerm] = useState('');
+  const { t } = useTranslation();
   const [selectedFestival, setSelectedFestival] = useState<string | undefined>(undefined);
   const mapRef = useRef<{ flyTo: (latlng: [number, number], zoom: number, options: any) => void }>(null);
 
@@ -52,7 +54,7 @@ const MapPage: React.FC = () => {
       <div className="min-h-screen pt-28 pb-16 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Laster festivaler...</p>
+          <p className="text-gray-600">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -72,7 +74,7 @@ const MapPage: React.FC = () => {
             onClick={() => window.location.reload()}
             className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 transition-colors"
           >
-            Prøv igjen
+            {t("error.try_again")}
           </button>
         </div>
       </div>
@@ -84,10 +86,10 @@ const MapPage: React.FC = () => {
       <div className="container-custom">
         {/* Page Header */}
         <div className="mb-10">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Festivalkart</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">{t("map.title")}</h1>
           <p className="text-lg text-gray-600 max-w-3xl">
-            Se festivaler på kartet over Norge. Trykk på markørene for mer informasjon.
-            {filteredFestivals.length === 0 && ' Ingen festivaler funnet.'}
+            {t("map.description")}
+            {filteredFestivals.length === 0 && t("error.no_results")}
           </p>
         </div>
       </div>
@@ -97,7 +99,6 @@ const MapPage: React.FC = () => {
           {/* Map section */}
           <div className="bg-white rounded-lg shadow-md h-full">
             <div className="p-6">
-              <h2 className="text-2xl font-bold mb-6">Kart</h2>
               <div className="h-[calc(65vh-32px)] w-full rounded-lg overflow-hidden bg-white relative" style={{ zIndex: 1 }}>
                 <FestivalMap 
                   ref={mapRef}
@@ -115,12 +116,12 @@ const MapPage: React.FC = () => {
           {/* Festival list section */}
           <div className="bg-white rounded-lg shadow-md">
             <div className="p-6">
-              <h2 className="text-2xl font-bold mb-6">Festivaler</h2>
+              <h2 className="text-2xl font-bold mb-6">{t("map.list_title")}</h2>
               <div className="flex flex-col gap-4 h-[calc(65vh-32px)]">
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Søk på festivaler..."
+                    placeholder={t("map.list_placeholder")}
                     value={searchTerm}
                     onChange={handleSearch}
                     className="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -139,7 +140,7 @@ const MapPage: React.FC = () => {
                 <div className="space-y-4 flex-1 overflow-y-auto px-2">
                   {filteredFestivals.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
-                      {searchTerm ? 'Ingen festivaler funnet' : 'Ingen festivaler tilgjengelig'}
+                      {searchTerm ? t("error.no_results") : t("error.no_festivals_available")}
                     </div>
                   ) : (
                     filteredFestivals.map((festival) => (

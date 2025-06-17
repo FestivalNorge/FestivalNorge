@@ -7,6 +7,7 @@ import FestivalCard from '../components/common/FestivalCard';
 import SearchBar from '../components/common/SearchBar';
 import { useLocation } from '../context/LocationContext';
 import { getNearbyFestivals, FestivalWithDistance } from '../services/festivalService';
+import { useTranslation } from 'react-i18next';
 
 // Skeleton loaders
 const FestivalCardSkeleton: React.FC<{ className?: string }> = ({ className = '' }) => (
@@ -34,6 +35,7 @@ const HomePage: React.FC = () => {
   // 1) FestivalContext
   const {popularFestivals, getUpcomingFestivals, loading, error} = useFestival();
   const upcomingFestivals = getUpcomingFestivals();
+  const { t } = useTranslation();
 
   // 2) LocationContext
   const { location: userLocation, requestLocation, locationError } = useLocation();
@@ -87,9 +89,9 @@ const HomePage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-primary-900/90 to-primary-900/70" />
         <div className="container-custom relative z-10">
           <div className="max-w-6xl animate-fade-in">
-            <h1 className="text-white mb-6">Utforsk festivaler i hele Norge</h1>
+            <h1 className="text-white mb-6">{t("home.title")}</h1>
             <p className="text-white/90 text-lg mb-8">
-              Finn og utforske de mest spennende musikk- og kulturfestivalene i hele Norge.
+              {t("home.description")}
             </p>
             <div className="max-w-2xl w-full mb-10">
               <SearchBar
@@ -99,10 +101,10 @@ const HomePage: React.FC = () => {
             </div>
             <div className="flex flex-wrap gap-4">
               <Link to="/festivals" className="btn btn-accent">
-                Alle Festivaler
+                {t("home.all_festivals_btn")}
               </Link>
               <Link to="/map" className="btn btn-outline border-white text-white hover:bg-white/10">
-                Kart over festivaler
+                {t("home.map_btn")}
               </Link>
             </div>
           </div>
@@ -117,11 +119,11 @@ const HomePage: React.FC = () => {
           ) : (
             <div className="flex flex-col sm:flex-row sm:justify-between mb-6 gap-4">
               <div>
-                <h2 className="text-3xl font-bold text-gray-900">Populære Festivaler</h2>
-                <p className="text-gray-600">Oppdag de mest populære festivalene i hele Norge</p>
+                <h2 className="text-3xl font-bold text-gray-900">{t("home.popular_festivals.title")}</h2>
+                <p className="text-gray-600">{t("home.popular_festivals.description")}</p>
               </div>
               <Link to="/festivals" className="text-accent-500 hover:text-accent-600 flex items-center">
-                <span className="mr-1">Alle Festivaler</span>
+                <span className="mr-1">{t("home.popular_festivals.all_festivals_btn")}</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -133,7 +135,7 @@ const HomePage: React.FC = () => {
               ? (
                 <div className="col-span-3 text-center py-8 text-gray-500">
                   <AlertCircle className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                  <p>Kunne ikke laste populære festivaler. Prøv på nytt.</p>
+                  <p>{t("error.failed_to_load_popular_festivals")}</p>
                 </div>
               )
               : popularFestivals.map(f => <FestivalCard key={f.id} festival={f} />)}
@@ -149,11 +151,11 @@ const HomePage: React.FC = () => {
           ) : (
             <div className="flex flex-col sm:flex-row sm:justify-between mb-6 gap-4">
               <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">Kommende Festivaler</h2>
-                <p className="text-gray-600">Planlegg din neste festivalopplevelse</p>
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">{t("home.upcoming_festivals.title")}</h2>
+                <p className="text-gray-600">{t("home.upcoming_festivals.description")}</p>
               </div>
               <Link to="/calendar" className="text-accent-500 hover:text-accent-600 flex items-center">
-                <span className="mr-1">Kalender</span>
+                <span className="mr-1">{t("home.upcoming_festivals.calendar_btn")}</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -165,7 +167,7 @@ const HomePage: React.FC = () => {
               ? (
                 <div className="col-span-2 text-center py-8 text-gray-500">
                   <AlertCircle className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                  <p>Kunne ikke laste kommende festivaler. Prøv på nytt.</p>
+                  <p>{t("error.failed_to_load_upcoming_festivals")}</p>
                 </div>
               )
               : upcomingFestivals.slice(0, 4).map(f => <FestivalCard key={f.id} festival={f} />)}
@@ -179,12 +181,12 @@ const HomePage: React.FC = () => {
           {!userLocation ? (
             // Step 1: Ask user for permission or show loading
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Finn festivaler i nærheten</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">{t("home.nearYou.title")}</h2>
               <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-                Se hvilke festivaler som arrangeres i nærheten av deg ved å dele din posisjon.
+                {t("home.nearYou.description")}
               </p>
               {isRequestingLocation ? (
-                <p className="text-center py-2">Henter posisjon…</p>
+                <p className="text-center py-2">{t("common.getting_location")}</p>
               ) : (
                 <button
                   onClick={handleRequestLocation}
@@ -192,7 +194,7 @@ const HomePage: React.FC = () => {
                   disabled={isRequestingLocation}
                 >
                   <MapPin className="w-4 h-4 mr-2" />
-                  Vis festivaler i nærheten
+                  {t("home.nearYou.request_location_btn")}
                 </button>
               )}
             </div>
@@ -206,14 +208,14 @@ const HomePage: React.FC = () => {
             </div>
           ) : isFetchingNearby ? (
             // Step 4: Fetching nearby festivals
-            <p className="text-center py-8">Laster festivaler i nærheten…</p>
+            <p className="text-center py-8">{t("common.loading_nearby_festivals")}</p>
           ) : nearbyFestivals.length > 0 ? (
             // Step 5: Show results
             <>
               <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Festivaler i nærheten av deg</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{t("home.nearYou.title")}</h2>
                 <Link to="/map" className="text-accent-500 hover:text-accent-600 flex items-center text-sm">
-                  <span className="mr-1">Se alle på kart</span>
+                  <span className="mr-1">{t("home.nearYou.map_btn")}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -231,7 +233,7 @@ const HomePage: React.FC = () => {
             </>
           ) : (
             // Step 6: No festivals found
-            <p className="text-gray-600 text-center py-8">Ingen festivaler funnet i nærheten</p>
+            <p className="text-gray-600 text-center py-8">{t("error.no_festivals_nearby")}</p>
           )}
         </div>
       </section>
@@ -240,34 +242,34 @@ const HomePage: React.FC = () => {
       <section className="py-20 bg-primary-50">
         <div className="container-custom">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            Oppdag, planlegg og nyt
+            {t("home.features.title")}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-lg shadow-md p-6 text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-100 text-primary-600 mb-4">
                 <Calendar className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Alle Festivaler</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t("home.features.all_festivals_title")}</h3>
               <p className="text-gray-600">
-                Oppdag en samling av musikk- og kulturfestivaler som foregår i hele Norge.
+                {t("home.features.all_festivals_description")}
               </p>
             </div>
             <div className="bg-white rounded-lg shadow-md p-6 text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary-100 text-secondary-600 mb-4">
                 <Map className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Festivalkalender</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t("home.features.calendar_title")}</h3>
               <p className="text-gray-600">
-                Se alle kommende festivaler i kalenderen for å finne den som passer deg.
+                {t("home.features.calendar_description")}
               </p>
             </div>
             <div className="bg-white rounded-lg shadow-md p-6 text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent-100 text-accent-600 mb-4">
                 <Star className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Festivaler nær deg</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t("home.features.nearYou_title")}</h3>
               <p className="text-gray-600">
-                Ved å tillate stedslokasjon kan du finne festivaler nær deg.
+                {t("home.features.nearYou_description")}
               </p>
             </div>
           </div>
