@@ -35,7 +35,7 @@ const HomePage: React.FC = () => {
   // 1) FestivalContext
   const {popularFestivals, getUpcomingFestivals, loading, error} = useFestival();
   const upcomingFestivals = getUpcomingFestivals();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // 2) LocationContext
   const { location: userLocation, requestLocation, locationError } = useLocation();
@@ -95,7 +95,6 @@ const HomePage: React.FC = () => {
             </p>
             <div className="max-w-2xl w-full mb-10">
               <SearchBar
-                placeholder="Søk etter festivaler, steder eller sjangere..."
                 className="w-full"
               />
             </div>
@@ -122,7 +121,7 @@ const HomePage: React.FC = () => {
                 <h2 className="text-3xl font-bold text-gray-900">{t("home.popular_festivals.title")}</h2>
                 <p className="text-gray-600">{t("home.popular_festivals.description")}</p>
               </div>
-              <Link to="/festivals" className="text-accent-500 hover:text-accent-600 flex items-center">
+              <Link to={`/${i18n.language}/festivals`} className="text-accent-500 hover:text-accent-600 flex items-center">
                 <span className="mr-1">{t("home.popular_festivals.all_festivals_btn")}</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
@@ -154,7 +153,7 @@ const HomePage: React.FC = () => {
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">{t("home.upcoming_festivals.title")}</h2>
                 <p className="text-gray-600">{t("home.upcoming_festivals.description")}</p>
               </div>
-              <Link to="/calendar" className="text-accent-500 hover:text-accent-600 flex items-center">
+              <Link to={`/${i18n.language}/calendar`} className="text-accent-500 hover:text-accent-600 flex items-center">
                 <span className="mr-1">{t("home.upcoming_festivals.calendar_btn")}</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
@@ -214,7 +213,7 @@ const HomePage: React.FC = () => {
             <>
               <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">{t("home.nearYou.title")}</h2>
-                <Link to="/map" className="text-accent-500 hover:text-accent-600 flex items-center text-sm">
+                <Link to={`/${i18n.language}/map`} className="text-accent-500 hover:text-accent-600 flex items-center text-sm">
                   <span className="mr-1">{t("home.nearYou.map_btn")}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
